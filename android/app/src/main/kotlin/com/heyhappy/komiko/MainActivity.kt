@@ -1,4 +1,4 @@
-package com.heyhappy.komiko.komiko
+package com.heyhappy.komiko
 
 import io.flutter.embedding.android.FlutterActivity
 

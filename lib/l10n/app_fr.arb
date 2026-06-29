@@ -67,5 +67,14 @@
   "catOther": "Autre",
   "propose": "Proposer",
   "noJokes": "Aucune blague pour le moment.",
-  "error": "Erreur"
+  "error": "Erreur",
+  "language": "Langue",
+  "french": "Français",
+  "english": "Anglais",
+  "importInitialJokes": "Importer les blagues initiales",
+  "jokesImported": "Blagues importées !",
+  "jokesShared": "Blagues partagées",
+  "totalLikes": "Likes totaux",
+  "rank": "Rang",
+  "memberSince": "Membre depuis"
 }

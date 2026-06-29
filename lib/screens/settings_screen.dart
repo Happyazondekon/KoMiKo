@@ -50,12 +50,12 @@ class SettingsScreen extends StatelessWidget {
           _buildSettingItem(
             context,
             icon: Icons.language_outlined,
-            title: "Language",
+            title: l10n.language,
             trailing: DropdownButton<String>(
               value: localizationService.currentLocale.languageCode,
-              items: const [
-                DropdownMenuItem(value: 'fr', child: Text("Français")),
-                DropdownMenuItem(value: 'en', child: Text("English")),
+              items: [
+                DropdownMenuItem(value: 'fr', child: Text(l10n.french)),
+                DropdownMenuItem(value: 'en', child: Text(l10n.english)),
               ],
               onChanged: (value) {
                 if (value != null) {
@@ -79,11 +79,11 @@ class SettingsScreen extends StatelessWidget {
           _buildSettingItem(
             context,
             icon: Icons.download,
-            title: "Importer les blagues initiales",
+            title: l10n.importInitialJokes,
             onTap: () async {
               await ImportService.importInitialJokes();
               if (context.mounted) {
-                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Blagues importées !")));
+                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.jokesImported)));
               }
             },
           ),
@@ -154,16 +154,16 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
         Text(
-          "Member since ${user?.createdAt != null ? user!.createdAt!.year.toString() : 'May 2023'}",
+          "${l10n.memberSince} ${user?.createdAt != null ? user!.createdAt!.year.toString() : '2023'}",
           style: const TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildStatItem("128", "Jokes shared"),
-            _buildStatItem("4.2k", "Total likes"),
-            _buildStatItem("#12", "Rank"),
+            _buildStatItem("128", l10n.jokesShared),
+            _buildStatItem("4.2k", l10n.totalLikes),
+            _buildStatItem("#12", l10n.rank),
           ],
         ),
       ],

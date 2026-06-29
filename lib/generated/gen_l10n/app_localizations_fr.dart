@@ -214,4 +214,31 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get error => 'Erreur';
+
+  @override
+  String get language => 'Langue';
+
+  @override
+  String get french => 'Français';
+
+  @override
+  String get english => 'Anglais';
+
+  @override
+  String get importInitialJokes => 'Importer les blagues initiales';
+
+  @override
+  String get jokesImported => 'Blagues importées !';
+
+  @override
+  String get jokesShared => 'Blagues partagées';
+
+  @override
+  String get totalLikes => 'Likes totaux';
+
+  @override
+  String get rank => 'Rang';
+
+  @override
+  String get memberSince => 'Membre depuis';
 }

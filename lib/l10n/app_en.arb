@@ -67,5 +67,14 @@
   "catOther": "Other",
   "propose": "Propose",
   "noJokes": "No jokes yet.",
-  "error": "Error"
+  "error": "Error",
+  "language": "Language",
+  "french": "French",
+  "english": "English",
+  "importInitialJokes": "Import initial jokes",
+  "jokesImported": "Jokes imported!",
+  "jokesShared": "Jokes shared",
+  "totalLikes": "Total likes",
+  "rank": "Rank",
+  "memberSince": "Member since"
 }

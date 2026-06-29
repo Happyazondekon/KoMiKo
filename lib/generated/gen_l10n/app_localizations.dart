@@ -508,6 +508,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @french.
+  ///
+  /// In en, this message translates to:
+  /// **'French'**
+  String get french;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @importInitialJokes.
+  ///
+  /// In en, this message translates to:
+  /// **'Import initial jokes'**
+  String get importInitialJokes;
+
+  /// No description provided for @jokesImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Jokes imported!'**
+  String get jokesImported;
+
+  /// No description provided for @jokesShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Jokes shared'**
+  String get jokesShared;
+
+  /// No description provided for @totalLikes.
+  ///
+  /// In en, this message translates to:
+  /// **'Total likes'**
+  String get totalLikes;
+
+  /// No description provided for @rank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank'**
+  String get rank;
+
+  /// No description provided for @memberSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Member since'**
+  String get memberSince;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
