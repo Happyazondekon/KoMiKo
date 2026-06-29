@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "23025675445",
+    "project_id": "memory-f7396",
+    "storage_bucket": "memory-f7396.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23025675445:android:e3450c4d89523417e762fc",
+        "android_client_info": {
+          "package_name": "com.heyhappy.komiko"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "23025675445-k6orftfkdajed1r1l781dh8pjc020q6o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heyhappy.komiko",
+            "certificate_hash": "6345a3087dcfe455751f607afa03f8fb5adb1777"
+          }
+        },
+        {
+          "client_id": "23025675445-l4376c4k8ro4qp0op9rv8ujdqt87o473.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsZ0Q1VPVOgKEbWpjlIgEaSTWIRMLqvb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "23025675445-l4376c4k8ro4qp0op9rv8ujdqt87o473.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
