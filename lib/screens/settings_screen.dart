@@ -1,17 +1,113 @@
+﻿import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
+import 'package:komiko/models/user_model.dart';
 import 'package:komiko/providers/theme_provider.dart';
-import 'package:komiko/services/localization_service.dart';
-import 'package:komiko/services/user_service.dart';
+import 'package:komiko/screens/edit_profile_screen.dart';
+import 'package:komiko/screens/my_jokes_screen.dart';
+import 'package:komiko/screens/notifications_screen.dart';
 import 'package:komiko/services/auth_service.dart';
 import 'package:komiko/services/import_service.dart';
-import 'package:komiko/models/user_model.dart';
-import 'package:komiko/screens/edit_profile_screen.dart';
-import 'dart:convert';
+import 'package:komiko/services/joke_service.dart';
+import 'package:komiko/services/localization_service.dart';
+import 'package:komiko/services/notification_service.dart';
+import 'package:komiko/services/user_service.dart';
+import 'package:komiko/theme/app_colors.dart';
+import 'package:provider/provider.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  late Future<Map<String, int>> _statsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStats();
+  }
+
+  void _loadStats() {
+    final uid = context.read<UserService>().currentUser?.uid;
+    _statsFuture = uid != null
+        ? JokeService().getUserStats(uid)
+        : Future.value({'jokesCount': 0, 'totalLikes': 0, 'totalComments': 0});
+  }
+
+  Future<void> _runImport(BuildContext context, AppLocalizations l10n) async {
+    // State for the progress dialog — updated via dialogSetState
+    int current = -1;
+    int total = -1;
+    StateSetter? dialogSetState;
+
+    // Show non-dismissable progress dialog
+    unawaited(
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => PopScope(
+          canPop: false,
+          child: StatefulBuilder(
+            builder: (ctx, setState) {
+              dialogSetState = setState;
+              final isCleanup = current == -1;
+              final isLoading = total == 0;
+              final progress =
+                  (!isCleanup && !isLoading && total > 0)
+                      ? current / total
+                      : null;
+
+              return AlertDialog(
+                title: Text(l10n.importInitialJokes),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    LinearProgressIndicator(value: progress),
+                    const SizedBox(height: 20),
+                    Text(
+                      isCleanup
+                          ? l10n.importCleaning
+                          : l10n.importingProgress(current, total),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    try {
+      await ImportService.importInitialJokes(
+        onProgress: (c, t) {
+          dialogSetState?.call(() {
+            current = c;
+            total = t;
+          });
+        },
+      );
+    } finally {
+      if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
+    }
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.importDone),
+          backgroundColor: Colors.green,
+        ),
+      );
+      setState(_loadStats);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,76 +116,121 @@ class SettingsScreen extends StatelessWidget {
     final localizationService = Provider.of<LocalizationService>(context);
     final userService = Provider.of<UserService>(context);
     final userModel = userService.currentUser;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.settings),
+        title: Image.asset(
+          'assets/images/Komiko nobg.webp',
+          height: 30,
+          fit: BoxFit.contain,
+        ),
+        centerTitle: true,
       ),
       body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         children: [
           const SizedBox(height: 20),
-          _buildProfileHeader(context, userModel, l10n),
-          const SizedBox(height: 30),
-          _buildSettingItem(
-            context,
-            icon: Icons.person_outline,
-            title: l10n.myJokes,
-            onTap: () {},
+          _buildProfileHeader(context, userModel, l10n, isDark),
+          const SizedBox(height: 28),
+          // Section title
+          Text(
+            'Account Settings',
+            style: GoogleFonts.poppins(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondaryDark,
+              letterSpacing: 0.5,
+            ),
           ),
-          _buildSettingItem(
+          const SizedBox(height: 10),
+          _buildSettingTile(
+            context,
+            icon: Icons.person_outline_rounded,
+            title: l10n.myJokes,
+            isDark: isDark,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const MyJokesScreen()),
+            ),
+          ),
+          _buildSettingTile(
             context,
             icon: Icons.palette_outlined,
             title: l10n.themeSettings,
+            isDark: isDark,
             trailing: Switch(
               value: themeProvider.themeMode == ThemeMode.dark,
-              onChanged: (value) {
-                themeProvider.setThemeMode(value ? ThemeMode.dark : ThemeMode.light);
-              },
+              activeColor: AppColors.primary,
+              onChanged: (value) => themeProvider
+                  .setThemeMode(value ? ThemeMode.dark : ThemeMode.light),
             ),
           ),
-          _buildSettingItem(
+          _buildSettingTile(
             context,
             icon: Icons.language_outlined,
             title: l10n.language,
+            isDark: isDark,
             trailing: DropdownButton<String>(
               value: localizationService.currentLocale.languageCode,
+              underline: const SizedBox(),
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
               items: [
                 DropdownMenuItem(value: 'fr', child: Text(l10n.french)),
                 DropdownMenuItem(value: 'en', child: Text(l10n.english)),
               ],
               onChanged: (value) {
-                if (value != null) {
-                  localizationService.setLocale(Locale(value));
-                }
+                if (value != null) localizationService.setLocale(Locale(value));
               },
             ),
           ),
-          _buildSettingItem(
+          _buildSettingTile(
             context,
-            icon: Icons.notifications_none,
+            icon: Icons.notifications_none_rounded,
             title: l10n.notifications,
-            onTap: () {},
+            isDark: isDark,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+            ),
+            trailing: StreamBuilder<int>(
+              stream: NotificationService.unreadCountStream(
+                  context.read<AuthService>().currentUser?.uid ?? ''),
+              builder: (ctx, snap) {
+                final count = snap.data ?? 0;
+                if (count == 0) return const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondaryDark);
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.error,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text('$count', style: GoogleFonts.poppins(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700)),
+                );
+              },
+            ),
           ),
-          _buildSettingItem(
+          _buildSettingTile(
             context,
-            icon: Icons.help_outline,
+            icon: Icons.help_outline_rounded,
             title: l10n.helpSupport,
+            isDark: isDark,
             onTap: () {},
           ),
-          _buildSettingItem(
+          _buildSettingTile(
             context,
-            icon: Icons.download,
+            icon: Icons.download_rounded,
             title: l10n.importInitialJokes,
-            onTap: () async {
-              await ImportService.importInitialJokes();
-              if (context.mounted) {
-                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.jokesImported)));
-              }
-            },
+            isDark: isDark,
+            onTap: () => _runImport(context, l10n),
           ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () async {
                 await context.read<AuthService>().signOut();
@@ -97,100 +238,230 @@ class SettingsScreen extends StatelessWidget {
                   context.read<UserService>().clearCache();
                 }
               },
-              icon: const Icon(Icons.logout),
+              icon: const Icon(Icons.logout_rounded),
               label: Text(l10n.logOut),
               style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.red,
-                side: const BorderSide(color: Colors.red),
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                foregroundColor: AppColors.error,
+                side: const BorderSide(color: AppColors.error),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
               ),
             ),
           ),
+          const SizedBox(height: 32),
         ],
       ),
     );
   }
+  Widget _buildProfileHeader(
+    BuildContext context,
+    UserModel? user,
+    AppLocalizations l10n,
+    bool isDark,
+  ) {
+    final avatarUrl = user?.avatarUrl;
+    ImageProvider? avatarProvider;
+    if (avatarUrl != null && avatarUrl.startsWith('base64:')) {
+      avatarProvider = MemoryImage(base64Decode(avatarUrl.substring(7)));
+    }
+    final cardBg = isDark ? AppColors.darkCard : AppColors.lightCard;
+    final border = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
-  Widget _buildProfileHeader(BuildContext context, UserModel? user, AppLocalizations l10n) {
     return Column(
       children: [
+        // Avatar
         Stack(
           children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: (user?.avatarUrl != null && user!.avatarUrl!.startsWith('base64:'))
-                  ? MemoryImage(base64Decode(user.avatarUrl!.substring(7)))
-                  : const NetworkImage("https://via.placeholder.com/150") as ImageProvider,
+            Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppColors.primary, width: 2),
+                image: avatarProvider != null
+                    ? DecorationImage(
+                        image: avatarProvider, fit: BoxFit.cover)
+                    : null,
+              ),
+              child: avatarProvider == null
+                  ? Icon(Icons.person_rounded,
+                      size: 48,
+                      color: AppColors.primary.withValues(alpha: 0.7))
+                  : null,
             ),
             Positioned(
               bottom: 0,
               right: 0,
               child: GestureDetector(
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen())),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const EditProfileScreen()),
+                ),
                 child: Container(
-                  padding: const EdgeInsets.all(4),
+                  width: 30,
+                  height: 30,
                   decoration: const BoxDecoration(
-                    color: Colors.yellow,
+                    color: AppColors.primary,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.edit, size: 20, color: Colors.black),
+                  child: const Icon(Icons.edit_rounded,
+                      size: 16, color: Colors.black),
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        Text(
-          user?.username ?? "Jean Rieur",
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        const SizedBox(height: 14),
+        // Name + verified
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              user?.username ?? l10n.anonymous,
+              style: GoogleFonts.poppins(
+                  fontSize: 22, fontWeight: FontWeight.w800),
+            ),
+            if (user?.isVerified == true) ...[
+              const SizedBox(width: 6),
+              Tooltip(
+                message: l10n.verifiedAccount,
+                child: const Icon(Icons.verified,
+                    color: AppColors.primary, size: 22),
+              ),
+            ],
+          ],
         ),
         if (user?.bio != null && user!.bio!.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 4),
             child: Text(
               user.bio!,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+              style: GoogleFonts.poppins(
+                  color: AppColors.textSecondaryDark,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 13),
             ),
           ),
         Text(
-          "${l10n.memberSince} ${user?.createdAt != null ? user!.createdAt!.year.toString() : '2023'}",
-          style: const TextStyle(color: Colors.grey),
+          '${l10n.memberSince} ${user?.createdAt?.year ?? ''}',
+          style: GoogleFonts.poppins(
+              color: AppColors.textSecondaryDark, fontSize: 12),
         ),
-        const SizedBox(height: 24),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        const SizedBox(height: 20),
+        // Stats row
+        FutureBuilder<Map<String, int>>(
+          future: _statsFuture,
+          builder: (context, snapshot) {
+            final stats = snapshot.data ?? {};
+            return Row(
+              children: [
+                _buildStatCard(
+                    '${stats['jokesCount'] ?? 0}',
+                    l10n.jokesShared,
+                    cardBg,
+                    border,
+                    isDark),
+                const SizedBox(width: 10),
+                _buildStatCard(
+                    '${stats['totalLikes'] ?? 0}',
+                    l10n.totalLikes,
+                    cardBg,
+                    border,
+                    isDark),
+                const SizedBox(width: 10),
+                _buildStatCard(
+                    '${stats['totalComments'] ?? 0}',
+                    l10n.commentsReceived,
+                    cardBg,
+                    border,
+                    isDark),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(
+      String value, String label, Color bg, Color border, bool isDark) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: border),
+        ),
+        child: Column(
           children: [
-            _buildStatItem("128", l10n.jokesShared),
-            _buildStatItem("4.2k", l10n.totalLikes),
-            _buildStatItem("#12", l10n.rank),
+            Text(
+              value,
+              style: GoogleFonts.poppins(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 10,
+                color: AppColors.textSecondaryDark,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildStatItem(String value, String label) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  Widget _buildSettingTile(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required bool isDark,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
+    final bg = isDark ? AppColors.darkCard : AppColors.lightCard;
+    final border = isDark ? AppColors.darkBorder : AppColors.lightBorder;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: border),
+      ),
+      child: ListTile(
+        onTap: onTap,
+        leading: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: AppColors.primary.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: AppColors.primary, size: 20),
         ),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600, fontSize: 14),
         ),
-      ],
-    );
-  }
-
-  Widget _buildSettingItem(BuildContext context, {required IconData icon, required String title, Widget? trailing, VoidCallback? onTap}) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      trailing: trailing ?? const Icon(Icons.chevron_right),
-      onTap: onTap,
+        trailing: trailing ??
+            Icon(Icons.chevron_right_rounded,
+                color: AppColors.textSecondaryDark),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14)),
+      ),
     );
   }
 }

@@ -25,8 +25,8 @@
   "bestJokes": "Meilleures blagues du jour",
   "randomJoke": "Blague Aléatoire",
   "seeAll": "Tout voir",
-  "exploreStyles": "Explorez les Styles",
-  "savedGems": "Pépites Sauvées",
+  "exploreStyles": "Explorez les Catégories",
+  "savedGems": "Pépites Sauvegardées",
   "myJokes": "Mes Blagues",
   "themeSettings": "Paramètres du thème",
   "notifications": "Notifications",
@@ -64,17 +64,117 @@
   "catMedicine": "Médecine",
   "catSport": "Sport",
   "catToto": "Toto",
+  "catManagement": "Management",
   "catOther": "Autre",
   "propose": "Proposer",
   "noJokes": "Aucune blague pour le moment.",
+  "noJokesInCategory": "Aucune blague dans cette catégorie pour l'instant.",
+  "noFavorites": "Vous n'avez encore aimé aucune blague. Explorez et likez vos favorites !",
+  "noMyJokes": "Vous n'avez pas encore posté de blague.",
   "error": "Erreur",
   "language": "Langue",
   "french": "Français",
   "english": "Anglais",
   "importInitialJokes": "Importer les blagues initiales",
   "jokesImported": "Blagues importées !",
-  "jokesShared": "Blagues partagées",
-  "totalLikes": "Likes totaux",
-  "rank": "Rang",
-  "memberSince": "Membre depuis"
+  "jokesShared": "Blagues postées",
+  "totalLikes": "Likes reçus",
+  "commentsReceived": "Commentaires reçus",
+  "memberSince": "Membre depuis",
+  "anonymous": "Utilisateur",
+  "verifiedAccount": "Compte vérifié",
+  "shareViaKomiko": "Partagé via Komiko 😄",
+  "deleteJoke": "Supprimer la blague",
+  "jokeDeleted": "Blague supprimée.",
+  "confirmDelete": "Voulez-vous vraiment supprimer cette blague ?",
+  "confirm": "Confirmer",
+  "myFavorites": "Mes Favoris",
+  "welcomeBack": "Bon Retour",
+  "createAccount": "Créer un Compte",
+  "resetPassword": "Réinitialiser le Mot de Passe",
+  "resetPasswordInfo": "Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+  "sendLink": "Envoyer le Lien",
+  "emailSent": "Email Envoyé !",
+  "emailSentInfo": "Vérifiez votre email à {email} pour les instructions de réinitialisation.",
+  "@emailSentInfo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backToLogin": "Retour à la Connexion",
+  "verifyEmail": "Vérifier l'Email",
+  "checkYourEmail": "Vérifiez votre email",
+  "verificationSentTo": "Nous avons envoyé un lien de vérification à {email}. Veuillez cliquer sur le lien pour vérifier votre compte.",
+  "@verificationSentTo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "resendEmail": "Renvoyer l'Email",
+  "resendInSeconds": "Renvoyer dans {count}s",
+  "@resendInSeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "useAnotherAccount": "Utiliser un autre compte",
+  "invalidEmailOrPassword": "Email ou mot de passe invalide",
+  "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+  "agreeToTermsError": "Veuillez accepter les conditions d'utilisation",
+  "registrationFailed": "Inscription échouée. Veuillez réessayer.",
+  "importCleaning": "Suppression des anciennes blagues...",
+  "importingProgress": "Importation {current} / {total}...",
+  "@importingProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "importDone": "Import terminé avec succès !",
+  "connectWith": "OU SE CONNECTER AVEC",
+  "onboardTitle1": "Riez Sans Limites",
+  "onboardSubtitle1": "Des blagues pour tous les gouts, disponibles en un clic.",
+  "onboardTitle2": "Decouvrez et Explorez",
+  "onboardSubtitle2": "Des centaines de blagues par categories. Trouvez votre style.",
+  "onboardTitle3": "Partagez le Rire",
+  "onboardSubtitle3": "Aimez, commentez et partagez vos blagues preferees.",
+  "getStarted": "Cest parti !",
+  "next": "Suivant",
+  "skip": "Passer",
+  "errorOops": "Oups ! Une erreur est survenue.",
+  "retry": "Reessayer",
+  "noNotifications": "Aucune notification pour linstant.",
+  "notifDailyJoke": "La blague du jour vous attend !",
+  "markAllRead": "Tout marquer comme lu",
+  "selectAvatar": "Choisir un avatar",
+  "predefinedAvatars": "Avatars predefinis",
+  "customAvatar": "Photo personnalisee",
+  "notifLiked": "{actor} a aime votre blague",
+  "@notifLiked": {
+    "placeholders": {
+      "actor": {
+        "type": "String"
+      }
+    }
+  },
+  "notifCommented": "{actor} a commente votre blague",
+  "@notifCommented": {
+    "placeholders": {
+      "actor": {
+        "type": "String"
+      }
+    }
+  },
+  "seeMore": "Voir plus",
+  "seeLess": "Voir moins"
 }

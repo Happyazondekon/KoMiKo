@@ -21,6 +21,8 @@ class Comment {
 
   factory Comment.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    // createdAt may be null immediately after an optimistic write
+    final ts = data['createdAt'];
     return Comment(
       id: doc.id,
       jokeId: data['jokeId'] ?? '',
@@ -28,7 +30,7 @@ class Comment {
       authorName: data['authorName'] ?? 'Anonymous',
       authorId: data['authorId'] ?? '',
       authorAvatarUrl: data['authorAvatarUrl'],
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      createdAt: ts is Timestamp ? ts.toDate() : DateTime.now(),
     );
   }
 
@@ -39,7 +41,8 @@ class Comment {
       'authorName': authorName,
       'authorId': authorId,
       'authorAvatarUrl': authorAvatarUrl,
-      'createdAt': Timestamp.fromDate(createdAt),
+      // Use server timestamp for accurate ordering across devices
+      'createdAt': FieldValue.serverTimestamp(),
     };
   }
 }

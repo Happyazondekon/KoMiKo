@@ -254,7 +254,7 @@ abstract class AppLocalizations {
   /// No description provided for @exploreStyles.
   ///
   /// In en, this message translates to:
-  /// **'Explore Styles'**
+  /// **'Explore Categories'**
   String get exploreStyles;
 
   /// No description provided for @savedGems.
@@ -389,6 +389,12 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get share;
 
+  /// No description provided for @shareViaKomiko.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared via Komiko 😄'**
+  String get shareViaKomiko;
+
   /// No description provided for @proposeJoke.
   ///
   /// In en, this message translates to:
@@ -485,6 +491,12 @@ abstract class AppLocalizations {
   /// **'Toto'**
   String get catToto;
 
+  /// No description provided for @catManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Management'**
+  String get catManagement;
+
   /// No description provided for @catOther.
   ///
   /// In en, this message translates to:
@@ -502,6 +514,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No jokes yet.'**
   String get noJokes;
+
+  /// No description provided for @noJokesInCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'No jokes in this category yet.'**
+  String get noJokesInCategory;
+
+  /// No description provided for @noFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t liked any jokes yet. Explore and like your favourites!'**
+  String get noFavorites;
+
+  /// No description provided for @noMyJokes.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t posted any jokes yet.'**
+  String get noMyJokes;
 
   /// No description provided for @error.
   ///
@@ -542,26 +572,326 @@ abstract class AppLocalizations {
   /// No description provided for @jokesShared.
   ///
   /// In en, this message translates to:
-  /// **'Jokes shared'**
+  /// **'Jokes posted'**
   String get jokesShared;
 
   /// No description provided for @totalLikes.
   ///
   /// In en, this message translates to:
-  /// **'Total likes'**
+  /// **'Likes received'**
   String get totalLikes;
 
-  /// No description provided for @rank.
+  /// No description provided for @commentsReceived.
   ///
   /// In en, this message translates to:
-  /// **'Rank'**
-  String get rank;
+  /// **'Comments received'**
+  String get commentsReceived;
 
   /// No description provided for @memberSince.
   ///
   /// In en, this message translates to:
   /// **'Member since'**
   String get memberSince;
+
+  /// No description provided for @anonymous.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get anonymous;
+
+  /// No description provided for @verifiedAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified account'**
+  String get verifiedAccount;
+
+  /// No description provided for @deleteJoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete joke'**
+  String get deleteJoke;
+
+  /// No description provided for @jokeDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Joke deleted.'**
+  String get jokeDeleted;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you really want to delete this joke?'**
+  String get confirmDelete;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @myFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'My Favourites'**
+  String get myFavorites;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get welcomeBack;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// No description provided for @resetPasswordInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address and we\'ll send you a link to reset your password.'**
+  String get resetPasswordInfo;
+
+  /// No description provided for @sendLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Link'**
+  String get sendLink;
+
+  /// No description provided for @emailSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Sent!'**
+  String get emailSent;
+
+  /// No description provided for @emailSentInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email at {email} for instructions on how to reset your password.'**
+  String emailSentInfo(String email);
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Login'**
+  String get backToLogin;
+
+  /// No description provided for @verifyEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Email'**
+  String get verifyEmail;
+
+  /// No description provided for @checkYourEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email'**
+  String get checkYourEmail;
+
+  /// No description provided for @verificationSentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ve sent a verification link to {email}. Please click the link to verify your account.'**
+  String verificationSentTo(String email);
+
+  /// No description provided for @resendEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Email'**
+  String get resendEmail;
+
+  /// No description provided for @resendInSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in {count}s'**
+  String resendInSeconds(int count);
+
+  /// No description provided for @useAnotherAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Use another account'**
+  String get useAnotherAccount;
+
+  /// No description provided for @invalidEmailOrPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email or password'**
+  String get invalidEmailOrPassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @agreeToTermsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please agree to the terms and conditions'**
+  String get agreeToTermsError;
+
+  /// No description provided for @registrationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration failed. Please try again.'**
+  String get registrationFailed;
+
+  /// No description provided for @importCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleaning up old jokes...'**
+  String get importCleaning;
+
+  /// No description provided for @importingProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Importing {current} / {total}...'**
+  String importingProgress(int current, int total);
+
+  /// No description provided for @importDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Import completed successfully!'**
+  String get importDone;
+
+  /// No description provided for @connectWith.
+  ///
+  /// In en, this message translates to:
+  /// **'OR CONNECT WITH'**
+  String get connectWith;
+
+  /// No description provided for @onboardTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Laugh Without Limits'**
+  String get onboardTitle1;
+
+  /// No description provided for @onboardSubtitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Jokes for every taste, one click away.'**
+  String get onboardSubtitle1;
+
+  /// No description provided for @onboardTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover & Explore'**
+  String get onboardTitle2;
+
+  /// No description provided for @onboardSubtitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Hundreds of jokes sorted by category. Find your style.'**
+  String get onboardSubtitle2;
+
+  /// No description provided for @onboardTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Share the Laughter'**
+  String get onboardTitle3;
+
+  /// No description provided for @onboardSubtitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Like, comment and share your favourite jokes with the people you love.'**
+  String get onboardSubtitle3;
+
+  /// No description provided for @getStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s Go!'**
+  String get getStarted;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @errorOops.
+  ///
+  /// In en, this message translates to:
+  /// **'Oops! Something went wrong.'**
+  String get errorOops;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet.'**
+  String get noNotifications;
+
+  /// No description provided for @notifLiked.
+  ///
+  /// In en, this message translates to:
+  /// **'{actor} liked your joke'**
+  String notifLiked(String actor);
+
+  /// No description provided for @notifCommented.
+  ///
+  /// In en, this message translates to:
+  /// **'{actor} commented on your joke'**
+  String notifCommented(String actor);
+
+  /// No description provided for @notifDailyJoke.
+  ///
+  /// In en, this message translates to:
+  /// **'The joke of the day is waiting for you!'**
+  String get notifDailyJoke;
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllRead;
+
+  /// No description provided for @selectAvatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an avatar'**
+  String get selectAvatar;
+
+  /// No description provided for @predefinedAvatars.
+  ///
+  /// In en, this message translates to:
+  /// **'Predefined avatars'**
+  String get predefinedAvatars;
+
+  /// No description provided for @customAvatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom photo'**
+  String get customAvatar;
+
+  /// No description provided for @seeMore.
+  ///
+  /// In en, this message translates to:
+  /// **'See more'**
+  String get seeMore;
+
+  /// No description provided for @seeLess.
+  ///
+  /// In en, this message translates to:
+  /// **'See less'**
+  String get seeLess;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

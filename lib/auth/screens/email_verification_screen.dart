@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
@@ -64,11 +65,12 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final email = context.read<AuthService>().currentUser?.email ?? '';
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Verify Email"),
+        title: Text(l10n.verifyEmail),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -84,26 +86,30 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
           children: [
             const Icon(Icons.email_outlined, size: 80, color: Colors.yellow),
             const SizedBox(height: 24),
-            const Text(
-              "Check your email",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              l10n.checkYourEmail,
+              style: const TextStyle(
+                  fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             Text(
-              "We've sent a verification link to $email. Please click the link to verify your account.",
+              l10n.verificationSentTo(email),
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 40),
             ElevatedButton(
-              onPressed: _canResendEmail ? _sendVerificationEmail : null,
-              child: Text(_canResendEmail ? "Resend Email" : "Resend in ${_countdown}s"),
+              onPressed:
+                  _canResendEmail ? _sendVerificationEmail : null,
+              child: Text(_canResendEmail
+                  ? l10n.resendEmail
+                  : l10n.resendInSeconds(_countdown)),
             ),
             const SizedBox(height: 16),
             TextButton(
               onPressed: () => context.read<AuthService>().signOut(),
-              child: const Text("Use another account"),
+              child: Text(l10n.useAnotherAccount),
             ),
           ],
         ),

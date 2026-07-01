@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/services/auth_service.dart';
+import 'package:komiko/theme/app_colors.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback onRegisterClicked;
@@ -43,12 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final authService = context.read<AuthService>();
+      final l10n = AppLocalizations.of(context)!;
       final result = await authService.signInWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
       if (result == null && mounted) {
-        setState(() => _errorMessage = "Invalid email or password");
+        setState(() => _errorMessage = l10n.invalidEmailOrPassword);
       }
     } catch (e) {
       if (mounted) setState(() => _errorMessage = e.toString());
@@ -76,108 +79,157 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 80),
-            Text(
-              l10n.appTitle,
-              style: const TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: Colors.yellow,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 40),
+              // Logo image
+              Center(
+                child: Image.asset(
+                  'assets/images/Komiko nobg.webp',
+                  height: 80,
+                  fit: BoxFit.contain,
+                ),
               ),
-              textAlign: TextAlign.center,
-            ),
-            const Text(
-              "Welcome Back",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 40),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: l10n.email,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                prefixIcon: const Icon(Icons.email_outlined),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: l10n.password,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: const Icon(Icons.visibility_outlined),
-              ),
-            ),
-            if (_errorMessage != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: 32),
+              // Welcome heading
               Text(
-                _errorMessage!,
-                style: const TextStyle(color: Colors.red, fontSize: 14),
+                l10n.welcomeBack,
+                style: GoogleFonts.poppins(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  color: isDark
+                      ? AppColors.textPrimaryDark
+                      : AppColors.textPrimaryLight,
+                ),
                 textAlign: TextAlign.center,
               ),
-            ],
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: widget.onForgotPasswordClicked,
-                child: Text(l10n.forgotPassword),
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _signIn,
-              child: _isLoading 
-                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
-                : Text(l10n.login),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                const Expanded(child: Divider()),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(l10n.orConnectWith),
+              const SizedBox(height: 4),
+              // Yellow underline accent
+              Center(
+                child: Container(
+                  width: 48,
+                  height: 3,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-                const Expanded(child: Divider()),
+              ),
+              const SizedBox(height: 32),
+              // Email field
+              TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: l10n.email,
+                  prefixIcon:
+                      const Icon(Icons.email_outlined, color: AppColors.primary),
+                ),
+              ),
+              const SizedBox(height: 14),
+              // Password field
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: l10n.password,
+                  prefixIcon: const Icon(Icons.lock_outline_rounded,
+                      color: AppColors.primary),
+                  suffixIcon: const Icon(Icons.visibility_outlined),
+                ),
+              ),
+              if (_errorMessage != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  _errorMessage!,
+                  style: GoogleFonts.poppins(
+                      color: AppColors.error, fontSize: 13),
+                  textAlign: TextAlign.center,
+                ),
               ],
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildSocialButton(
-                  Icons.g_mobiledata, 
-                  l10n.google, 
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: widget.onForgotPasswordClicked,
+                  child: Text(
+                    l10n.forgotPassword,
+                    style: GoogleFonts.poppins(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: _isLoading ? null : _signIn,
+                style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 52)),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.black))
+                    : Text(l10n.login,
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w700, fontSize: 16)),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  const Expanded(child: Divider()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      l10n.orConnectWith,
+                      style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          color: AppColors.textSecondaryDark),
+                    ),
+                  ),
+                  const Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: _buildSocialButton(
+                  Icons.g_mobiledata,
+                  l10n.google,
                   _isGoogleLoading ? null : _signInWithGoogle,
                   isLoading: _isGoogleLoading,
                 ),
-                _buildSocialButton(Icons.facebook, l10n.facebook, () {
-                  // TODO: Implement facebook login
-                }),
-              ],
-            ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(l10n.dontHaveAccount),
-                TextButton(
-                  onPressed: widget.onRegisterClicked,
-                  child: Text(l10n.signUp),
-                ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.dontHaveAccount,
+                    style: GoogleFonts.poppins(
+                        color: AppColors.textSecondaryDark),
+                  ),
+                  TextButton(
+                    onPressed: widget.onRegisterClicked,
+                    child: Text(
+                      l10n.signUp,
+                      style: GoogleFonts.poppins(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );

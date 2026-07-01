@@ -1,0 +1,82 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ────────────────────────────────────────────────────
+
+    /// True if the requesting user's Firestore profile has isVerified = true.
+    function isVerifiedUser() {
+      return request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isVerified == true;
+    }
+
+    // ── Users ───────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      // Any authenticated user can read profiles (needed for verified badge lookups)
+      allow read: if request.auth != null;
+
+      // New profile creation: only the user themselves
+      allow create: if request.auth != null && request.auth.uid == userId;
+
+      // Profile updates: only the owner, but they cannot promote themselves
+      // to isVerified=true or change their role to a privileged value.
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && (
+          // isVerified field must remain unchanged (only admins/cloud functions can set it)
+          !request.resource.data.diff(resource.data).affectedKeys().hasAll(['isVerified'])
+          || request.resource.data.isVerified == resource.data.isVerified
+        )
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAll(['role'])
+          || request.resource.data.role == resource.data.role
+        );
+    }
+
+    // ── Config (daily joke, app settings) ──────────────────────────────────
+    match /config/{document} {
+      // Anyone can read the daily joke config
+      allow read: if true;
+      // Only verified accounts (Komiko official) can write config
+      allow write: if isVerifiedUser();
+    }
+
+    // ── Jokes ───────────────────────────────────────────────────────────────
+    match /jokes/{jokeId} {
+      // Jokes are publicly readable
+      allow read: if true;
+
+      // Any authenticated user can post a joke
+      allow create: if request.auth != null;
+
+      // Author can update/delete their own joke freely.
+      // Anyone authenticated can update only likesCount/likedBy/commentsCount.
+      allow update: if request.auth != null && (
+        request.auth.uid == resource.data.authorId
+        ||
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['likesCount', 'likedBy', 'commentsCount'])
+      );
+
+      allow delete: if request.auth != null && (
+        request.auth.uid == resource.data.authorId
+        || isVerifiedUser()
+      );
+    }
+
+    // ── Comments ────────────────────────────────────────────────────────────
+    match /comments/{commentId} {
+      // Comments are publicly readable
+      allow read: if true;
+
+      // Any authenticated user can post a comment
+      allow create: if request.auth != null;
+
+      // Only the author can delete their own comment (or verified admin)
+      allow delete: if request.auth != null && (
+        request.auth.uid == resource.data.authorId
+        || isVerifiedUser()
+      );
+    }
+  }
+}

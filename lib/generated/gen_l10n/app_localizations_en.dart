@@ -87,7 +87,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seeAll => 'See All';
 
   @override
-  String get exploreStyles => 'Explore Styles';
+  String get exploreStyles => 'Explore Categories';
 
   @override
   String get savedGems => 'Saved Gems';
@@ -156,6 +156,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get share => 'Share';
 
   @override
+  String get shareViaKomiko => 'Shared via Komiko 😄';
+
+  @override
   String get proposeJoke => 'Propose a Joke';
 
   @override
@@ -204,6 +207,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get catToto => 'Toto';
 
   @override
+  String get catManagement => 'Management';
+
+  @override
   String get catOther => 'Other';
 
   @override
@@ -211,6 +217,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noJokes => 'No jokes yet.';
+
+  @override
+  String get noJokesInCategory => 'No jokes in this category yet.';
+
+  @override
+  String get noFavorites => 'You haven\'t liked any jokes yet. Explore and like your favourites!';
+
+  @override
+  String get noMyJokes => 'You haven\'t posted any jokes yet.';
 
   @override
   String get error => 'Error';
@@ -231,14 +246,176 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jokesImported => 'Jokes imported!';
 
   @override
-  String get jokesShared => 'Jokes shared';
+  String get jokesShared => 'Jokes posted';
 
   @override
-  String get totalLikes => 'Total likes';
+  String get totalLikes => 'Likes received';
 
   @override
-  String get rank => 'Rank';
+  String get commentsReceived => 'Comments received';
 
   @override
   String get memberSince => 'Member since';
+
+  @override
+  String get anonymous => 'User';
+
+  @override
+  String get verifiedAccount => 'Verified account';
+
+  @override
+  String get deleteJoke => 'Delete joke';
+
+  @override
+  String get jokeDeleted => 'Joke deleted.';
+
+  @override
+  String get confirmDelete => 'Do you really want to delete this joke?';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get myFavorites => 'My Favourites';
+
+  @override
+  String get welcomeBack => 'Welcome Back';
+
+  @override
+  String get createAccount => 'Create Account';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get resetPasswordInfo => 'Enter your email address and we\'ll send you a link to reset your password.';
+
+  @override
+  String get sendLink => 'Send Link';
+
+  @override
+  String get emailSent => 'Email Sent!';
+
+  @override
+  String emailSentInfo(String email) {
+    return 'Check your email at $email for instructions on how to reset your password.';
+  }
+
+  @override
+  String get backToLogin => 'Back to Login';
+
+  @override
+  String get verifyEmail => 'Verify Email';
+
+  @override
+  String get checkYourEmail => 'Check your email';
+
+  @override
+  String verificationSentTo(String email) {
+    return 'We\'ve sent a verification link to $email. Please click the link to verify your account.';
+  }
+
+  @override
+  String get resendEmail => 'Resend Email';
+
+  @override
+  String resendInSeconds(int count) {
+    return 'Resend in ${count}s';
+  }
+
+  @override
+  String get useAnotherAccount => 'Use another account';
+
+  @override
+  String get invalidEmailOrPassword => 'Invalid email or password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get agreeToTermsError => 'Please agree to the terms and conditions';
+
+  @override
+  String get registrationFailed => 'Registration failed. Please try again.';
+
+  @override
+  String get importCleaning => 'Cleaning up old jokes...';
+
+  @override
+  String importingProgress(int current, int total) {
+    return 'Importing $current / $total...';
+  }
+
+  @override
+  String get importDone => 'Import completed successfully!';
+
+  @override
+  String get connectWith => 'OR CONNECT WITH';
+
+  @override
+  String get onboardTitle1 => 'Laugh Without Limits';
+
+  @override
+  String get onboardSubtitle1 => 'Jokes for every taste, one click away.';
+
+  @override
+  String get onboardTitle2 => 'Discover & Explore';
+
+  @override
+  String get onboardSubtitle2 => 'Hundreds of jokes sorted by category. Find your style.';
+
+  @override
+  String get onboardTitle3 => 'Share the Laughter';
+
+  @override
+  String get onboardSubtitle3 => 'Like, comment and share your favourite jokes with the people you love.';
+
+  @override
+  String get getStarted => 'Let\'s Go!';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get errorOops => 'Oops! Something went wrong.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get noNotifications => 'No notifications yet.';
+
+  @override
+  String notifLiked(String actor) {
+    return '$actor liked your joke';
+  }
+
+  @override
+  String notifCommented(String actor) {
+    return '$actor commented on your joke';
+  }
+
+  @override
+  String get notifDailyJoke => 'The joke of the day is waiting for you!';
+
+  @override
+  String get markAllRead => 'Mark all as read';
+
+  @override
+  String get selectAvatar => 'Select an avatar';
+
+  @override
+  String get predefinedAvatars => 'Predefined avatars';
+
+  @override
+  String get customAvatar => 'Custom photo';
+
+  @override
+  String get seeMore => 'See more';
+
+  @override
+  String get seeLess => 'See less';
 }

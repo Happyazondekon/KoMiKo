@@ -25,7 +25,7 @@
   "bestJokes": "Best Jokes of the Day",
   "randomJoke": "Random Joke",
   "seeAll": "See All",
-  "exploreStyles": "Explore Styles",
+  "exploreStyles": "Explore Categories",
   "savedGems": "Saved Gems",
   "myJokes": "My Jokes",
   "themeSettings": "Theme Settings",
@@ -48,6 +48,7 @@
   "noComments": "No comments yet. Be the first to comment!",
   "like": "Like",
   "share": "Share",
+  "shareViaKomiko": "Shared via Komiko 😄",
   "proposeJoke": "Propose a Joke",
   "jokeContent": "Joke Content",
   "punchline": "Punchline (Optional)",
@@ -64,17 +65,116 @@
   "catMedicine": "Medicine",
   "catSport": "Sport",
   "catToto": "Toto",
+  "catManagement": "Management",
   "catOther": "Other",
   "propose": "Propose",
   "noJokes": "No jokes yet.",
+  "noJokesInCategory": "No jokes in this category yet.",
+  "noFavorites": "You haven't liked any jokes yet. Explore and like your favourites!",
+  "noMyJokes": "You haven't posted any jokes yet.",
   "error": "Error",
   "language": "Language",
   "french": "French",
   "english": "English",
   "importInitialJokes": "Import initial jokes",
   "jokesImported": "Jokes imported!",
-  "jokesShared": "Jokes shared",
-  "totalLikes": "Total likes",
-  "rank": "Rank",
-  "memberSince": "Member since"
+  "jokesShared": "Jokes posted",
+  "totalLikes": "Likes received",
+  "commentsReceived": "Comments received",
+  "memberSince": "Member since",
+  "anonymous": "User",
+  "verifiedAccount": "Verified account",
+  "deleteJoke": "Delete joke",
+  "jokeDeleted": "Joke deleted.",
+  "confirmDelete": "Do you really want to delete this joke?",
+  "confirm": "Confirm",
+  "myFavorites": "My Favourites",
+  "welcomeBack": "Welcome Back",
+  "createAccount": "Create Account",
+  "resetPassword": "Reset Password",
+  "resetPasswordInfo": "Enter your email address and we'll send you a link to reset your password.",
+  "sendLink": "Send Link",
+  "emailSent": "Email Sent!",
+  "emailSentInfo": "Check your email at {email} for instructions on how to reset your password.",
+  "@emailSentInfo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backToLogin": "Back to Login",
+  "verifyEmail": "Verify Email",
+  "checkYourEmail": "Check your email",
+  "verificationSentTo": "We've sent a verification link to {email}. Please click the link to verify your account.",
+  "@verificationSentTo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "resendEmail": "Resend Email",
+  "resendInSeconds": "Resend in {count}s",
+  "@resendInSeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "useAnotherAccount": "Use another account",
+  "invalidEmailOrPassword": "Invalid email or password",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "agreeToTermsError": "Please agree to the terms and conditions",
+  "registrationFailed": "Registration failed. Please try again.",
+  "importCleaning": "Cleaning up old jokes...",
+  "importingProgress": "Importing {current} / {total}...",
+  "@importingProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "importDone": "Import completed successfully!",
+  "connectWith": "OR CONNECT WITH",
+  "onboardTitle1": "Laugh Without Limits",
+  "onboardSubtitle1": "Jokes for every taste, one click away.",
+  "onboardTitle2": "Discover & Explore",
+  "onboardSubtitle2": "Hundreds of jokes sorted by category. Find your style.",
+  "onboardTitle3": "Share the Laughter",
+  "onboardSubtitle3": "Like, comment and share your favourite jokes with the people you love.",
+  "getStarted": "Let's Go!",
+  "next": "Next",
+  "skip": "Skip",
+  "errorOops": "Oops! Something went wrong.",
+  "retry": "Retry",
+  "noNotifications": "No notifications yet.",
+  "notifLiked": "{actor} liked your joke",
+  "@notifLiked": {
+    "placeholders": {
+      "actor": {
+        "type": "String"
+      }
+    }
+  },
+  "notifCommented": "{actor} commented on your joke",
+  "@notifCommented": {
+    "placeholders": {
+      "actor": {
+        "type": "String"
+      }
+    }
+  },
+  "notifDailyJoke": "The joke of the day is waiting for you!",
+  "markAllRead": "Mark all as read",
+  "selectAvatar": "Select an avatar",
+  "predefinedAvatars": "Predefined avatars",
+  "customAvatar": "Custom photo",
+  "seeMore": "See more",
+  "seeLess": "See less"
 }

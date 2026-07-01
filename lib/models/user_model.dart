@@ -7,6 +7,9 @@ class UserModel {
   final String? bio;
   final String? avatarUrl;
   final DateTime? createdAt;
+  final bool isVerified;
+  /// Role: 'user' | 'komiko' | 'premium'
+  final String role;
 
   UserModel({
     required this.uid,
@@ -15,17 +18,21 @@ class UserModel {
     this.bio,
     this.avatarUrl,
     this.createdAt,
+    this.isVerified = false,
+    this.role = 'user',
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return UserModel(
       uid: doc.id,
-      email: data['email'],
-      username: data['username'],
-      bio: data['bio'],
-      avatarUrl: data['avatarUrl'],
+      email: data['email'] as String?,
+      username: data['username'] as String?,
+      bio: data['bio'] as String?,
+      avatarUrl: data['avatarUrl'] as String?,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
+      isVerified: data['isVerified'] as bool? ?? false,
+      role: data['role'] as String? ?? 'user',
     );
   }
 
@@ -35,7 +42,11 @@ class UserModel {
       'username': username,
       'bio': bio,
       'avatarUrl': avatarUrl,
-      'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
+      'createdAt': createdAt != null
+          ? Timestamp.fromDate(createdAt!)
+          : FieldValue.serverTimestamp(),
+      'isVerified': isVerified,
+      'role': role,
     };
   }
 
@@ -46,6 +57,8 @@ class UserModel {
     String? bio,
     String? avatarUrl,
     DateTime? createdAt,
+    bool? isVerified,
+    String? role,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -54,6 +67,8 @@ class UserModel {
       bio: bio ?? this.bio,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       createdAt: createdAt ?? this.createdAt,
+      isVerified: isVerified ?? this.isVerified,
+      role: role ?? this.role,
     );
   }
 }

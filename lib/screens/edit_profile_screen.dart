@@ -67,30 +67,104 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (context) => SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: Text(l10n.gallery),
-              onTap: () {
-                Navigator.pop(context);
-                _pickImage(ImageSource.gallery);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_camera),
-              title: Text(l10n.camera),
-              onTap: () {
-                Navigator.pop(context);
-                _pickImage(ImageSource.camera);
-              },
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.selectAvatar,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              Text(l10n.predefinedAvatars,
+                  style: const TextStyle(fontSize: 13, color: Colors.grey)),
+              const SizedBox(height: 8),
+              // Predefined avatar grid from DiceBear API
+              SizedBox(
+                height: 80,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: _kAvatarUrls.map((url) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _avatarUrl = url;
+                          _imageFile = null;
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: _avatarUrl == url ? Colors.amber : Colors.transparent,
+                            width: 3,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(url),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              const Divider(height: 24),
+              Text(l10n.customAvatar,
+                  style: const TextStyle(fontSize: 13, color: Colors.grey)),
+              const SizedBox(height: 8),
+              Wrap(
+                children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.photo_library),
+                    title: Text(l10n.gallery),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _pickImage(ImageSource.gallery);
+                    },
+                  ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.photo_camera),
+                    title: Text(l10n.camera),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _pickImage(ImageSource.camera);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  // Predefined avatars from DiceBear API (fun-emoji style)
+  static const List<String> _kAvatarUrls = [
+    'https://api.dicebear.com/9.x/fun-emoji/png?seed=komiko1',
+    'https://api.dicebear.com/9.x/fun-emoji/png?seed=komiko2',
+    'https://api.dicebear.com/9.x/fun-emoji/png?seed=komiko3',
+    'https://api.dicebear.com/9.x/fun-emoji/png?seed=rire4',
+    'https://api.dicebear.com/9.x/fun-emoji/png?seed=rire5',
+    'https://api.dicebear.com/9.x/fun-emoji/png?seed=blague6',
+    'https://api.dicebear.com/9.x/adventurer/png?seed=alice',
+    'https://api.dicebear.com/9.x/adventurer/png?seed=bob',
+    'https://api.dicebear.com/9.x/adventurer/png?seed=charlie',
+    'https://api.dicebear.com/9.x/adventurer/png?seed=diana',
+    'https://api.dicebear.com/9.x/adventurer/png?seed=eve',
+    'https://api.dicebear.com/9.x/adventurer/png?seed=frank',
+  ];
 
   Future<void> _updateProfile() async {
     if (!_formKey.currentState!.validate()) return;

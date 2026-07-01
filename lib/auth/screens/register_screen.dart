@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/services/auth_service.dart';
+import 'package:komiko/theme/app_colors.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   final VoidCallback onLoginClicked;
@@ -30,13 +32,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _signUp() async {
+    final l10n = AppLocalizations.of(context)!;
     if (!_agreeToTerms) {
-      setState(() => _errorMessage = "Please agree to the terms and conditions");
+      setState(() => _errorMessage = l10n.agreeToTermsError);
       return;
     }
 
     if (_passwordController.text != _confirmPasswordController.text) {
-      setState(() => _errorMessage = "Passwords do not match");
+      setState(() => _errorMessage = l10n.passwordsDoNotMatch);
       return;
     }
 
@@ -62,7 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         // Send email verification
         await authService.sendEmailVerification();
       } else if (mounted) {
-        setState(() => _errorMessage = "Registration failed. Please try again.");
+        setState(() => _errorMessage = l10n.registrationFailed);
       }
     } catch (e) {
       if (mounted) setState(() => _errorMessage = e.toString());
@@ -81,33 +84,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 60),
+            const SizedBox(height: 40),
+            // Logo image
+            Center(
+              child: Image.asset(
+                'assets/images/Komiko nobg.webp',
+                height: 80,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 24),
             Text(
-              l10n.appTitle,
-              style: const TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: Colors.yellow,
+              l10n.createAccount,
+              style: GoogleFonts.poppins(
+                fontSize: 26,
+                fontWeight: FontWeight.w800,
               ),
               textAlign: TextAlign.center,
             ),
-            const Text(
-              "Create Account",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+            Center(
+              child: Container(
+                width: 48,
+                height: 3,
+                margin: const EdgeInsets.only(top: 6, bottom: 28),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
             ),
-            const SizedBox(height: 40),
             TextField(
               controller: _nameController,
               decoration: InputDecoration(
                 labelText: l10n.fullName,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                prefixIcon: const Icon(Icons.person_outline),
+                prefixIcon: const Icon(Icons.person_outline_rounded,
+                    color: AppColors.primary),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
             TextField(
               controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: l10n.email,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -120,25 +137,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
               obscureText: true,
               decoration: InputDecoration(
                 labelText: l10n.password,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                prefixIcon: const Icon(Icons.lock_outline),
+                prefixIcon: const Icon(Icons.lock_outline_rounded,
+                    color: AppColors.primary),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
             TextField(
               controller: _confirmPasswordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: l10n.confirmPassword,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                prefixIcon: const Icon(Icons.key_outlined),
+                prefixIcon: const Icon(Icons.lock_rounded,
+                    color: AppColors.primary),
               ),
             ),
             if (_errorMessage != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
               Text(
                 _errorMessage!,
-                style: const TextStyle(color: Colors.red, fontSize: 14),
+                style: GoogleFonts.poppins(
+                    color: AppColors.error, fontSize: 13),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -147,34 +165,54 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 Checkbox(
                   value: _agreeToTerms,
-                  onChanged: (value) => setState(() => _agreeToTerms = value!),
+                  activeColor: AppColors.primary,
+                  onChanged: (value) =>
+                      setState(() => _agreeToTerms = value!),
                 ),
                 Expanded(
                   child: Text(
                     "${l10n.iAgreeTo} ${l10n.termsOfService} ${l10n.and} ${l10n.privacyPolicy}",
-                    style: const TextStyle(fontSize: 12),
+                    style: GoogleFonts.poppins(fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _isLoading ? null : _signUp,
+              style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 52)),
+              child: _isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.black))
+                  : Text(l10n.signUp,
+                      style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w700, fontSize: 16)),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  l10n.alreadyHaveAccount,
+                  style: GoogleFonts.poppins(
+                      color: AppColors.textSecondaryDark),
+                ),
+                TextButton(
+                  onPressed: widget.onLoginClicked,
+                  child: Text(
+                    l10n.login,
+                    style: GoogleFonts.poppins(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _signUp,
-              child: _isLoading 
-                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
-                : Text(l10n.signUp),
-            ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(l10n.alreadyHaveAccount),
-                TextButton(
-                  onPressed: widget.onLoginClicked,
-                  child: Text(l10n.login),
-                ),
-              ],
-            ),
           ],
         ),
       ),

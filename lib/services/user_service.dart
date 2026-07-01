@@ -6,9 +6,17 @@ class UserService extends ChangeNotifier {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   UserModel? _currentUser;
 
+  bool _isLoading = false;
+
   UserModel? get currentUser => _currentUser;
+  bool get isLoading => _isLoading;
 
   Future<void> loadUserProfile(String uid) async {
+    // Skip if already loaded for this UID or a load is already in progress
+    if (_currentUser?.uid == uid || _isLoading) return;
+
+    _isLoading = true;
+    notifyListeners();
     try {
       DocumentSnapshot doc = await _db.collection('users').doc(uid).get();
       if (doc.exists) {
@@ -18,9 +26,11 @@ class UserService extends ChangeNotifier {
         _currentUser = UserModel(uid: uid);
         await _db.collection('users').doc(uid).set(_currentUser!.toMap());
       }
-      notifyListeners();
     } catch (e) {
       debugPrint('Error loading user profile: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 

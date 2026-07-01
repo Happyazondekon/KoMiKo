@@ -87,10 +87,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get seeAll => 'Tout voir';
 
   @override
-  String get exploreStyles => 'Explorez les Styles';
+  String get exploreStyles => 'Explorez les Catégories';
 
   @override
-  String get savedGems => 'Pépites Sauvées';
+  String get savedGems => 'Pépites Sauvegardées';
 
   @override
   String get myJokes => 'Mes Blagues';
@@ -156,6 +156,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get share => 'Partager';
 
   @override
+  String get shareViaKomiko => 'Partagé via Komiko 😄';
+
+  @override
   String get proposeJoke => 'Proposer une blague';
 
   @override
@@ -204,6 +207,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get catToto => 'Toto';
 
   @override
+  String get catManagement => 'Management';
+
+  @override
   String get catOther => 'Autre';
 
   @override
@@ -211,6 +217,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noJokes => 'Aucune blague pour le moment.';
+
+  @override
+  String get noJokesInCategory => 'Aucune blague dans cette catégorie pour l\'instant.';
+
+  @override
+  String get noFavorites => 'Vous n\'avez encore aimé aucune blague. Explorez et likez vos favorites !';
+
+  @override
+  String get noMyJokes => 'Vous n\'avez pas encore posté de blague.';
 
   @override
   String get error => 'Erreur';
@@ -231,14 +246,176 @@ class AppLocalizationsFr extends AppLocalizations {
   String get jokesImported => 'Blagues importées !';
 
   @override
-  String get jokesShared => 'Blagues partagées';
+  String get jokesShared => 'Blagues postées';
 
   @override
-  String get totalLikes => 'Likes totaux';
+  String get totalLikes => 'Likes reçus';
 
   @override
-  String get rank => 'Rang';
+  String get commentsReceived => 'Commentaires reçus';
 
   @override
   String get memberSince => 'Membre depuis';
+
+  @override
+  String get anonymous => 'Utilisateur';
+
+  @override
+  String get verifiedAccount => 'Compte vérifié';
+
+  @override
+  String get deleteJoke => 'Supprimer la blague';
+
+  @override
+  String get jokeDeleted => 'Blague supprimée.';
+
+  @override
+  String get confirmDelete => 'Voulez-vous vraiment supprimer cette blague ?';
+
+  @override
+  String get confirm => 'Confirmer';
+
+  @override
+  String get myFavorites => 'Mes Favoris';
+
+  @override
+  String get welcomeBack => 'Bon Retour';
+
+  @override
+  String get createAccount => 'Créer un Compte';
+
+  @override
+  String get resetPassword => 'Réinitialiser le Mot de Passe';
+
+  @override
+  String get resetPasswordInfo => 'Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.';
+
+  @override
+  String get sendLink => 'Envoyer le Lien';
+
+  @override
+  String get emailSent => 'Email Envoyé !';
+
+  @override
+  String emailSentInfo(String email) {
+    return 'Vérifiez votre email à $email pour les instructions de réinitialisation.';
+  }
+
+  @override
+  String get backToLogin => 'Retour à la Connexion';
+
+  @override
+  String get verifyEmail => 'Vérifier l\'Email';
+
+  @override
+  String get checkYourEmail => 'Vérifiez votre email';
+
+  @override
+  String verificationSentTo(String email) {
+    return 'Nous avons envoyé un lien de vérification à $email. Veuillez cliquer sur le lien pour vérifier votre compte.';
+  }
+
+  @override
+  String get resendEmail => 'Renvoyer l\'Email';
+
+  @override
+  String resendInSeconds(int count) {
+    return 'Renvoyer dans ${count}s';
+  }
+
+  @override
+  String get useAnotherAccount => 'Utiliser un autre compte';
+
+  @override
+  String get invalidEmailOrPassword => 'Email ou mot de passe invalide';
+
+  @override
+  String get passwordsDoNotMatch => 'Les mots de passe ne correspondent pas';
+
+  @override
+  String get agreeToTermsError => 'Veuillez accepter les conditions d\'utilisation';
+
+  @override
+  String get registrationFailed => 'Inscription échouée. Veuillez réessayer.';
+
+  @override
+  String get importCleaning => 'Suppression des anciennes blagues...';
+
+  @override
+  String importingProgress(int current, int total) {
+    return 'Importation $current / $total...';
+  }
+
+  @override
+  String get importDone => 'Import terminé avec succès !';
+
+  @override
+  String get connectWith => 'OU SE CONNECTER AVEC';
+
+  @override
+  String get onboardTitle1 => 'Riez Sans Limites';
+
+  @override
+  String get onboardSubtitle1 => 'Des blagues pour tous les gouts, disponibles en un clic.';
+
+  @override
+  String get onboardTitle2 => 'Decouvrez et Explorez';
+
+  @override
+  String get onboardSubtitle2 => 'Des centaines de blagues par categories. Trouvez votre style.';
+
+  @override
+  String get onboardTitle3 => 'Partagez le Rire';
+
+  @override
+  String get onboardSubtitle3 => 'Aimez, commentez et partagez vos blagues preferees.';
+
+  @override
+  String get getStarted => 'Cest parti !';
+
+  @override
+  String get next => 'Suivant';
+
+  @override
+  String get skip => 'Passer';
+
+  @override
+  String get errorOops => 'Oups ! Une erreur est survenue.';
+
+  @override
+  String get retry => 'Reessayer';
+
+  @override
+  String get noNotifications => 'Aucune notification pour linstant.';
+
+  @override
+  String notifLiked(String actor) {
+    return '$actor a aime votre blague';
+  }
+
+  @override
+  String notifCommented(String actor) {
+    return '$actor a commente votre blague';
+  }
+
+  @override
+  String get notifDailyJoke => 'La blague du jour vous attend !';
+
+  @override
+  String get markAllRead => 'Tout marquer comme lu';
+
+  @override
+  String get selectAvatar => 'Choisir un avatar';
+
+  @override
+  String get predefinedAvatars => 'Avatars predefinis';
+
+  @override
+  String get customAvatar => 'Photo personnalisee';
+
+  @override
+  String get seeMore => 'Voir plus';
+
+  @override
+  String get seeLess => 'Voir moins';
 }

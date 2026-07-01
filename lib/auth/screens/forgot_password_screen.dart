@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:komiko/services/auth_service.dart';
-import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   final VoidCallback onLoginClicked;
@@ -16,13 +16,24 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool _isLoading = false;
   bool _emailSent = false;
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
   Future<void> _resetPassword() async {
     setState(() => _isLoading = true);
     try {
-      await context.read<AuthService>().sendPasswordResetEmail(_emailController.text.trim());
-      setState(() => _emailSent = true);
+      await context
+          .read<AuthService>()
+          .sendPasswordResetEmail(_emailController.text.trim());
+      if (mounted) setState(() => _emailSent = true);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -50,29 +61,32 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          "Reset Password",
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        Text(
+          l10n.resetPassword,
+          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
-        const Text(
-          "Enter your email address and we'll send you a link to reset your password.",
+        Text(
+          l10n.resetPasswordInfo,
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.grey),
+          style: const TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 40),
         TextField(
           controller: _emailController,
           decoration: InputDecoration(
             labelText: l10n.email,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
         const SizedBox(height: 24),
         ElevatedButton(
           onPressed: _isLoading ? null : _resetPassword,
-          child: _isLoading ? const CircularProgressIndicator() : const Text("Send Link"),
+          child: _isLoading
+              ? const CircularProgressIndicator()
+              : Text(l10n.sendLink),
         ),
       ],
     );
@@ -83,23 +97,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Icon(Icons.mark_email_read_outlined, size: 80, color: Colors.green),
+        const Icon(Icons.mark_email_read_outlined,
+            size: 80, color: Colors.green),
         const SizedBox(height: 24),
-        const Text(
-          "Email Sent!",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        Text(
+          l10n.emailSent,
+          style:
+              const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
         Text(
-          "Check your email at ${_emailController.text} for instructions on how to reset your password.",
+          l10n.emailSentInfo(_emailController.text),
           textAlign: TextAlign.center,
           style: const TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 40),
         ElevatedButton(
           onPressed: widget.onLoginClicked,
-          child: const Text("Back to Login"),
+          child: Text(l10n.backToLogin),
         ),
       ],
     );
