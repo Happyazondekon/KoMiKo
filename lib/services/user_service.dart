@@ -12,8 +12,9 @@ class UserService extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<void> loadUserProfile(String uid) async {
-    // Skip if already loaded for this UID or a load is already in progress
-    if (_currentUser?.uid == uid || _isLoading) return;
+    // Check if we already have the correct user or are already loading
+    if (_isLoading) return;
+    if (_currentUser != null && _currentUser!.uid == uid) return;
 
     _isLoading = true;
     notifyListeners();
@@ -21,9 +22,30 @@ class UserService extends ChangeNotifier {
       DocumentSnapshot doc = await _db.collection('users').doc(uid).get();
       if (doc.exists) {
         _currentUser = UserModel.fromFirestore(doc);
+        
+        // Ensure official account data is always correct if it's missing or wrong
+        if (uid == 'UK42noQ7qiVt63v3PHHywdZQajS2' && 
+            (_currentUser?.avatarUrl == null || !_currentUser!.isVerified)) {
+           _currentUser = _currentUser!.copyWith(
+            username: 'Komiko',
+            isVerified: true,
+            avatarUrl: 'asset:assets/images/Komiko.webp',
+          );
+          await _db.collection('users').doc(uid).update(_currentUser!.toMap());
+        }
       } else {
         // Create default profile
         _currentUser = UserModel(uid: uid);
+        
+        // Special case for official Komiko account
+        if (uid == 'UK42noQ7qiVt63v3PHHywdZQajS2') {
+          _currentUser = _currentUser!.copyWith(
+            username: 'Komiko',
+            isVerified: true,
+            avatarUrl: 'asset:assets/images/Komiko.webp',
+          );
+        }
+
         await _db.collection('users').doc(uid).set(_currentUser!.toMap());
       }
     } catch (e) {

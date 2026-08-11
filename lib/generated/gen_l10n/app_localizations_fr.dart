@@ -138,7 +138,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileUpdateSuccess => 'Profil mis à jour avec succès !';
 
   @override
-  String get imageTooLarge => 'L\'image est trop lourde (> 1Mo). Veuillez en choisir une autre.';
+  String get imageTooLarge =>
+      'L\'image est trop lourde (> 1Mo). Veuillez en choisir une autre.';
 
   @override
   String get comments => 'Commentaires';
@@ -147,7 +148,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get addComment => 'Ajouter un commentaire...';
 
   @override
-  String get noComments => 'Aucun commentaire pour le moment. Soyez le premier à commenter !';
+  String get noComments =>
+      'Aucun commentaire pour le moment. Soyez le premier à commenter !';
 
   @override
   String get like => 'J\'aime';
@@ -219,10 +221,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noJokes => 'Aucune blague pour le moment.';
 
   @override
-  String get noJokesInCategory => 'Aucune blague dans cette catégorie pour l\'instant.';
+  String get noJokesInCategory =>
+      'Aucune blague dans cette catégorie pour l\'instant.';
 
   @override
-  String get noFavorites => 'Vous n\'avez encore aimé aucune blague. Explorez et likez vos favorites !';
+  String get noFavorites =>
+      'Vous n\'avez encore aimé aucune blague. Explorez et likez vos favorites !';
 
   @override
   String get noMyJokes => 'Vous n\'avez pas encore posté de blague.';
@@ -288,7 +292,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get resetPassword => 'Réinitialiser le Mot de Passe';
 
   @override
-  String get resetPasswordInfo => 'Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.';
+  String get resetPasswordInfo =>
+      'Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.';
 
   @override
   String get sendLink => 'Envoyer le Lien';
@@ -333,7 +338,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get passwordsDoNotMatch => 'Les mots de passe ne correspondent pas';
 
   @override
-  String get agreeToTermsError => 'Veuillez accepter les conditions d\'utilisation';
+  String get agreeToTermsError =>
+      'Veuillez accepter les conditions d\'utilisation';
 
   @override
   String get registrationFailed => 'Inscription échouée. Veuillez réessayer.';
@@ -356,19 +362,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get onboardTitle1 => 'Riez Sans Limites';
 
   @override
-  String get onboardSubtitle1 => 'Des blagues pour tous les gouts, disponibles en un clic.';
+  String get onboardSubtitle1 =>
+      'Des blagues pour tous les gouts, disponibles en un clic.';
 
   @override
   String get onboardTitle2 => 'Decouvrez et Explorez';
 
   @override
-  String get onboardSubtitle2 => 'Des centaines de blagues par categories. Trouvez votre style.';
+  String get onboardSubtitle2 =>
+      'Des centaines de blagues par categories. Trouvez votre style.';
 
   @override
   String get onboardTitle3 => 'Partagez le Rire';
 
   @override
-  String get onboardSubtitle3 => 'Aimez, commentez et partagez vos blagues preferees.';
+  String get onboardSubtitle3 =>
+      'Aimez, commentez et partagez vos blagues preferees.';
 
   @override
   String get getStarted => 'Cest parti !';
@@ -418,4 +427,32 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get seeLess => 'Voir moins';
+
+  @override
+  String get search => 'Rechercher';
+
+  @override
+  String get searchPlaceholder => 'Rechercher une blague...';
+
+  @override
+  String get typeAWordOrPhrase => 'Tapez un mot ou une phrase...';
+
+  @override
+  String noResultsFor(String query) {
+    return 'Aucun résultat pour \"$query\"';
+  }
+
+  @override
+  String get accountSettings => 'Paramètres du compte';
+
+  @override
+  String get categoriesSubtitle => 'Trouvez votre dose de rire quotidienne';
+
+  @override
+  String get fieldRequired => 'Ce champ est obligatoire';
+
+  @override
+  String dataDeletion(int current, int total) {
+    return 'Suppression des données ($current / $total)...';
+  }
 }

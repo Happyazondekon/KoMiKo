@@ -138,7 +138,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileUpdateSuccess => 'Profile updated successfully!';
 
   @override
-  String get imageTooLarge => 'Image is too large (> 1MB). Please choose another one.';
+  String get imageTooLarge =>
+      'Image is too large (> 1MB). Please choose another one.';
 
   @override
   String get comments => 'Comments';
@@ -222,7 +223,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noJokesInCategory => 'No jokes in this category yet.';
 
   @override
-  String get noFavorites => 'You haven\'t liked any jokes yet. Explore and like your favourites!';
+  String get noFavorites =>
+      'You haven\'t liked any jokes yet. Explore and like your favourites!';
 
   @override
   String get noMyJokes => 'You haven\'t posted any jokes yet.';
@@ -288,7 +290,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetPassword => 'Reset Password';
 
   @override
-  String get resetPasswordInfo => 'Enter your email address and we\'ll send you a link to reset your password.';
+  String get resetPasswordInfo =>
+      'Enter your email address and we\'ll send you a link to reset your password.';
 
   @override
   String get sendLink => 'Send Link';
@@ -362,13 +365,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardTitle2 => 'Discover & Explore';
 
   @override
-  String get onboardSubtitle2 => 'Hundreds of jokes sorted by category. Find your style.';
+  String get onboardSubtitle2 =>
+      'Hundreds of jokes sorted by category. Find your style.';
 
   @override
   String get onboardTitle3 => 'Share the Laughter';
 
   @override
-  String get onboardSubtitle3 => 'Like, comment and share your favourite jokes with the people you love.';
+  String get onboardSubtitle3 =>
+      'Like, comment and share your favourite jokes with the people you love.';
 
   @override
   String get getStarted => 'Let\'s Go!';
@@ -418,4 +423,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seeLess => 'See less';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get searchPlaceholder => 'Search for a joke...';
+
+  @override
+  String get typeAWordOrPhrase => 'Type a word or phrase...';
+
+  @override
+  String noResultsFor(String query) {
+    return 'No results for \"$query\"';
+  }
+
+  @override
+  String get accountSettings => 'Account Settings';
+
+  @override
+  String get categoriesSubtitle => 'Find your daily dose of laughter';
+
+  @override
+  String get fieldRequired => 'Field required';
+
+  @override
+  String dataDeletion(int current, int total) {
+    return 'Deleting data ($current / $total)...';
+  }
 }

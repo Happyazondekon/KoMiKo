@@ -196,21 +196,15 @@ class HomeScreen extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               child: ElevatedButton.icon(
-                onPressed: () {
-                  jokeService.jokesStream.first.then((jokes) {
-                    if (jokes.isNotEmpty) {
-                      final random =
-                          (List.from(jokes)..shuffle()).first;
-                      if (context.mounted) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) =>
-                                  JokeDetailScreen(joke: random)),
-                        );
-                      }
-                    }
-                  });
+                onPressed: () async {
+                  final random = await jokeService.getRandomJoke();
+                  if (random != null && context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => JokeDetailScreen(joke: random)),
+                    );
+                  }
                 },
                 icon: const Icon(Icons.casino_rounded, size: 20),
                 label: Text(l10n.randomJoke),
@@ -448,7 +442,7 @@ class KomikoDrawer extends StatelessWidget {
                     border: border,
                     trailing: Switch(
                       value: themeProvider.themeMode == ThemeMode.dark,
-                      activeColor: AppColors.primary,
+                      activeThumbColor: AppColors.primary,
                       onChanged: (v) => themeProvider.setThemeMode(
                           v ? ThemeMode.dark : ThemeMode.light),
                     ),
@@ -575,28 +569,31 @@ class _DrawerTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: border),
       ),
-      child: ListTile(
-        onTap: onTap,
-        leading: Container(
-          width: 34,
-          height: 34,
-          decoration: BoxDecoration(
-            color: ic.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(8),
+      child: Material(
+        color: Colors.transparent,
+        child: ListTile(
+          onTap: onTap,
+          leading: Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: ic.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: ic, size: 18),
           ),
-          child: Icon(icon, color: ic, size: 18),
+          title: Text(label,
+              style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: lc)),
+          trailing: trailing ??
+              Icon(Icons.chevron_right_rounded,
+                  color: AppColors.textSecondaryDark, size: 18),
+          dense: true,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)),
         ),
-        title: Text(label,
-            style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                color: lc)),
-        trailing: trailing ??
-            Icon(Icons.chevron_right_rounded,
-                color: AppColors.textSecondaryDark, size: 18),
-        dense: true,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -613,7 +610,7 @@ class JokeSearchDelegate extends SearchDelegate<Joke?> {
     required this.jokeService,
     required this.l10n,
     required this.langCode,
-  }) : super(searchFieldLabel: '🔍 Rechercher une blague...');
+  }) : super(searchFieldLabel: l10n.searchPlaceholder);
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -660,9 +657,7 @@ class JokeSearchDelegate extends SearchDelegate<Joke?> {
                 size: 64, color: AppColors.primary),
             const SizedBox(height: 12),
             Text(
-              langCode == 'fr'
-                  ? 'Tapez un mot ou une phrase...'
-                  : 'Type a word or phrase...',
+              l10n.typeAWordOrPhrase,
               style: GoogleFonts.poppins(
                   color: AppColors.textSecondaryDark),
             ),
@@ -692,9 +687,7 @@ class JokeSearchDelegate extends SearchDelegate<Joke?> {
                     size: 64, color: AppColors.primary),
                 const SizedBox(height: 12),
                 Text(
-                  langCode == 'fr'
-                      ? 'Aucun résultat pour "$query"'
-                      : 'No results for "$query"',
+                  l10n.noResultsFor(query),
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                       color: AppColors.textSecondaryDark),

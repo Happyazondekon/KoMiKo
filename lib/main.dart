@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,6 +27,12 @@ void main() async {
   
   await Firebase.initializeApp();
   await NotificationService.init();
+
+  // Enable Firestore offline persistence
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+  );
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -136,8 +143,12 @@ class _AuthWrapperState extends State<AuthWrapper> {
     final userService = Provider.of<UserService>(context);
 
     if (user != null) {
-      // Trigger profile load (idempotent — safe to call every rebuild)
-      userService.loadUserProfile(user.uid);
+      // Trigger profile load safely after the current build frame
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          userService.loadUserProfile(user.uid);
+        }
+      });
 
       // Wait for profile to load before making routing decisions
       if (userService.isLoading || userService.currentUser == null) {

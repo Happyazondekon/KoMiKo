@@ -1,5 +1,4 @@
 ﻿import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
@@ -15,6 +14,7 @@ import 'package:komiko/services/localization_service.dart';
 import 'package:komiko/services/notification_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
+import 'package:komiko/widgets/joke_card.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -38,75 +38,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _statsFuture = uid != null
         ? JokeService().getUserStats(uid)
         : Future.value({'jokesCount': 0, 'totalLikes': 0, 'totalComments': 0});
-  }
-
-  Future<void> _runImport(BuildContext context, AppLocalizations l10n) async {
-    // State for the progress dialog — updated via dialogSetState
-    int current = -1;
-    int total = -1;
-    StateSetter? dialogSetState;
-
-    // Show non-dismissable progress dialog
-    unawaited(
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (ctx) => PopScope(
-          canPop: false,
-          child: StatefulBuilder(
-            builder: (ctx, setState) {
-              dialogSetState = setState;
-              final isCleanup = current == -1;
-              final isLoading = total == 0;
-              final progress =
-                  (!isCleanup && !isLoading && total > 0)
-                      ? current / total
-                      : null;
-
-              return AlertDialog(
-                title: Text(l10n.importInitialJokes),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    LinearProgressIndicator(value: progress),
-                    const SizedBox(height: 20),
-                    Text(
-                      isCleanup
-                          ? l10n.importCleaning
-                          : l10n.importingProgress(current, total),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-
-    try {
-      await ImportService.importInitialJokes(
-        onProgress: (c, t) {
-          dialogSetState?.call(() {
-            current = c;
-            total = t;
-          });
-        },
-      );
-    } finally {
-      if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
-    }
-
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.importDone),
-          backgroundColor: Colors.green,
-        ),
-      );
-      setState(_loadStats);
-    }
   }
 
   @override
@@ -135,7 +66,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 28),
           // Section title
           Text(
-            'Account Settings',
+            l10n.accountSettings,
             style: GoogleFonts.poppins(
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -161,7 +92,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             isDark: isDark,
             trailing: Switch(
               value: themeProvider.themeMode == ThemeMode.dark,
-              activeColor: AppColors.primary,
+              activeThumbColor: AppColors.primary,
               onChanged: (value) => themeProvider
                   .setThemeMode(value ? ThemeMode.dark : ThemeMode.light),
             ),
@@ -221,13 +152,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             isDark: isDark,
             onTap: () {},
           ),
-          _buildSettingTile(
-            context,
-            icon: Icons.download_rounded,
-            title: l10n.importInitialJokes,
-            isDark: isDark,
-            onTap: () => _runImport(context, l10n),
-          ),
           const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
@@ -260,11 +184,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     AppLocalizations l10n,
     bool isDark,
   ) {
-    final avatarUrl = user?.avatarUrl;
-    ImageProvider? avatarProvider;
-    if (avatarUrl != null && avatarUrl.startsWith('base64:')) {
-      avatarProvider = MemoryImage(base64Decode(avatarUrl.substring(7)));
-    }
     final cardBg = isDark ? AppColors.darkCard : AppColors.lightCard;
     final border = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
@@ -273,23 +192,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         // Avatar
         Stack(
           children: [
-            Container(
-              width: 96,
-              height: 96,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppColors.primary, width: 2),
-                image: avatarProvider != null
-                    ? DecorationImage(
-                        image: avatarProvider, fit: BoxFit.cover)
-                    : null,
-              ),
-              child: avatarProvider == null
-                  ? Icon(Icons.person_rounded,
-                      size: 48,
-                      color: AppColors.primary.withValues(alpha: 0.7))
-                  : null,
+            AuthorAvatar(
+              url: user?.avatarUrl,
+              name: user?.username ?? '?',
+              radius: 48,
             ),
             Positioned(
               bottom: 0,
@@ -440,27 +346,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: border),
       ),
-      child: ListTile(
-        onTap: onTap,
-        leading: Container(
-          width: 38,
-          height: 38,
-          decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(10),
+      child: Material(
+        color: Colors.transparent,
+        child: ListTile(
+          onTap: onTap,
+          leading: Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: AppColors.primary, size: 20),
           ),
-          child: Icon(icon, color: AppColors.primary, size: 20),
+          title: Text(
+            title,
+            style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600, fontSize: 14),
+          ),
+          trailing: trailing ??
+              Icon(Icons.chevron_right_rounded,
+                  color: AppColors.textSecondaryDark),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14)),
         ),
-        title: Text(
-          title,
-          style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w600, fontSize: 14),
-        ),
-        trailing: trailing ??
-            Icon(Icons.chevron_right_rounded,
-                color: AppColors.textSecondaryDark),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14)),
       ),
     );
   }

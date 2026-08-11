@@ -4,9 +4,10 @@ import 'package:komiko/models/joke_model.dart';
 import 'package:komiko/services/joke_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/screens/joke_detail_screen.dart';
+import 'package:komiko/utils/joke_categories.dart';
+import 'package:komiko/widgets/joke_card.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert';
 
 class MyJokesScreen extends StatelessWidget {
   const MyJokesScreen({super.key});
@@ -141,16 +142,10 @@ class _MyJokeTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
+                  AuthorAvatar(
+                    url: joke.authorAvatarUrl,
+                    name: joke.authorName,
                     radius: 18,
-                    backgroundImage: (joke.authorAvatarUrl != null &&
-                            joke.authorAvatarUrl!.startsWith('base64:'))
-                        ? MemoryImage(
-                            base64Decode(joke.authorAvatarUrl!.substring(7)))
-                        : null,
-                    child: joke.authorAvatarUrl == null
-                        ? const Icon(Icons.person, size: 20)
-                        : null,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -172,7 +167,7 @@ class _MyJokeTile extends StatelessWidget {
                           ],
                         ),
                         Text(
-                          "${DateFormat.yMMMd().format(joke.createdAt)} • ${joke.category}",
+                          "${DateFormat.yMMMd().format(joke.createdAt)} • ${JokeCategories.getLocalizedName(joke.category, l10n)}",
                           style:
                               const TextStyle(fontSize: 12, color: Colors.grey),
                         ),

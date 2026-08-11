@@ -86,7 +86,7 @@ class _ProposeJokeScreenState extends State<ProposeJokeScreen> {
             ),
             const SizedBox(height: 24),
             DropdownButtonFormField<String>(
-              value: _selectedCategory,
+              initialValue: _selectedCategory,
               decoration: InputDecoration(
                 labelText: l10n.category,
                 border: const OutlineInputBorder(),

@@ -93,7 +93,7 @@ class AppTheme {
         surface: AppColors.lightSurface,
         error: AppColors.error,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.lightCard,
         elevation: 0,
         shadowColor: Colors.black.withValues(alpha: 0.06),
@@ -146,7 +146,7 @@ class AppTheme {
         surface: AppColors.darkSurface,
         error: AppColors.error,
       ),
-      cardTheme: const CardTheme(
+      cardTheme: const CardThemeData(
         color: AppColors.darkCard,
         elevation: 0,
         shape: RoundedRectangleBorder(

@@ -89,9 +89,7 @@ class CategoriesScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    langCode(context) == 'fr'
-                        ? 'Trouvez votre dose de rire quotidienne'
-                        : 'Find your daily dose of laughter',
+                    l10n.categoriesSubtitle,
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       color: AppColors.textSecondaryDark,

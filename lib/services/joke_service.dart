@@ -7,11 +7,12 @@ class JokeService {
 
   // ── Joke streams ──────────────────────────────────────────────────
 
-  /// All jokes, newest first.
+  /// All jokes, limited to the latest 50 for performance.
   Stream<List<Joke>> get jokesStream {
     return _db
         .collection('jokes')
         .orderBy('createdAt', descending: true)
+        .limit(50)
         .snapshots()
         .map((s) => s.docs.map(Joke.fromFirestore).toList());
   }
@@ -51,19 +52,29 @@ class JokeService {
     });
   }
 
-  /// Returns the same joke for the entire calendar day.
-  /// Uses `yyyyMMdd` as an integer seed → reproducible, no shuffle.
+  /// Returns a unique joke for each day of the year based on a linear sequence.
+  /// With 1216 jokes, this covers over 3 years without repetition.
   Future<Joke?> _getDailyFallbackJoke() async {
     final now = DateTime.now();
-    final daySeed = now.year * 10000 + now.month * 100 + now.day;
+    
+    // We use the number of days since a fixed epoch (e.g., Jan 1, 2024) 
+    // to ensure a continuous sequence that doesn't just repeat every 365 days 
+    // if the collection is larger than 365.
+    final epoch = DateTime(2024, 1, 1);
+    final daysSinceEpoch = now.difference(epoch).inDays;
 
     final snapshot = await _db
         .collection('jokes')
-        .orderBy('createdAt')
+        .orderBy('createdAt', descending: false)
+        .limit(2000) // Fetch the pool of jokes to choose from
         .get();
 
     if (snapshot.docs.isEmpty) return null;
-    return Joke.fromFirestore(snapshot.docs[daySeed % snapshot.docs.length]);
+    
+    // Map the current day to a specific joke in the collection
+    final jokeIndex = daysSinceEpoch % snapshot.docs.length;
+    
+    return Joke.fromFirestore(snapshot.docs[jokeIndex]);
   }
 
   /// Jokes filtered by [category] (canonical Firestore key), newest first.
@@ -72,6 +83,7 @@ class JokeService {
         .collection('jokes')
         .where('category', isEqualTo: category)
         .orderBy('createdAt', descending: true)
+        .limit(50)
         .snapshots()
         .map((s) => s.docs.map(Joke.fromFirestore).toList());
   }
@@ -82,6 +94,7 @@ class JokeService {
         .collection('jokes')
         .where('likedBy', arrayContains: userId)
         .orderBy('createdAt', descending: true)
+        .limit(50)
         .snapshots()
         .map((s) => s.docs.map(Joke.fromFirestore).toList());
   }
@@ -92,6 +105,7 @@ class JokeService {
         .collection('jokes')
         .where('authorId', isEqualTo: userId)
         .orderBy('createdAt', descending: true)
+        .limit(50)
         .snapshots()
         .map((s) => s.docs.map(Joke.fromFirestore).toList());
   }
@@ -182,16 +196,18 @@ class JokeService {
     };
   }
 
-  // ── Search ───────────────────────────────────────────────────────────────
-
-  /// Returns jokes whose content/punchline/author contains [query] (case-insensitive).
+  /// Returns jokes matching the query (limited to latest 200 for performance).
   Future<List<Joke>> searchJokes(String query) async {
     if (query.trim().isEmpty) return [];
     final lower = query.trim().toLowerCase();
+
+    // Note: To avoid OOM, we only search within the latest 200 jokes.
     final snapshot = await _db
         .collection('jokes')
         .orderBy('createdAt', descending: true)
+        .limit(200)
         .get();
+
     return snapshot.docs
         .map(Joke.fromFirestore)
         .where((j) =>
@@ -201,5 +217,20 @@ class JokeService {
             (j.punchlineEn?.toLowerCase().contains(lower) ?? false) ||
             j.authorName.toLowerCase().contains(lower))
         .toList();
+  }
+
+  /// Efficiently returns a single random joke from the latest 200 jokes.
+  Future<Joke?> getRandomJoke() async {
+    final snapshot = await _db
+        .collection('jokes')
+        .orderBy('createdAt', descending: true)
+        .limit(200)
+        .get();
+
+    if (snapshot.docs.isEmpty) return null;
+
+    final list = snapshot.docs.map(Joke.fromFirestore).toList();
+    list.shuffle();
+    return list.first;
   }
 }

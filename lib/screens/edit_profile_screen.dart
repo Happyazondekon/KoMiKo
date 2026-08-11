@@ -250,7 +250,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   labelText: l10n.username,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                validator: (val) => val == null || val.isEmpty ? "Required" : null,
+                validator: (val) => val == null || val.isEmpty ? l10n.fieldRequired : null,
               ),
               const SizedBox(height: 16),
               TextFormField(

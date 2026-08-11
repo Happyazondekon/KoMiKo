@@ -1,4 +1,5 @@
 ﻿import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
@@ -10,16 +11,70 @@ import 'package:komiko/services/notification_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
 import 'package:komiko/utils/joke_categories.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
-class JokeCard extends StatelessWidget {
+class JokeCard extends StatefulWidget {
   final Joke joke;
 
   const JokeCard({super.key, required this.joke});
 
   @override
+  State<JokeCard> createState() => _JokeCardState();
+}
+
+class _JokeCardState extends State<JokeCard> {
+  final _screenshotController = ScreenshotController();
+  bool _isSharing = false;
+
+  Future<void> _shareJokeAsImage() async {
+    setState(() => _isSharing = true);
+    try {
+      final l10n = AppLocalizations.of(context)!;
+      final langCode = Localizations.localeOf(context).languageCode;
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      final theme = Theme.of(context);
+
+      final image = await _screenshotController.captureFromWidget(
+        Material(
+          type: MaterialType.transparency,
+          child: MediaQuery(
+            data: const MediaQueryData(),
+            child: Theme(
+              data: theme,
+              child: JokeShareTemplate(
+                joke: widget.joke,
+                l10n: l10n,
+                langCode: langCode,
+                isDark: isDark,
+              ),
+            ),
+          ),
+        ),
+        delay: const Duration(milliseconds: 100),
+        context: context,
+      );
+
+      final directory = await getTemporaryDirectory();
+      final imagePath = await File('${directory.path}/komiko_joke_${widget.joke.id}.png').create();
+      await imagePath.writeAsBytes(image);
+
+      await Share.shareXFiles(
+        [XFile(imagePath.path)],
+        text: l10n.shareViaKomiko,
+      );
+    } catch (e) {
+      debugPrint('Error sharing image: $e');
+    } finally {
+      if (mounted) setState(() => _isSharing = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final joke = widget.joke;
     final l10n = AppLocalizations.of(context)!;
     final langCode = Localizations.localeOf(context).languageCode;
     final userId = context.read<AuthService>().currentUser?.uid ?? '';
@@ -50,7 +105,7 @@ class JokeCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // â”€â”€ Author row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+              // ── Author row ──────────────────────────────────────────
               Row(
                 children: [
                   AuthorAvatar(
@@ -87,7 +142,7 @@ class JokeCard extends StatelessWidget {
                           ],
                         ),
                         Text(
-                          '$ago â€¢ $categoryLabel',
+                          '$ago • $categoryLabel',
                           style: GoogleFonts.poppins(
                             fontSize: 11,
                             color: AppColors.textSecondaryDark,
@@ -97,26 +152,37 @@ class JokeCard extends StatelessWidget {
                     ),
                   ),
                   // Share icon
-                  IconButton(
-                    icon: Icon(
-                      Icons.share_outlined,
-                      size: 18,
-                      color: isDark
-                          ? Colors.grey[500]
-                          : Colors.grey[600],
-                    ),
-                    onPressed: () => Share.share(
-                        '$content\n\n${punchline ?? ''}\n\n${l10n.shareViaKomiko}'),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
+                  _isSharing
+                      ? const SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: Center(
+                            child: SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: AppColors.primary),
+                            ),
+                          ),
+                        )
+                      : IconButton(
+                          icon: Icon(
+                            Icons.share_outlined,
+                            size: 18,
+                            color: isDark ? Colors.grey[500] : Colors.grey[600],
+                          ),
+                          onPressed: _shareJokeAsImage,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
                 ],
               ),
               const SizedBox(height: 14),
-              // â”€â”€ Joke content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-              Text(
-                content,
-                style: GoogleFonts.poppins(
+              // ── Joke content ────────────────────────────────────────
+              ExpandableText(
+                text: content,
+                maxLines: 4,
+                textStyle: GoogleFonts.poppins(
                   fontSize: 15,
                   height: 1.5,
                   color: isDark
@@ -127,9 +193,10 @@ class JokeCard extends StatelessWidget {
               if (punchline != null && punchline.isNotEmpty) ...
                 [
                   const SizedBox(height: 8),
-                  Text(
-                    punchline,
-                    style: GoogleFonts.poppins(
+                  ExpandableText(
+                    text: punchline,
+                    maxLines: 2,
+                    textStyle: GoogleFonts.poppins(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       fontStyle: FontStyle.italic,
@@ -138,7 +205,7 @@ class JokeCard extends StatelessWidget {
                   ),
                 ],
               const SizedBox(height: 14),
-              // â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+              // ── Actions ───────────────────────────────────────────────
               Row(
                 children: [
                   _StatChip(
@@ -181,7 +248,172 @@ class JokeCard extends StatelessWidget {
   }
 }
 
-// â”€â”€ Avatar widget (public â€” reused by JokeDetailScreen) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Share Template (Stylized snapshot for image sharing) ────────────────
+
+class JokeShareTemplate extends StatelessWidget {
+  final Joke joke;
+  final AppLocalizations l10n;
+  final String langCode;
+  final bool isDark;
+
+  const JokeShareTemplate({
+    super.key,
+    required this.joke,
+    required this.l10n,
+    required this.langCode,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final content = joke.localizedContent(langCode);
+    final punchline = joke.localizedPunchline(langCode);
+    final categoryLabel = JokeCategories.getLocalizedName(joke.category, l10n);
+    final cardBg = isDark ? AppColors.darkCard : AppColors.lightCard;
+    final border = isDark ? AppColors.darkBorder : AppColors.lightBorder;
+    final textPrimary =
+        isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight;
+
+    return Container(
+      width: 400,
+      color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header with Author & Category
+          Row(
+            children: [
+              AuthorAvatar(
+                url: joke.authorAvatarUrl,
+                name: joke.authorName,
+                radius: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      joke.authorName,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: textPrimary,
+                      ),
+                    ),
+                    Text(
+                      categoryLabel,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: AppColors.textSecondaryDark,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          // Decorative quote
+          Text(
+            '\u201c',
+            style: GoogleFonts.poppins(
+              fontSize: 64,
+              height: 0.6,
+              fontWeight: FontWeight.w900,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          // Joke Content
+          Text(
+            content,
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              height: 1.4,
+              color: textPrimary,
+            ),
+          ),
+          // Punchline
+          if (punchline != null && punchline.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            Container(
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: border),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 4,
+                        color: AppColors.primary,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                          child: Text(
+                            punchline,
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              fontStyle: FontStyle.italic,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 48),
+          // Footer Branding
+          const Divider(),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/Komiko nobg.webp',
+                height: 32,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Komiko',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 24,
+                  color: AppColors.primary,
+                  letterSpacing: 1,
+                ),
+              ),
+            ],
+          ),
+          Text(
+            'Rire sans limites',
+            style: GoogleFonts.poppins(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondaryDark,
+              letterSpacing: 2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class AuthorAvatar extends StatelessWidget {
   final String? url;
@@ -205,24 +437,29 @@ class AuthorAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (url != null && url!.startsWith('asset:')) {
+    String? effectiveUrl = url;
+    if (effectiveUrl == null && name == 'Komiko') {
+      effectiveUrl = 'asset:assets/images/Komiko.webp';
+    }
+
+    if (effectiveUrl != null && effectiveUrl.startsWith('asset:')) {
       // Local Flutter asset (used by verified Komiko account)
       return CircleAvatar(
         radius: radius,
-        backgroundImage: AssetImage(url!.substring(6)),
+        backgroundImage: AssetImage(effectiveUrl.substring(6)),
       );
     }
-    if (url != null && url!.startsWith('base64:')) {
+    if (effectiveUrl != null && effectiveUrl.startsWith('base64:')) {
       return CircleAvatar(
         radius: radius,
         backgroundImage:
-            MemoryImage(base64Decode(url!.substring(7))),
+            MemoryImage(base64Decode(effectiveUrl.substring(7))),
       );
     }
-    if (url != null && url!.startsWith('http')) {
+    if (effectiveUrl != null && effectiveUrl.startsWith('http')) {
       return CircleAvatar(
         radius: radius,
-        backgroundImage: NetworkImage(url!),
+        backgroundImage: NetworkImage(effectiveUrl),
         backgroundColor: bgColor(name),
       );
     }
@@ -243,7 +480,7 @@ class AuthorAvatar extends StatelessWidget {
   }
 }
 
-// â”€â”€ Stat chip widget â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Stat chip widget ──────────────────────────────────────────────────
 
 class _StatChip extends StatelessWidget {
   final IconData icon;

@@ -176,5 +176,30 @@
   "predefinedAvatars": "Predefined avatars",
   "customAvatar": "Custom photo",
   "seeMore": "See more",
-  "seeLess": "See less"
+  "seeLess": "See less",
+  "search": "Search",
+  "searchPlaceholder": "Search for a joke...",
+  "typeAWordOrPhrase": "Type a word or phrase...",
+  "noResultsFor": "No results for \"{query}\"",
+  "@noResultsFor": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSettings": "Account Settings",
+  "categoriesSubtitle": "Find your daily dose of laughter",
+  "fieldRequired": "Field required",
+  "dataDeletion": "Deleting data ({current} / {total})...",
+  "@dataDeletion": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

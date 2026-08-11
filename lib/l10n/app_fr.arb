@@ -176,5 +176,30 @@
     }
   },
   "seeMore": "Voir plus",
-  "seeLess": "Voir moins"
+  "seeLess": "Voir moins",
+  "search": "Rechercher",
+  "searchPlaceholder": "Rechercher une blague...",
+  "typeAWordOrPhrase": "Tapez un mot ou une phrase...",
+  "noResultsFor": "Aucun résultat pour \"{query}\"",
+  "@noResultsFor": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSettings": "Paramètres du compte",
+  "categoriesSubtitle": "Trouvez votre dose de rire quotidienne",
+  "fieldRequired": "Ce champ est obligatoire",
+  "dataDeletion": "Suppression des données ({current} / {total})...",
+  "@dataDeletion": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

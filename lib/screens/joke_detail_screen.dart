@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+﻿import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
@@ -10,7 +10,9 @@ import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
 import 'package:komiko/utils/joke_categories.dart';
 import 'package:komiko/widgets/joke_card.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
 class JokeDetailScreen extends StatefulWidget {
@@ -24,12 +26,58 @@ class JokeDetailScreen extends StatefulWidget {
 class _JokeDetailScreenState extends State<JokeDetailScreen> {
   final _commentController = TextEditingController();
   final _jokeService = JokeService();
+  final _screenshotController = ScreenshotController();
   bool _isSubmitting = false;
+  bool _isSharing = false;
 
   @override
   void dispose() {
     _commentController.dispose();
     super.dispose();
+  }
+
+  Future<void> _shareJokeAsImage() async {
+    setState(() => _isSharing = true);
+    try {
+      final l10n = AppLocalizations.of(context)!;
+      final langCode = Localizations.localeOf(context).languageCode;
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      final theme = Theme.of(context);
+      
+      // Capture the screenshot of the stylized template
+      final image = await _screenshotController.captureFromWidget(
+        Material(
+          type: MaterialType.transparency,
+          child: MediaQuery(
+            data: const MediaQueryData(),
+            child: Theme(
+              data: theme,
+              child: JokeShareTemplate(
+                joke: widget.joke,
+                l10n: l10n,
+                langCode: langCode,
+                isDark: isDark,
+              ),
+            ),
+          ),
+        ),
+        delay: const Duration(milliseconds: 100),
+        context: context,
+      );
+
+      final directory = await getTemporaryDirectory();
+      final imagePath = await File('${directory.path}/komiko_joke.png').create();
+      await imagePath.writeAsBytes(image);
+
+      await Share.shareXFiles(
+        [XFile(imagePath.path)],
+        text: l10n.shareViaKomiko,
+      );
+    } catch (e) {
+      debugPrint('Error sharing image: $e');
+    } finally {
+      if (mounted) setState(() => _isSharing = false);
+    }
   }
 
   Future<void> _submitComment() async {
@@ -101,11 +149,23 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.share_rounded),
-            onPressed: () => Share.share(
-                '$content\n\n${punchline ?? ''}\n\n${l10n.shareViaKomiko}'),
-          ),
+          _isSharing
+              ? const SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: Center(
+                    child: SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: AppColors.primary),
+                    ),
+                  ),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.share_rounded),
+                  onPressed: _shareJokeAsImage,
+                ),
         ],
       ),
       body: Column(
@@ -204,25 +264,37 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
                   if (punchline != null && punchline.isNotEmpty) ...[
                     const SizedBox(height: 20),
                     Container(
-                      padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
                       decoration: BoxDecoration(
                         color: cardBg,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border(
-                          left: BorderSide(
-                              color: AppColors.primary, width: 4),
-                          right: BorderSide(color: border),
-                          top: BorderSide(color: border),
-                          bottom: BorderSide(color: border),
-                        ),
+                        border: Border.all(color: border),
                       ),
-                      child: Text(
-                        punchline,
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.italic,
-                          color: AppColors.primary,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Container(
+                                width: 4,
+                                color: AppColors.primary,
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(12, 14, 14, 14),
+                                  child: Text(
+                                    punchline,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      fontStyle: FontStyle.italic,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -234,9 +306,14 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
                       Expanded(
                         flex: 3,
                         child: ElevatedButton.icon(
-                          onPressed: () => Share.share(
-                              '$content\n\n${punchline ?? ''}\n\n${l10n.shareViaKomiko}'),
-                          icon: const Icon(Icons.share_rounded, size: 18),
+                          onPressed: _isSharing ? null : _shareJokeAsImage,
+                          icon: _isSharing
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2, color: Colors.black))
+                              : const Icon(Icons.share_rounded, size: 18),
                           label: Text(l10n.share),
                           style: ElevatedButton.styleFrom(
                               minimumSize: const Size(0, 48)),
@@ -244,7 +321,7 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
                       ),
                       const SizedBox(width: 12),
                       _LikeButton(
-                        jokeId: widget.joke.id,
+                        joke: widget.joke,
                         userId: user?.uid ?? '',
                         isLiked: isLiked,
                         likesCount: widget.joke.likesCount,
@@ -325,13 +402,6 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
                             const SizedBox(height: 8),
                         itemBuilder: (context, index) {
                           final c = comments[index];
-                          final avatarUrl = c.authorAvatarUrl;
-                          ImageProvider? avatarProvider;
-                          if (avatarUrl != null &&
-                              avatarUrl.startsWith('base64:')) {
-                            avatarProvider = MemoryImage(
-                                base64Decode(avatarUrl.substring(7)));
-                          }
                           return Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
@@ -342,23 +412,10 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                CircleAvatar(
+                                AuthorAvatar(
+                                  url: c.authorAvatarUrl,
+                                  name: c.authorName,
                                   radius: 16,
-                                  backgroundImage: avatarProvider,
-                                  backgroundColor: AppColors.forCategory(
-                                      widget.joke.category),
-                                  child: avatarProvider == null
-                                      ? Text(
-                                          c.authorName.isNotEmpty
-                                              ? c.authorName[0].toUpperCase()
-                                              : '?',
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 12,
-                                          ),
-                                        )
-                                      : null,
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
@@ -464,14 +521,14 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
 // ── Like button widget ───────────────────────────────────────────────
 
 class _LikeButton extends StatelessWidget {
-  final String jokeId;
+  final Joke joke;
   final String userId;
   final bool isLiked;
   final int likesCount;
   final JokeService jokeService;
 
   const _LikeButton({
-    required this.jokeId,
+    required this.joke,
     required this.userId,
     required this.isLiked,
     required this.likesCount,
@@ -482,7 +539,21 @@ class _LikeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: userId.isNotEmpty
-          ? () => jokeService.likeJoke(jokeId, userId)
+          ? () async {
+              final wasLiked = joke.likedBy.contains(userId);
+              await jokeService.likeJoke(joke.id, userId);
+              if (!wasLiked && joke.authorId != userId) {
+                final user = context.read<UserService>().currentUser;
+                NotificationService.createLikeNotification(
+                  recipientId: joke.authorId,
+                  actorId: userId,
+                  actorName: user?.username ?? '?',
+                  actorAvatarUrl: user?.avatarUrl,
+                  jokeId: joke.id,
+                  jokeContent: joke.contentFr,
+                );
+              }
+            }
           : null,
       child: Container(
         width: 48,
