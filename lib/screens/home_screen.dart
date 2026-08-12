@@ -10,14 +10,35 @@ import 'package:komiko/screens/propose_joke_screen.dart';
 import 'package:komiko/services/auth_service.dart';
 import 'package:komiko/services/joke_service.dart';
 import 'package:komiko/services/localization_service.dart';
+import 'package:komiko/services/notification_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
 import 'package:komiko/utils/joke_categories.dart';
 import 'package:komiko/widgets/joke_card.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _initNotifications();
+  }
+
+  Future<void> _initNotifications() async {
+    // Schedule the 3 daily notifications on launch
+    final l10n = AppLocalizations.of(context);
+    if (l10n != null) {
+      await NotificationService.scheduleMultipleDailyNotifications(l10n);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +98,18 @@ class HomeScreen extends StatelessWidget {
       ),
       body: CustomScrollView(
         slivers: [
+          // ── Notification Permission Prompt ─────────────────────────
+          SliverToBoxAdapter(
+            child: FutureBuilder<PermissionStatus>(
+              future: Permission.notification.status,
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data != PermissionStatus.granted) {
+                  return _NotificationPromptCard(l10n: l10n, isDark: isDark);
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
           // ── A LA UNE hero card ─────────────────────────────────────
           SliverToBoxAdapter(
             child: StreamBuilder<Joke?>(
@@ -215,6 +248,119 @@ class HomeScreen extends StatelessWidget {
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 8)),
         ],
+      ),
+    );
+  }
+}
+
+// ── Notification Prompt Widget ──────────────────────────────────────
+
+class _NotificationPromptCard extends StatefulWidget {
+  final AppLocalizations l10n;
+  final bool isDark;
+  const _NotificationPromptCard({required this.l10n, required this.isDark});
+
+  @override
+  State<_NotificationPromptCard> createState() => _NotificationPromptCardState();
+}
+
+class _NotificationPromptCardState extends State<_NotificationPromptCard> {
+  bool _isVisible = true;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_isVisible) return const SizedBox.shrink();
+
+    final border = widget.isDark ? AppColors.darkBorder : AppColors.lightBorder;
+    final cardBg = widget.isDark ? AppColors.darkCard : AppColors.lightCard;
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: border),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: IntrinsicHeight(
+          child: Row(
+            children: [
+              Container(width: 6, color: AppColors.pink),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.notifications_active_outlined, 
+                              color: AppColors.pink, size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            widget.l10n.notifStatusTitle,
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                              color: AppColors.pink,
+                            ),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () => setState(() => _isVisible = false),
+                            child: Icon(Icons.close_rounded, 
+                                size: 18, color: Colors.grey.withValues(alpha: 0.5)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.l10n.enableNotifPrompt,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          height: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final granted = await NotificationService.requestPermission();
+                            if (granted) {
+                              if (context.mounted) {
+                                setState(() => _isVisible = false);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(widget.l10n.permissionGranted), 
+                                  backgroundColor: Colors.green),
+                                );
+                              }
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.pink,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            minimumSize: const Size(0, 36),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          child: Text(
+                            widget.l10n.enableNotifButton,
+                            style: GoogleFonts.poppins(
+                                fontSize: 12, fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -201,5 +201,29 @@
         "type": "int"
       }
     }
-  }
+  },
+  "debugNotifications": "Debug Notifications",
+  "testInstantNotif": "Tester Notification immédiate",
+  "testDelayedNotif": "Tester Notification (10 sec)",
+  "requestNotifPerm": "Demander l'autorisation",
+  "permissionGranted": "Autorisation accordée",
+  "permissionDenied": "Autorisation refusée",
+  "notifMorningTitle": "Bonjour ! ☕",
+  "notifMorningBody": "Commencez la journée avec la Blague du Jour. Sourire garanti !",
+  "notifAfternoonTitle": "Pause café ? 🍩",
+  "notifAfternoonBody": "Prenez 2 minutes pour découvrir les dernières blagues qui buzzent.",
+  "notifEveningTitle": "Moment détente 🌙",
+  "notifEveningBody": "Finissez votre journée en beauté avec notre sélection du soir.",
+  "enableNotifPrompt": "Même nos blagues sont tristes quand vous ne les recevez pas... 😢",
+  "enableNotifButton": "Activer les notifs !",
+  "notifStatusTitle": "Ne manquez pas le rire",
+  "updateRequiredTitle": "Mise à jour requise",
+  "updateAppImproving": "Komiko s'améliore !",
+  "updateDescription": "Une nouvelle version de l'application est disponible. Veuillez la mettre à jour pour continuer à rire sans limites et profiter des dernières nouveautés.",
+  "updateButton": "Mettre à jour maintenant",
+  "updateDontMissFeatures": "Ne manquez pas les nouvelles blagues et fonctionnalités !",
+  "rateAppTitle": "Vous aimez Komiko ?",
+  "rateAppDescription": "Si vous appréciez l'application, n'hésitez pas à nous laisser une note sur le store. Cela nous aide énormément !",
+  "rateNow": "Noter maintenant",
+  "later": "Plus tard"
 }

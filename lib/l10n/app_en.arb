@@ -201,5 +201,29 @@
         "type": "int"
       }
     }
-  }
+  },
+  "debugNotifications": "Debug Notifications",
+  "testInstantNotif": "Test Instant Notification",
+  "testDelayedNotif": "Test 10s Delayed Notification",
+  "requestNotifPerm": "Request Permission Dialog",
+  "permissionGranted": "Permission Granted",
+  "permissionDenied": "Permission Denied",
+  "notifMorningTitle": "Good morning! ☕",
+  "notifMorningBody": "Start your day with the Joke of the Day. Smiles guaranteed!",
+  "notifAfternoonTitle": "Coffee break? 🍩",
+  "notifAfternoonBody": "Take 2 minutes to discover the latest trending jokes.",
+  "notifEveningTitle": "Relaxing time 🌙",
+  "notifEveningBody": "End your day on a high note with our selection of the evening.",
+  "enableNotifPrompt": "Even our jokes are sad when you don't receive them... 😢",
+  "enableNotifButton": "Enable Notifications!",
+  "notifStatusTitle": "Don't miss the fun",
+  "updateRequiredTitle": "Update Required",
+  "updateAppImproving": "Komiko is getting better!",
+  "updateDescription": "A new version of the app is available. Please update to continue laughing without limits and enjoy the latest features.",
+  "updateButton": "Update Now",
+  "updateDontMissFeatures": "Don't miss out on new jokes and features!",
+  "rateAppTitle": "Enjoying Komiko?",
+  "rateAppDescription": "If you like the app, please leave us a rating on the store. It helps us a lot!",
+  "rateNow": "Rate Now",
+  "later": "Later"
 }

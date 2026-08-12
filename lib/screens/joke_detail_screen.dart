@@ -6,6 +6,7 @@ import 'package:komiko/models/comment_model.dart';
 import 'package:komiko/models/joke_model.dart';
 import 'package:komiko/services/joke_service.dart';
 import 'package:komiko/services/notification_service.dart';
+import 'package:komiko/services/rating_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
 import 'package:komiko/utils/joke_categories.dart';
@@ -542,16 +543,24 @@ class _LikeButton extends StatelessWidget {
           ? () async {
               final wasLiked = joke.likedBy.contains(userId);
               await jokeService.likeJoke(joke.id, userId);
+              
+              if (!wasLiked) {
+                // If it's a new like, consider asking for a review
+                RatingService().maybeRequestReview();
+              }
+
               if (!wasLiked && joke.authorId != userId) {
-                final user = context.read<UserService>().currentUser;
-                NotificationService.createLikeNotification(
-                  recipientId: joke.authorId,
-                  actorId: userId,
-                  actorName: user?.username ?? '?',
-                  actorAvatarUrl: user?.avatarUrl,
-                  jokeId: joke.id,
-                  jokeContent: joke.contentFr,
-                );
+                if (context.mounted) {
+                  final user = context.read<UserService>().currentUser;
+                  NotificationService.createLikeNotification(
+                    recipientId: joke.authorId,
+                    actorId: userId,
+                    actorName: user?.username ?? '?',
+                    actorAvatarUrl: user?.avatarUrl,
+                    jokeId: joke.id,
+                    jokeContent: joke.contentFr,
+                  );
+                }
               }
             }
           : null,

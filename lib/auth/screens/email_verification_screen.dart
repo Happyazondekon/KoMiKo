@@ -42,7 +42,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       });
       _startCountdown();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
   }
 

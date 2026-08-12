@@ -943,6 +943,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deleting data ({current} / {total})...'**
   String dataDeletion(int current, int total);
+
+  /// No description provided for @debugNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug Notifications'**
+  String get debugNotifications;
+
+  /// No description provided for @testInstantNotif.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Instant Notification'**
+  String get testInstantNotif;
+
+  /// No description provided for @testDelayedNotif.
+  ///
+  /// In en, this message translates to:
+  /// **'Test 10s Delayed Notification'**
+  String get testDelayedNotif;
+
+  /// No description provided for @requestNotifPerm.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Permission Dialog'**
+  String get requestNotifPerm;
+
+  /// No description provided for @permissionGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Granted'**
+  String get permissionGranted;
+
+  /// No description provided for @permissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Denied'**
+  String get permissionDenied;
+
+  /// No description provided for @notifMorningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning! ☕'**
+  String get notifMorningTitle;
+
+  /// No description provided for @notifMorningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your day with the Joke of the Day. Smiles guaranteed!'**
+  String get notifMorningBody;
+
+  /// No description provided for @notifAfternoonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Coffee break? 🍩'**
+  String get notifAfternoonTitle;
+
+  /// No description provided for @notifAfternoonBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Take 2 minutes to discover the latest trending jokes.'**
+  String get notifAfternoonBody;
+
+  /// No description provided for @notifEveningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Relaxing time 🌙'**
+  String get notifEveningTitle;
+
+  /// No description provided for @notifEveningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'End your day on a high note with our selection of the evening.'**
+  String get notifEveningBody;
+
+  /// No description provided for @enableNotifPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Even our jokes are sad when you don\'t receive them... 😢'**
+  String get enableNotifPrompt;
+
+  /// No description provided for @enableNotifButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Notifications!'**
+  String get enableNotifButton;
+
+  /// No description provided for @notifStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t miss the fun'**
+  String get notifStatusTitle;
+
+  /// No description provided for @updateRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Required'**
+  String get updateRequiredTitle;
+
+  /// No description provided for @updateAppImproving.
+  ///
+  /// In en, this message translates to:
+  /// **'Komiko is getting better!'**
+  String get updateAppImproving;
+
+  /// No description provided for @updateDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version of the app is available. Please update to continue laughing without limits and enjoy the latest features.'**
+  String get updateDescription;
+
+  /// No description provided for @updateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Now'**
+  String get updateButton;
+
+  /// No description provided for @updateDontMissFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t miss out on new jokes and features!'**
+  String get updateDontMissFeatures;
+
+  /// No description provided for @rateAppTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoying Komiko?'**
+  String get rateAppTitle;
+
+  /// No description provided for @rateAppDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'If you like the app, please leave us a rating on the store. It helps us a lot!'**
+  String get rateAppDescription;
+
+  /// No description provided for @rateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Now'**
+  String get rateNow;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
 }
 
 class _AppLocalizationsDelegate

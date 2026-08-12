@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/theme/app_colors.dart';
+import 'package:komiko/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -29,6 +30,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ];
 
   Future<void> _finish() async {
+    // Request notification permissions before finishing onboarding
+    await NotificationService.requestPermission();
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('hasSeenOnboarding', true);
     widget.onFinished();

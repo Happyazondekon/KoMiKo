@@ -455,4 +455,83 @@ class AppLocalizationsFr extends AppLocalizations {
   String dataDeletion(int current, int total) {
     return 'Suppression des données ($current / $total)...';
   }
+
+  @override
+  String get debugNotifications => 'Debug Notifications';
+
+  @override
+  String get testInstantNotif => 'Tester Notification immédiate';
+
+  @override
+  String get testDelayedNotif => 'Tester Notification (10 sec)';
+
+  @override
+  String get requestNotifPerm => 'Demander l\'autorisation';
+
+  @override
+  String get permissionGranted => 'Autorisation accordée';
+
+  @override
+  String get permissionDenied => 'Autorisation refusée';
+
+  @override
+  String get notifMorningTitle => 'Bonjour ! ☕';
+
+  @override
+  String get notifMorningBody =>
+      'Commencez la journée avec la Blague du Jour. Sourire garanti !';
+
+  @override
+  String get notifAfternoonTitle => 'Pause café ? 🍩';
+
+  @override
+  String get notifAfternoonBody =>
+      'Prenez 2 minutes pour découvrir les dernières blagues qui buzzent.';
+
+  @override
+  String get notifEveningTitle => 'Moment détente 🌙';
+
+  @override
+  String get notifEveningBody =>
+      'Finissez votre journée en beauté avec notre sélection du soir.';
+
+  @override
+  String get enableNotifPrompt =>
+      'Même nos blagues sont tristes quand vous ne les recevez pas... 😢';
+
+  @override
+  String get enableNotifButton => 'Activer les notifs !';
+
+  @override
+  String get notifStatusTitle => 'Ne manquez pas le rire';
+
+  @override
+  String get updateRequiredTitle => 'Mise à jour requise';
+
+  @override
+  String get updateAppImproving => 'Komiko s\'améliore !';
+
+  @override
+  String get updateDescription =>
+      'Une nouvelle version de l\'application est disponible. Veuillez la mettre à jour pour continuer à rire sans limites et profiter des dernières nouveautés.';
+
+  @override
+  String get updateButton => 'Mettre à jour maintenant';
+
+  @override
+  String get updateDontMissFeatures =>
+      'Ne manquez pas les nouvelles blagues et fonctionnalités !';
+
+  @override
+  String get rateAppTitle => 'Vous aimez Komiko ?';
+
+  @override
+  String get rateAppDescription =>
+      'Si vous appréciez l\'application, n\'hésitez pas à nous laisser une note sur le store. Cela nous aide énormément !';
+
+  @override
+  String get rateNow => 'Noter maintenant';
+
+  @override
+  String get later => 'Plus tard';
 }

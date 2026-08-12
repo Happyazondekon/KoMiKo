@@ -21,12 +21,17 @@ import 'package:komiko/auth/screens/forgot_password_screen.dart';
 import 'package:komiko/auth/screens/email_verification_screen.dart';
 
 import 'package:komiko/services/user_service.dart';
+import 'package:komiko/services/remote_config_service.dart';
+import 'package:komiko/screens/update_required_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   await Firebase.initializeApp();
   await NotificationService.init();
+
+  // Initialize Remote Config
+  await RemoteConfigService().initialize();
 
   // Enable Firestore offline persistence
   FirebaseFirestore.instance.settings = const Settings(
@@ -96,11 +101,24 @@ class _AuthWrapperState extends State<AuthWrapper> {
   bool _showLogin = true;
   bool _showForgotPassword = false;
   bool? _hasSeenOnboarding;
+  bool _updateRequired = false;
+  bool _checkingUpdate = true;
 
   @override
   void initState() {
     super.initState();
     _checkOnboarding();
+    _checkUpdate();
+  }
+
+  Future<void> _checkUpdate() async {
+    final required = await RemoteConfigService().isUpdateRequired();
+    if (mounted) {
+      setState(() {
+        _updateRequired = required;
+        _checkingUpdate = false;
+      });
+    }
   }
 
   Future<void> _checkOnboarding() async {
@@ -127,9 +145,14 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    // Wait for onboarding check
-    if (_hasSeenOnboarding == null) {
+    // Show splash-like loader while checking for update or onboarding
+    if (_checkingUpdate || _hasSeenOnboarding == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    // Force update screen if required
+    if (_updateRequired) {
+      return const UpdateRequiredScreen();
     }
 
     // Show onboarding on first launch

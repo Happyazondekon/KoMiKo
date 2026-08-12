@@ -219,15 +219,17 @@ class _JokeCardState extends State<JokeCard> {
                             final wasLiked = joke.likedBy.contains(userId);
                             await JokeService().likeJoke(joke.id, userId);
                             if (!wasLiked && joke.authorId != userId) {
-                              final user = context.read<UserService>().currentUser;
-                              NotificationService.createLikeNotification(
-                                recipientId: joke.authorId,
-                                actorId: userId,
-                                actorName: user?.username ?? '?',
-                                actorAvatarUrl: user?.avatarUrl,
-                                jokeId: joke.id,
-                                jokeContent: joke.contentFr,
-                              );
+                              if (context.mounted) {
+                                final user = context.read<UserService>().currentUser;
+                                NotificationService.createLikeNotification(
+                                  recipientId: joke.authorId,
+                                  actorId: userId,
+                                  actorName: user?.username ?? '?',
+                                  actorAvatarUrl: user?.avatarUrl,
+                                  jokeId: joke.id,
+                                  jokeContent: joke.contentFr,
+                                );
+                              }
                             }
                           }
                         : null,

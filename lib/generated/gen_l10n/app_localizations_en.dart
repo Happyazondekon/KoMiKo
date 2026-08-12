@@ -451,4 +451,83 @@ class AppLocalizationsEn extends AppLocalizations {
   String dataDeletion(int current, int total) {
     return 'Deleting data ($current / $total)...';
   }
+
+  @override
+  String get debugNotifications => 'Debug Notifications';
+
+  @override
+  String get testInstantNotif => 'Test Instant Notification';
+
+  @override
+  String get testDelayedNotif => 'Test 10s Delayed Notification';
+
+  @override
+  String get requestNotifPerm => 'Request Permission Dialog';
+
+  @override
+  String get permissionGranted => 'Permission Granted';
+
+  @override
+  String get permissionDenied => 'Permission Denied';
+
+  @override
+  String get notifMorningTitle => 'Good morning! ☕';
+
+  @override
+  String get notifMorningBody =>
+      'Start your day with the Joke of the Day. Smiles guaranteed!';
+
+  @override
+  String get notifAfternoonTitle => 'Coffee break? 🍩';
+
+  @override
+  String get notifAfternoonBody =>
+      'Take 2 minutes to discover the latest trending jokes.';
+
+  @override
+  String get notifEveningTitle => 'Relaxing time 🌙';
+
+  @override
+  String get notifEveningBody =>
+      'End your day on a high note with our selection of the evening.';
+
+  @override
+  String get enableNotifPrompt =>
+      'Even our jokes are sad when you don\'t receive them... 😢';
+
+  @override
+  String get enableNotifButton => 'Enable Notifications!';
+
+  @override
+  String get notifStatusTitle => 'Don\'t miss the fun';
+
+  @override
+  String get updateRequiredTitle => 'Update Required';
+
+  @override
+  String get updateAppImproving => 'Komiko is getting better!';
+
+  @override
+  String get updateDescription =>
+      'A new version of the app is available. Please update to continue laughing without limits and enjoy the latest features.';
+
+  @override
+  String get updateButton => 'Update Now';
+
+  @override
+  String get updateDontMissFeatures =>
+      'Don\'t miss out on new jokes and features!';
+
+  @override
+  String get rateAppTitle => 'Enjoying Komiko?';
+
+  @override
+  String get rateAppDescription =>
+      'If you like the app, please leave us a rating on the store. It helps us a lot!';
+
+  @override
+  String get rateNow => 'Rate Now';
+
+  @override
+  String get later => 'Later';
 }

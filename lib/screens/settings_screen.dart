@@ -8,10 +8,10 @@ import 'package:komiko/screens/edit_profile_screen.dart';
 import 'package:komiko/screens/my_jokes_screen.dart';
 import 'package:komiko/screens/notifications_screen.dart';
 import 'package:komiko/services/auth_service.dart';
-import 'package:komiko/services/import_service.dart';
 import 'package:komiko/services/joke_service.dart';
 import 'package:komiko/services/localization_service.dart';
 import 'package:komiko/services/notification_service.dart';
+import 'package:komiko/services/rating_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
 import 'package:komiko/widgets/joke_card.dart';
@@ -152,7 +152,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             isDark: isDark,
             onTap: () {},
           ),
-          const SizedBox(height: 24),
+          _buildSettingTile(
+            context,
+            icon: Icons.star_outline_rounded,
+            title: l10n.rateNow,
+            isDark: isDark,
+            onTap: () => RatingService().forceRequestReview(),
+          ),
+          const SizedBox(height: 28),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
