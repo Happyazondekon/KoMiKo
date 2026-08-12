@@ -1,4 +1,6 @@
 ﻿import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:komiko/models/notification_model.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,22 +20,146 @@ class NotificationService {
   // ── Init ──────────────────────────────────────────────────────────────────
 
   static Future<void> init() async {
-    tz.initializeTimeZones();
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const initSettings = InitializationSettings(android: androidSettings);
-    await _localNotif.initialize(initSettings);
-    await _localNotif
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(_channel);
+    try {
+      tz.initializeTimeZones();
+      const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const initSettings = InitializationSettings(android: androidSettings);
+      
+      await _localNotif.initialize(
+        initSettings,
+        onDidReceiveNotificationResponse: (details) {
+          debugPrint('Notification tapped: ${details.payload}');
+        },
+      );
+
+      // Create channel explicitly for Android
+      await _localNotif
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(_channel);
+          
+      debugPrint('NotificationService initialized successfully');
+    } catch (e) {
+      debugPrint('Error initializing NotificationService: $e');
+    }
   }
 
   static Future<bool> requestPermission() async {
-    final status = await Permission.notification.request();
-    return status.isGranted;
+    try {
+      // 1. Request system notification permission (Android 13+)
+      final status = await Permission.notification.request();
+      
+      // 2. Also request Exact Alarm permission (for scheduled jokes)
+      // This is now required for exact timing on modern Android
+      if (await Permission.scheduleExactAlarm.isDenied) {
+        await Permission.scheduleExactAlarm.request();
+      }
+
+      return status.isGranted;
+    } catch (e) {
+      debugPrint('Error requesting notification permissions: $e');
+      return false;
+    }
   }
 
-  // ── Local: schedule daily joke notification ───────────────────────────────
+  // ── Testing Methods ───────────────────────────────────────────────────────
+
+  static Future<void> sendImmediateNotification({
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
+    await _localNotif.show(
+      DateTime.now().millisecond, // Unique ID
+      title,
+      body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          _channel.id,
+          _channel.name,
+          channelDescription: _channel.description,
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+      ),
+      payload: payload,
+    );
+  }
+
+  static Future<void> scheduleTestNotification({
+    required String title,
+    required String body,
+    required int delaySeconds,
+  }) async {
+    final scheduled = tz.TZDateTime.now(tz.local).add(Duration(seconds: delaySeconds));
+    
+    await _localNotif.zonedSchedule(
+      999, // Test ID
+      title,
+      body,
+      scheduled,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          _channel.id,
+          _channel.name,
+          channelDescription: _channel.description,
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: null,
+    );
+  }
+
+  // ── Local: schedule recurring notifications ─────────────────────────────
+
+  /// Schedules 3 daily notifications to keep users engaged.
+  /// 10:00, 14:00, and 19:00
+  static Future<void> scheduleMultipleDailyNotifications(AppLocalizations l10n) async {
+    final times = [
+      {'id': 101, 'hour': 10, 'minute': 0, 'title': l10n.notifMorningTitle, 'body': l10n.notifMorningBody},
+      {'id': 102, 'hour': 14, 'minute': 0, 'title': l10n.notifAfternoonTitle, 'body': l10n.notifAfternoonBody},
+      {'id': 103, 'hour': 19, 'minute': 0, 'title': l10n.notifEveningTitle, 'body': l10n.notifEveningBody},
+    ];
+
+    for (final time in times) {
+      final now = tz.TZDateTime.now(tz.local);
+      var scheduled = tz.TZDateTime(
+        tz.local,
+        now.year,
+        now.month,
+        now.day,
+        time['hour'] as int,
+        time['minute'] as int,
+      );
+
+      if (scheduled.isBefore(now)) {
+        scheduled = scheduled.add(const Duration(days: 1));
+      }
+
+      await _localNotif.zonedSchedule(
+        time['id'] as int,
+        time['title'] as String,
+        time['body'] as String,
+        scheduled,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            _channel.id,
+            _channel.name,
+            channelDescription: _channel.description,
+            importance: Importance.high,
+            priority: Priority.high,
+            styleInformation: BigTextStyleInformation(time['body'] as String),
+          ),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.time,
+      );
+    }
+    debugPrint('3 Daily notifications scheduled');
+  }
 
   static Future<void> scheduleDailyJokeNotification({
     required String title,
@@ -41,6 +167,7 @@ class NotificationService {
     int hour = 9,
     int minute = 0,
   }) async {
+    // Keeping this for potential specific admin-driven triggers
     final now = tz.TZDateTime.now(tz.local);
     var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
     if (scheduled.isBefore(now)) {
