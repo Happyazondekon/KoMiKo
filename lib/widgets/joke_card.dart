@@ -388,16 +388,6 @@ class JokeShareTemplate extends StatelessWidget {
                 'assets/images/Komiko nobg.webp',
                 height: 32,
               ),
-              const SizedBox(width: 8),
-              Text(
-                'Komiko',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 24,
-                  color: AppColors.primary,
-                  letterSpacing: 1,
-                ),
-              ),
             ],
           ),
           Text(
