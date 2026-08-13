@@ -50,5 +50,6 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/illustrations/
+    - assets/illustrations/google_logo.webp
     - assets/jokes_import.json
     - assets/Compilations de blagues_Projet Komiko.docx

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/services/auth_service.dart';
 import 'package:komiko/theme/app_colors.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -178,19 +179,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _signUp,
-              style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 52)),
-              child: _isLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.black))
-                  : Text(l10n.signUp,
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700, fontSize: 16)),
+            BubbleButton(
+              onTap: _isLoading ? null : _signUp,
+              label: l10n.signUp,
+              fullWidth: true,
+              isLoading: _isLoading,
             ),
             const SizedBox(height: 24),
             Row(

@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -262,11 +263,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _isUpdating ? null : _updateProfile,
-                style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
-                child: _isUpdating ? const CircularProgressIndicator() : Text(l10n.save),
+              BubbleButton(
+                onTap: _isUpdating ? null : _updateProfile,
+                label: l10n.save,
+                fullWidth: true,
+                isLoading: _isUpdating,
               ),
+              const SizedBox(height: 12),
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(l10n.cancel),

@@ -11,6 +11,7 @@ import 'package:komiko/services/rating_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
 import 'package:komiko/utils/joke_categories.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 import 'package:komiko/widgets/joke_card.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -322,21 +323,28 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
                       Row(
                         children: [
                           Expanded(
-                            flex: 3,
-                            child: ElevatedButton.icon(
-                              onPressed: _isSharing ? null : _shareJokeAsImage,
-                              icon: _isSharing
-                                  ? const SizedBox(
-                                      width: 18,
-                                      height: 18,
-                                      child: CircularProgressIndicator(
-                                          strokeWidth: 2, color: Colors.black))
-                                  : const Icon(Icons.share_rounded, size: 18),
-                              label: Text(l10n.share),
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(0, 48)),
-                            ),
+                        flex: 3,
+                        child: BubbleButton(
+                          onTap: _isSharing ? null : _shareJokeAsImage,
+                          label: l10n.share,
+                          isLoading: _isSharing,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.share_rounded, size: 18, color: Colors.black),
+                              const SizedBox(width: 8),
+                              Text(
+                                l10n.share,
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                      ),
                           const SizedBox(width: 12),
                           _LikeButton(
                             joke: joke,

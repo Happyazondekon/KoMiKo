@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/services/auth_service.dart';
 import 'package:komiko/theme/app_colors.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -167,19 +168,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _signIn,
-                style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 52)),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.black))
-                    : Text(l10n.login,
-                        style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w700, fontSize: 16)),
+              BubbleButton(
+                onTap: _signIn,
+                label: l10n.login,
+                fullWidth: true,
+                isLoading: _isLoading,
               ),
               const SizedBox(height: 24),
               Row(
@@ -198,13 +191,33 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: _buildSocialButton(
-                  Icons.g_mobiledata,
-                  l10n.google,
-                  _isGoogleLoading ? null : _signInWithGoogle,
-                  isLoading: _isGoogleLoading,
+              BubbleButton(
+                onTap: _signInWithGoogle,
+                variant: BubbleVariant.secondary,
+                fullWidth: true,
+                isLoading: _isGoogleLoading,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/illustrations/google_logo.webp',
+                      height: 24,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.g_mobiledata, size: 28),
+                    ),
+                    const SizedBox(width: 12),
+                    Flexible(
+                      child: Text(
+                        l10n.google,
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 32),
@@ -231,20 +244,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSocialButton(IconData icon, String label, VoidCallback? onPressed, {bool isLoading = false}) {
-    return OutlinedButton.icon(
-      onPressed: onPressed,
-      icon: isLoading 
-        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-        : Icon(icon),
-      label: Text(label),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

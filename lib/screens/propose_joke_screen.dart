@@ -4,6 +4,7 @@ import 'package:komiko/models/joke_model.dart';
 import 'package:komiko/services/joke_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/utils/joke_categories.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 import 'package:provider/provider.dart';
 
 class ProposeJokeScreen extends StatefulWidget {
@@ -122,13 +123,11 @@ class _ProposeJokeScreenState extends State<ProposeJokeScreen> {
               ),
             ),
             const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _submitJoke,
-              style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50)),
-              child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : Text(l10n.publish),
+            BubbleButton(
+              onTap: _isLoading ? null : _submitJoke,
+              label: l10n.publish,
+              fullWidth: true,
+              isLoading: _isLoading,
             ),
           ],
         ),

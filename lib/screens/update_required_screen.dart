@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/services/remote_config_service.dart';
 import 'package:komiko/theme/app_colors.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UpdateRequiredScreen extends StatelessWidget {
@@ -68,26 +69,11 @@ class UpdateRequiredScreen extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _launchStore,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: Text(
-                      l10n.updateButton,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
+                BubbleButton(
+                  onTap: _launchStore,
+                  label: l10n.updateButton,
+                  fullWidth: true,
+                  size: BubbleSize.large,
                 ),
                 const SizedBox(height: 16),
                 Text(

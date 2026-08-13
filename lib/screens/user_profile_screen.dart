@@ -8,6 +8,7 @@ import 'package:komiko/services/follow_service.dart';
 import 'package:komiko/services/joke_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 import 'package:komiko/widgets/joke_card.dart';
 import 'package:provider/provider.dart';
 
@@ -141,36 +142,28 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           stream: _followService.isFollowingStream(user.uid),
                           builder: (context, followingSnap) {
                             final isFollowing = followingSnap.data ?? false;
-                            return SizedBox(
-                              width: 200,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  if (isFollowing) {
-                                    await _followService.unfollowUser(user.uid);
-                                  } else {
-                                    await _followService.followUser(
-                                      targetUid: user.uid,
-                                      targetName: user.username ?? '',
-                                      targetAvatar: user.avatarUrl,
-                                      currentUserName: currentUser?.username ?? '',
-                                      currentUserAvatar: currentUser?.avatarUrl,
-                                    );
-                                  }
-                                  setState(() {
-                                    _userFuture = _loadUserData();
-                                  });
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: isFollowing ? Colors.grey[800] : AppColors.primary,
-                                  foregroundColor: isFollowing ? Colors.white : Colors.black,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30)),
-                                ),
-                                child: Text(
-                                  isFollowing ? l10n.unfollow : l10n.follow,
-                                  style: GoogleFonts.poppins(fontWeight: FontWeight.w800),
-                                ),
-                              ),
+                            return BubbleButton(
+                              onTap: () async {
+                                if (isFollowing) {
+                                  await _followService.unfollowUser(user.uid);
+                                } else {
+                                  await _followService.followUser(
+                                    targetUid: user.uid,
+                                    targetName: user.username ?? '',
+                                    targetAvatar: user.avatarUrl,
+                                    currentUserName: currentUser?.username ?? '',
+                                    currentUserAvatar: currentUser?.avatarUrl,
+                                  );
+                                }
+                                setState(() {
+                                  _userFuture = _loadUserData();
+                                });
+                              },
+                              variant: isFollowing
+                                  ? BubbleVariant.secondary
+                                  : BubbleVariant.primary,
+                              label: isFollowing ? l10n.unfollow : l10n.follow,
+                              size: BubbleSize.small,
                             );
                           },
                         ),

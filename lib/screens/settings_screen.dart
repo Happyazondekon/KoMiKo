@@ -15,6 +15,7 @@ import 'package:komiko/services/notification_service.dart';
 import 'package:komiko/services/rating_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 import 'package:komiko/widgets/joke_card.dart';
 import 'package:provider/provider.dart';
 
@@ -164,24 +165,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onTap: () => RatingService().forceRequestReview(),
           ),
           const SizedBox(height: 28),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () async {
-                await context.read<AuthService>().signOut();
-                if (context.mounted) {
-                  context.read<UserService>().clearCache();
-                }
-              },
-              icon: const Icon(Icons.logout_rounded),
-              label: Text(l10n.logOut),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.error,
-                side: const BorderSide(color: AppColors.error),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-              ),
+          BubbleButton(
+            onTap: () async {
+              await context.read<AuthService>().signOut();
+              if (context.mounted) {
+                context.read<UserService>().clearCache();
+              }
+            },
+            variant: BubbleVariant.danger,
+            fullWidth: true,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.logout_rounded, size: 20, color: Colors.white),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.logOut,
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                      color: Colors.white),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 32),

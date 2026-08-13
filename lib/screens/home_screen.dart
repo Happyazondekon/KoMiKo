@@ -14,6 +14,7 @@ import 'package:komiko/services/notification_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
 import 'package:komiko/utils/joke_categories.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 import 'package:komiko/widgets/joke_card.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -228,8 +229,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              child: ElevatedButton.icon(
-                onPressed: () async {
+              child: BubbleButton(
+                onTap: () async {
                   final random = await jokeService.getRandomJoke();
                   if (random != null && context.mounted) {
                     Navigator.push(
@@ -239,10 +240,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   }
                 },
-                icon: const Icon(Icons.casino_rounded, size: 20),
-                label: Text(l10n.randomJoke),
-                style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 52)),
+                label: l10n.randomJoke,
+                fullWidth: true,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.casino_rounded, size: 20, color: Colors.black),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.randomJoke,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

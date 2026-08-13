@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/theme/app_colors.dart';
 import 'package:komiko/services/notification_service.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -104,8 +105,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             // Action button
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
-              child: ElevatedButton(
-                onPressed: () {
+              child: BubbleButton(
+                onTap: () {
                   if (isLast) {
                     _finish();
                   } else {
@@ -115,13 +116,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     );
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 54),
-                ),
-                child: Text(
-                  isLast ? l10n.getStarted : l10n.next,
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 16),
-                ),
+                fullWidth: true,
+                label: isLast ? l10n.getStarted : l10n.next,
               ),
             ),
           ],

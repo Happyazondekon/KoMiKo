@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
+import 'package:komiko/widgets/bubble_button.dart';
 import 'package:provider/provider.dart';
 import 'package:komiko/services/auth_service.dart';
 
@@ -82,11 +83,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ),
         ),
         const SizedBox(height: 24),
-        ElevatedButton(
-          onPressed: _isLoading ? null : _resetPassword,
-          child: _isLoading
-              ? const CircularProgressIndicator()
-              : Text(l10n.sendLink),
+        BubbleButton(
+          onTap: _isLoading ? null : _resetPassword,
+          label: l10n.sendLink,
+          fullWidth: true,
+          isLoading: _isLoading,
         ),
       ],
     );
@@ -113,9 +114,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           style: const TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 40),
-        ElevatedButton(
-          onPressed: widget.onLoginClicked,
-          child: Text(l10n.backToLogin),
+        BubbleButton(
+          onTap: widget.onLoginClicked,
+          label: l10n.backToLogin,
+          fullWidth: true,
         ),
       ],
     );
