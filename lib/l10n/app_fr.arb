@@ -225,5 +225,24 @@
   "rateAppTitle": "Vous aimez Komiko ?",
   "rateAppDescription": "Si vous appréciez l'application, n'hésitez pas à nous laisser une note sur le store. Cela nous aide énormément !",
   "rateNow": "Noter maintenant",
-  "later": "Plus tard"
+  "later": "Plus tard",
+  "shareText": "{content}\n\n{punchline}\n\nVoir la blague sur Komiko : https://play.google.com/store/apps/details?id=com.heyhappy.komiko",
+  "@shareText": {
+    "placeholders": {
+      "content": {
+        "type": "String"
+      },
+      "punchline": {
+        "type": "String"
+      }
+    }
+  },
+  "tagline": "Rire sans limites",
+  "aboutKomiko": "À propos de Komiko",
+  "aboutKomikoDesc": "Komiko est le premier réseau social dédié à l'humour bilingue. Notre mission est de propager la joie, une blague à la fois.",
+  "contactUs": "Nous contacter",
+  "contactUsDesc": "Une question, un bug ou une suggestion ? Notre équipe est à votre écoute.",
+  "termsAndPrivacy": "Conditions & Confidentialité",
+  "termsAndPrivacyDesc": "En utilisant Komiko, vous acceptez nos conditions d'utilisation. Nous protégeons vos données avec le plus grand soin.",
+  "readFullOnKomiko": "Découvrez la suite sur l'app !"
 }

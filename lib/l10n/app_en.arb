@@ -225,5 +225,24 @@
   "rateAppTitle": "Enjoying Komiko?",
   "rateAppDescription": "If you like the app, please leave us a rating on the store. It helps us a lot!",
   "rateNow": "Rate Now",
-  "later": "Later"
+  "later": "Later",
+  "shareText": "{content}\n\n{punchline}\n\nView this joke on Komiko: https://play.google.com/store/apps/details?id=com.heyhappy.komiko",
+  "@shareText": {
+    "placeholders": {
+      "content": {
+        "type": "String"
+      },
+      "punchline": {
+        "type": "String"
+      }
+    }
+  },
+  "tagline": "Laugh without limits",
+  "aboutKomiko": "About Komiko",
+  "aboutKomikoDesc": "Komiko is the first social network dedicated to bilingual humor. Our mission is to spread joy, one joke at a time.",
+  "contactUs": "Contact Us",
+  "contactUsDesc": "Any questions, bugs or suggestions? Our team is here to help.",
+  "termsAndPrivacy": "Terms & Privacy",
+  "termsAndPrivacyDesc": "By using Komiko, you agree to our terms of service. We protect your data with the utmost care.",
+  "readFullOnKomiko": "Read the full joke on the app!"
 }

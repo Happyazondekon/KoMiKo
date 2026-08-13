@@ -5,6 +5,7 @@ import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/models/user_model.dart';
 import 'package:komiko/providers/theme_provider.dart';
 import 'package:komiko/screens/edit_profile_screen.dart';
+import 'package:komiko/screens/help_support_screen.dart';
 import 'package:komiko/screens/my_jokes_screen.dart';
 import 'package:komiko/screens/notifications_screen.dart';
 import 'package:komiko/services/auth_service.dart';
@@ -150,7 +151,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             icon: Icons.help_outline_rounded,
             title: l10n.helpSupport,
             isDark: isDark,
-            onTap: () {},
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const HelpSupportScreen()),
+            ),
           ),
           _buildSettingTile(
             context,

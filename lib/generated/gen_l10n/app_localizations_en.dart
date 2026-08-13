@@ -530,4 +530,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get later => 'Later';
+
+  @override
+  String shareText(String content, String punchline) {
+    return '$content\n\n$punchline\n\nView this joke on Komiko: https://play.google.com/store/apps/details?id=com.heyhappy.komiko';
+  }
+
+  @override
+  String get tagline => 'Laugh without limits';
+
+  @override
+  String get aboutKomiko => 'About Komiko';
+
+  @override
+  String get aboutKomikoDesc =>
+      'Komiko is the first social network dedicated to bilingual humor. Our mission is to spread joy, one joke at a time.';
+
+  @override
+  String get contactUs => 'Contact Us';
+
+  @override
+  String get contactUsDesc =>
+      'Any questions, bugs or suggestions? Our team is here to help.';
+
+  @override
+  String get termsAndPrivacy => 'Terms & Privacy';
+
+  @override
+  String get termsAndPrivacyDesc =>
+      'By using Komiko, you agree to our terms of service. We protect your data with the utmost care.';
+
+  @override
+  String get readFullOnKomiko => 'Read the full joke on the app!';
 }

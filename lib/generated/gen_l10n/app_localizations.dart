@@ -1087,6 +1087,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Later'**
   String get later;
+
+  /// No description provided for @shareText.
+  ///
+  /// In en, this message translates to:
+  /// **'{content}\n\n{punchline}\n\nView this joke on Komiko: https://play.google.com/store/apps/details?id=com.heyhappy.komiko'**
+  String shareText(String content, String punchline);
+
+  /// No description provided for @tagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Laugh without limits'**
+  String get tagline;
+
+  /// No description provided for @aboutKomiko.
+  ///
+  /// In en, this message translates to:
+  /// **'About Komiko'**
+  String get aboutKomiko;
+
+  /// No description provided for @aboutKomikoDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Komiko is the first social network dedicated to bilingual humor. Our mission is to spread joy, one joke at a time.'**
+  String get aboutKomikoDesc;
+
+  /// No description provided for @contactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get contactUs;
+
+  /// No description provided for @contactUsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Any questions, bugs or suggestions? Our team is here to help.'**
+  String get contactUsDesc;
+
+  /// No description provided for @termsAndPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Privacy'**
+  String get termsAndPrivacy;
+
+  /// No description provided for @termsAndPrivacyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'By using Komiko, you agree to our terms of service. We protect your data with the utmost care.'**
+  String get termsAndPrivacyDesc;
+
+  /// No description provided for @readFullOnKomiko.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the full joke on the app!'**
+  String get readFullOnKomiko;
 }
 
 class _AppLocalizationsDelegate

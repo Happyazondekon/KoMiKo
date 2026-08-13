@@ -45,12 +45,16 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
       final isDark = Theme.of(context).brightness == Brightness.dark;
       final theme = Theme.of(context);
       
-      // Capture the screenshot of the stylized template
+      final content = widget.joke.localizedContent(langCode);
+      final punchline = widget.joke.localizedPunchline(langCode);
+
       final image = await _screenshotController.captureFromWidget(
         Material(
-          type: MaterialType.transparency,
+          color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
           child: MediaQuery(
-            data: const MediaQueryData(),
+            data: MediaQuery.of(context).copyWith(
+              size: const Size(400, 3000), // Sufficiently tall for long jokes
+            ),
             child: Theme(
               data: theme,
               child: JokeShareTemplate(
@@ -63,7 +67,6 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
           ),
         ),
         delay: const Duration(milliseconds: 100),
-        context: context,
       );
 
       final directory = await getTemporaryDirectory();
@@ -72,7 +75,7 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
 
       await Share.shareXFiles(
         [XFile(imagePath.path)],
-        text: l10n.shareViaKomiko,
+        text: l10n.shareText(content, punchline ?? ''),
       );
     } catch (e) {
       debugPrint('Error sharing image: $e');
@@ -128,7 +131,6 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
     final l10n = AppLocalizations.of(context)!;
     final langCode = Localizations.localeOf(context).languageCode;
     final user = context.watch<UserService>().currentUser;
-    final isLiked = widget.joke.likedBy.contains(user?.uid ?? '');
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final content = widget.joke.localizedContent(langCode);
@@ -138,383 +140,395 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
     final cardBg = isDark ? AppColors.darkCard : AppColors.lightCard;
     final border = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          categoryLabel,
-          style: GoogleFonts.poppins(
-            color: AppColors.primary,
-            fontWeight: FontWeight.w800,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          _isSharing
-              ? const SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: Center(
-                    child: SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: AppColors.primary),
-                    ),
-                  ),
-                )
-              : IconButton(
-                  icon: const Icon(Icons.share_rounded),
-                  onPressed: _shareJokeAsImage,
-                ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ── Author row ──────────────────────────────────────────
-                  Row(
-                    children: [
-                      AuthorAvatar(
-                        url: widget.joke.authorAvatarUrl,
-                        name: widget.joke.authorName,
-                        radius: 20,
+    return StreamBuilder<Joke?>(
+      stream: _jokeService.getJokeStream(widget.joke.id),
+      initialData: widget.joke,
+      builder: (context, snapshot) {
+        final joke = snapshot.data ?? widget.joke;
+        final isLiked = joke.likedBy.contains(user?.uid ?? '');
+        
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              categoryLabel,
+              style: GoogleFonts.poppins(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
+              ),
+            ),
+            centerTitle: true,
+            actions: [
+              _isSharing
+                  ? const SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: Center(
+                        child: SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: AppColors.primary),
+                        ),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                    )
+                  : IconButton(
+                      icon: const Icon(Icons.share_rounded),
+                      onPressed: _shareJokeAsImage,
+                    ),
+            ],
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ── Author row ──────────────────────────────────────────
+                      Row(
+                        children: [
+                          AuthorAvatar(
+                            url: joke.authorAvatarUrl,
+                            name: joke.authorName,
+                            radius: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      joke.authorName,
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    if (joke.isAuthorVerified) ...[
+                                      const SizedBox(width: 4),
+                                      Tooltip(
+                                        message: l10n.verifiedAccount,
+                                        child: const Icon(Icons.verified,
+                                            color: AppColors.primary,
+                                            size: 15),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                                 Text(
-                                  widget.joke.authorName,
+                                  timeAgo(joke.createdAt, langCode),
                                   style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14,
+                                    fontSize: 11,
+                                    color: AppColors.textSecondaryDark,
                                   ),
                                 ),
-                                if (widget.joke.isAuthorVerified) ...[
-                                  const SizedBox(width: 4),
-                                  Tooltip(
-                                    message: l10n.verifiedAccount,
-                                    child: const Icon(Icons.verified,
-                                        color: AppColors.primary,
-                                        size: 15),
-                                  ),
-                                ],
                               ],
                             ),
-                            Text(
-                              timeAgo(widget.joke.createdAt, langCode),
+                          ),
+                          // Category chip
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColors.forCategory(joke.category)
+                                  .withValues(alpha: 0.85),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              categoryLabel,
                               style: GoogleFonts.poppins(
                                 fontSize: 11,
-                                color: AppColors.textSecondaryDark,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
                               ),
                             ),
-                          ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 28),
+                      // ── Decorative quote ────────────────────────────────────
+                      Text(
+                        '\u201c',
+                        style: GoogleFonts.poppins(
+                          fontSize: 72,
+                          height: 0.6,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.primary,
                         ),
                       ),
-                      // Category chip
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: AppColors.forCategory(widget.joke.category)
-                              .withValues(alpha: 0.85),
-                          borderRadius: BorderRadius.circular(20),
+                      const SizedBox(height: 12),
+                      // ── Joke content ────────────────────────────────────────
+                      Text(
+                        content,
+                        style: GoogleFonts.poppins(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          height: 1.4,
                         ),
-                        child: Text(
-                          categoryLabel,
-                          style: GoogleFonts.poppins(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                      ),
+                      // ── Punchline ───────────────────────────────────────────
+                      if (punchline != null && punchline.isNotEmpty) ...[
+                        const SizedBox(height: 20),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: cardBg,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: border),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Container(
+                                    width: 4,
+                                    color: AppColors.primary,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(12, 14, 14, 14),
+                                      child: Text(
+                                        punchline,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                          fontStyle: FontStyle.italic,
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
+                      ],
+                      const SizedBox(height: 28),
+                      // ── Action buttons ──────────────────────────────────────
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: ElevatedButton.icon(
+                              onPressed: _isSharing ? null : _shareJokeAsImage,
+                              icon: _isSharing
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2, color: Colors.black))
+                                  : const Icon(Icons.share_rounded, size: 18),
+                              label: Text(l10n.share),
+                              style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(0, 48)),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          _LikeButton(
+                            joke: joke,
+                            userId: user?.uid ?? '',
+                            isLiked: isLiked,
+                            likesCount: joke.likesCount,
+                            jokeService: _jokeService,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
-                  // ── Decorative quote ────────────────────────────────────
-                  Text(
-                    '\u201c',
-                    style: GoogleFonts.poppins(
-                      fontSize: 72,
-                      height: 0.6,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  // ── Joke content ────────────────────────────────────────
-                  Text(
-                    content,
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      height: 1.4,
-                    ),
-                  ),
-                  // ── Punchline ───────────────────────────────────────────
-                  if (punchline != null && punchline.isNotEmpty) ...[
-                    const SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: cardBg,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: border),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: IntrinsicHeight(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Container(
-                                width: 4,
-                                color: AppColors.primary,
+                      const SizedBox(height: 24),
+                      // ── Comments header ─────────────────────────────────────
+                      Row(
+                        children: [
+                          Text(
+                            l10n.comments,
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppColors.blue.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              '${joke.commentsCount}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.blue,
                               ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(12, 14, 14, 14),
-                                  child: Text(
-                                    punchline,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                      fontStyle: FontStyle.italic,
-                                      color: AppColors.primary,
-                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      // ── Comments list ───────────────────────────────────────
+                      StreamBuilder<List<Comment>>(
+                        stream: _jokeService.getCommentsStream(widget.joke.id),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Text(
+                                '${l10n.error}: ${snapshot.error}',
+                                style: const TextStyle(color: AppColors.error),
+                              ),
+                            );
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator(
+                                    color: AppColors.primary));
+                          }
+                          final comments = snapshot.data ?? [];
+                          if (comments.isEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 24),
+                              child: Center(
+                                child: Text(
+                                  l10n.noComments,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.poppins(
+                                    color: AppColors.textSecondaryDark,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
+                            );
+                          }
+                          return ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: comments.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 8),
+                            itemBuilder: (context, index) {
+                              final c = comments[index];
+                              return Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: cardBg,
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(color: border),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AuthorAvatar(
+                                      url: c.authorAvatarUrl,
+                                      name: c.authorName,
+                                      radius: 16,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            c.authorName,
+                                            style: GoogleFonts.poppins(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            c.content,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 13, height: 1.4),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
                       ),
-                    ),
-                  ],
-                  const SizedBox(height: 28),
-                  // ── Action buttons ──────────────────────────────────────
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: ElevatedButton.icon(
-                          onPressed: _isSharing ? null : _shareJokeAsImage,
-                          icon: _isSharing
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                      strokeWidth: 2, color: Colors.black))
-                              : const Icon(Icons.share_rounded, size: 18),
-                          label: Text(l10n.share),
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(0, 48)),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      _LikeButton(
-                        joke: widget.joke,
-                        userId: user?.uid ?? '',
-                        isLiked: isLiked,
-                        likesCount: widget.joke.likesCount,
-                        jokeService: _jokeService,
-                      ),
+                      const SizedBox(height: 8),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  // ── Comments header ─────────────────────────────────────
-                  Row(
+                ),
+              ),
+              // ── Comment input ───────────────────────────────────────────────
+              SafeArea(
+                top: false,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                    border: Border(
+                        top: BorderSide(color: border)),
+                  ),
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 8,
+                    left: 16,
+                    right: 16,
+                    top: 10,
+                  ),
+                  child: Row(
                     children: [
-                      Text(
-                        l10n.comments,
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
+                      Expanded(
+                        child: TextField(
+                          controller: _commentController,
+                          decoration: InputDecoration(
+                            hintText: l10n.addComment,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 10),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24)),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: AppColors.blue.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          '${widget.joke.commentsCount}',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.blue,
-                          ),
-                        ),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                width: 44,
+                                height: 44,
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.primary),
+                                  ),
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: _submitComment,
+                                child: Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.primary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Icons.send_rounded,
+                                      color: Colors.black, size: 20),
+                                ),
+                              ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  // ── Comments list ───────────────────────────────────────
-                  StreamBuilder<List<Comment>>(
-                    stream: _jokeService.getCommentsStream(widget.joke.id),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Text(
-                            '${l10n.error}: ${snapshot.error}',
-                            style: const TextStyle(color: AppColors.error),
-                          ),
-                        );
-                      }
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const Center(
-                            child: CircularProgressIndicator(
-                                color: AppColors.primary));
-                      }
-                      final comments = snapshot.data ?? [];
-                      if (comments.isEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 24),
-                          child: Center(
-                            child: Text(
-                              l10n.noComments,
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
-                                color: AppColors.textSecondaryDark,
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-                      return ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: comments.length,
-                        separatorBuilder: (_, __) =>
-                            const SizedBox(height: 8),
-                        itemBuilder: (context, index) {
-                          final c = comments[index];
-                          return Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: cardBg,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(color: border),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AuthorAvatar(
-                                  url: c.authorAvatarUrl,
-                                  name: c.authorName,
-                                  radius: 16,
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        c.authorName,
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        c.content,
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 13, height: 1.4),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-          // ── Comment input ───────────────────────────────────────────────
-          Container(
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-              border: Border(
-                  top: BorderSide(color: border)),
-            ),
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom + 8,
-              left: 16,
-              right: 16,
-              top: 10,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(
-                      hintText: l10n.addComment,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24)),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  child: _isSubmitting
-                      ? const SizedBox(
-                          width: 44,
-                          height: 44,
-                          child: Center(
-                            child: SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.primary),
-                            ),
-                          ),
-                        )
-                      : GestureDetector(
-                          onTap: _submitComment,
-                          child: Container(
-                            width: 44,
-                            height: 44,
-                            decoration: const BoxDecoration(
-                              color: AppColors.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(Icons.send_rounded,
-                                color: Colors.black, size: 20),
-                          ),
-                        ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      }
     );
   }
 }
@@ -600,4 +614,3 @@ class _LikeButton extends StatelessWidget {
     );
   }
 }
-

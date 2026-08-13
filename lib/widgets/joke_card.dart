@@ -37,11 +37,16 @@ class _JokeCardState extends State<JokeCard> {
       final isDark = Theme.of(context).brightness == Brightness.dark;
       final theme = Theme.of(context);
 
+      final content = widget.joke.localizedContent(langCode);
+      final punchline = widget.joke.localizedPunchline(langCode);
+
       final image = await _screenshotController.captureFromWidget(
         Material(
-          type: MaterialType.transparency,
+          color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
           child: MediaQuery(
-            data: const MediaQueryData(),
+            data: MediaQuery.of(context).copyWith(
+              size: const Size(400, 3000), // Sufficiently tall for long jokes
+            ),
             child: Theme(
               data: theme,
               child: JokeShareTemplate(
@@ -54,7 +59,6 @@ class _JokeCardState extends State<JokeCard> {
           ),
         ),
         delay: const Duration(milliseconds: 100),
-        context: context,
       );
 
       final directory = await getTemporaryDirectory();
@@ -63,7 +67,7 @@ class _JokeCardState extends State<JokeCard> {
 
       await Share.shareXFiles(
         [XFile(imagePath.path)],
-        text: l10n.shareViaKomiko,
+        text: l10n.shareText(content, punchline ?? ''),
       );
     } catch (e) {
       debugPrint('Error sharing image: $e');
@@ -280,128 +284,170 @@ class JokeShareTemplate extends StatelessWidget {
       width: 400,
       color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       padding: const EdgeInsets.all(32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header with Author & Category
-          Row(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final textStyle = GoogleFonts.poppins(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            height: 1.4,
+            color: textPrimary,
+          );
+
+          // Measure if text exceeds 12 lines
+          final tp = TextPainter(
+            text: TextSpan(text: content, style: textStyle),
+            maxLines: 12,
+            textDirection: TextDirection.ltr,
+          )..layout(maxWidth: 400 - 64); // subtract padding
+
+          final isTruncated = tp.didExceedMaxLines;
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AuthorAvatar(
-                url: joke.authorAvatarUrl,
-                name: joke.authorName,
-                radius: 20,
+              // Header with Author & Category
+              Row(
+                children: [
+                  AuthorAvatar(
+                    url: joke.authorAvatarUrl,
+                    name: joke.authorName,
+                    radius: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          joke.authorName,
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            color: textPrimary,
+                          ),
+                        ),
+                        Text(
+                          categoryLabel,
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            color: AppColors.textSecondaryDark,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      joke.authorName,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                        color: textPrimary,
-                      ),
-                    ),
-                    Text(
-                      categoryLabel,
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: AppColors.textSecondaryDark,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 24),
+              // Decorative quote
+              Text(
+                '\u201c',
+                style: GoogleFonts.poppins(
+                  fontSize: 64,
+                  height: 0.6,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.primary,
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          // Decorative quote
-          Text(
-            '\u201c',
-            style: GoogleFonts.poppins(
-              fontSize: 64,
-              height: 0.6,
-              fontWeight: FontWeight.w900,
-              color: AppColors.primary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          // Joke Content
-          Text(
-            content,
-            style: GoogleFonts.poppins(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              height: 1.4,
-              color: textPrimary,
-            ),
-          ),
-          // Punchline
-          if (punchline != null && punchline.isNotEmpty) ...[
-            const SizedBox(height: 24),
-            Container(
-              decoration: BoxDecoration(
-                color: cardBg,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: border),
+              const SizedBox(height: 8),
+              // Joke Content
+              Text(
+                content,
+                style: textStyle,
+                maxLines: 12,
+                overflow: TextOverflow.ellipsis,
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: IntrinsicHeight(
+              if (isTruncated) ...[
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        width: 4,
-                        color: AppColors.primary,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                          child: Text(
-                            punchline,
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              fontStyle: FontStyle.italic,
-                              color: AppColors.primary,
-                            ),
-                          ),
+                      const Icon(Icons.arrow_forward_rounded, size: 14, color: AppColors.primary),
+                      const SizedBox(width: 6),
+                      Text(
+                        l10n.readFullOnKomiko,
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primary,
                         ),
                       ),
                     ],
                   ),
                 ),
+              ],
+              // Punchline (only show if not truncated)
+              if (!isTruncated && punchline != null && punchline.isNotEmpty) ...[
+                const SizedBox(height: 24),
+                Container(
+                  decoration: BoxDecoration(
+                    color: cardBg,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: border),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 4,
+                            color: AppColors.primary,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                              child: Text(
+                                punchline,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  fontStyle: FontStyle.italic,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 48),
+              // Footer Branding
+              const Divider(),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/Komiko nobg.webp',
+                    height: 32,
+                  ),
+                ],
               ),
-            ),
-          ],
-          const SizedBox(height: 48),
-          // Footer Branding
-          const Divider(),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'assets/images/Komiko nobg.webp',
-                height: 32,
+              Text(
+                l10n.tagline,
+                style: GoogleFonts.poppins(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondaryDark,
+                  letterSpacing: 2,
+                ),
               ),
             ],
-          ),
-          Text(
-            'Rire sans limites',
-            style: GoogleFonts.poppins(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondaryDark,
-              letterSpacing: 2,
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

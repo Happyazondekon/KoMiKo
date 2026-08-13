@@ -534,4 +534,36 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get later => 'Plus tard';
+
+  @override
+  String shareText(String content, String punchline) {
+    return '$content\n\n$punchline\n\nVoir la blague sur Komiko : https://play.google.com/store/apps/details?id=com.heyhappy.komiko';
+  }
+
+  @override
+  String get tagline => 'Rire sans limites';
+
+  @override
+  String get aboutKomiko => 'À propos de Komiko';
+
+  @override
+  String get aboutKomikoDesc =>
+      'Komiko est le premier réseau social dédié à l\'humour bilingue. Notre mission est de propager la joie, une blague à la fois.';
+
+  @override
+  String get contactUs => 'Nous contacter';
+
+  @override
+  String get contactUsDesc =>
+      'Une question, un bug ou une suggestion ? Notre équipe est à votre écoute.';
+
+  @override
+  String get termsAndPrivacy => 'Conditions & Confidentialité';
+
+  @override
+  String get termsAndPrivacyDesc =>
+      'En utilisant Komiko, vous acceptez nos conditions d\'utilisation. Nous protégeons vos données avec le plus grand soin.';
+
+  @override
+  String get readFullOnKomiko => 'Découvrez la suite sur l\'app !';
 }

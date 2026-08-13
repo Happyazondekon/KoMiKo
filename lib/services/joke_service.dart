@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:komiko/models/joke_model.dart';
 import 'package:komiko/models/comment_model.dart';
 
@@ -110,6 +111,15 @@ class JokeService {
         .map((s) => s.docs.map(Joke.fromFirestore).toList());
   }
 
+  /// Fetches a single joke by ID as a real-time stream.
+  Stream<Joke?> getJokeStream(String jokeId) {
+    return _db
+        .collection('jokes')
+        .doc(jokeId)
+        .snapshots()
+        .map((s) => s.exists ? Joke.fromFirestore(s) : null);
+  }
+
   // ── Joke CRUD ───────────────────────────────────────────────────
 
   Future<void> addJoke(Joke joke) async {
@@ -125,27 +135,32 @@ class JokeService {
   /// Toggles like/unlike for [userId] on [jokeId] — atomic transaction.
   Future<void> likeJoke(String jokeId, String userId) async {
     final jokeRef = _db.collection('jokes').doc(jokeId);
-    return _db.runTransaction((transaction) async {
-      final snapshot = await transaction.get(jokeRef);
-      if (!snapshot.exists) return;
+    try {
+      await _db.runTransaction((transaction) async {
+        final snapshot = await transaction.get(jokeRef);
+        if (!snapshot.exists) return;
 
-      final likedBy =
-          List<String>.from(snapshot.get('likedBy') as List? ?? []);
-      int likesCount = snapshot.get('likesCount') as int? ?? 0;
+        final likedBy =
+            List<String>.from(snapshot.get('likedBy') as List? ?? []);
+        int likesCount = snapshot.get('likesCount') as int? ?? 0;
 
-      if (likedBy.contains(userId)) {
-        likedBy.remove(userId);
-        likesCount -= 1;
-      } else {
-        likedBy.add(userId);
-        likesCount += 1;
-      }
+        if (likedBy.contains(userId)) {
+          likedBy.remove(userId);
+          likesCount -= 1;
+        } else {
+          likedBy.add(userId);
+          likesCount += 1;
+        }
 
-      transaction.update(jokeRef, {
-        'likedBy': likedBy,
-        'likesCount': likesCount,
+        transaction.update(jokeRef, {
+          'likedBy': likedBy,
+          'likesCount': likesCount,
+        });
       });
-    });
+    } catch (e) {
+      debugPrint('Error in likeJoke transaction: $e');
+      rethrow;
+    }
   }
 
   /// Adds a comment and increments commentsCount atomically via WriteBatch.

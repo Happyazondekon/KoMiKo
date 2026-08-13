@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
@@ -30,7 +31,23 @@ class NotificationsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: userId.isNotEmpty
-                ? () => NotificationService.markAllRead(userId)
+                ? () async {
+                    // Mark as read in Firestore
+                    await NotificationService.markAllRead(userId);
+                    
+                    // Actually DELETE the notifications from the database
+                    final db = FirebaseFirestore.instance;
+                    final snaps = await db
+                        .collection('notifications')
+                        .where('recipientId', isEqualTo: userId)
+                        .get();
+                        
+                    final batch = db.batch();
+                    for (var doc in snaps.docs) {
+                      batch.delete(doc.reference);
+                    }
+                    await batch.commit();
+                  }
                 : null,
             child: Text(
               l10n.markAllRead,
