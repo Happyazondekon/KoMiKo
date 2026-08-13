@@ -9,6 +9,7 @@ import 'package:komiko/screens/user_profile_screen.dart';
 import 'package:komiko/services/auth_service.dart';
 import 'package:komiko/services/joke_service.dart';
 import 'package:komiko/services/notification_service.dart';
+import 'package:komiko/services/rating_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
 import 'package:komiko/utils/joke_categories.dart';
@@ -230,6 +231,12 @@ class _JokeCardState extends State<JokeCard> {
                         ? () async {
                             final wasLiked = joke.likedBy.contains(userId);
                             await JokeService().likeJoke(joke.id, userId);
+                            
+                            if (!wasLiked) {
+                              // If it's a new like, consider asking for a review
+                              RatingService().maybeRequestReview();
+                            }
+
                             if (!wasLiked && joke.authorId != userId) {
                               if (context.mounted) {
                                 final user = context.read<UserService>().currentUser;

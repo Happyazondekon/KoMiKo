@@ -576,7 +576,9 @@ class _LikeButton extends StatelessWidget {
               
               if (!wasLiked) {
                 // If it's a new like, consider asking for a review
-                RatingService().maybeRequestReview();
+                if (context.mounted) {
+                  RatingService().maybeRequestReview();
+                }
               }
 
               if (!wasLiked && joke.authorId != userId) {

@@ -1115,7 +1115,7 @@ abstract class AppLocalizations {
   /// No description provided for @rateAppDescription.
   ///
   /// In en, this message translates to:
-  /// **'If you like the app, please leave us a rating on the store. It helps us a lot!'**
+  /// **'Your feedback helps us make the app even funnier!'**
   String get rateAppDescription;
 
   /// No description provided for @rateNow.
@@ -1123,6 +1123,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rate Now'**
   String get rateNow;
+
+  /// No description provided for @submitRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submitRating;
+
+  /// No description provided for @rateOnPlayStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate on Play Store'**
+  String get rateOnPlayStore;
+
+  /// No description provided for @rateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe later'**
+  String get rateLater;
+
+  /// No description provided for @noThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'No thanks'**
+  String get noThanks;
+
+  /// No description provided for @thankYouForRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your feedback! ❤️'**
+  String get thankYouForRating;
+
+  /// No description provided for @tapToRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a star to rate'**
+  String get tapToRate;
+
+  /// No description provided for @rating1Star.
+  ///
+  /// In en, this message translates to:
+  /// **'Terrible 😠'**
+  String get rating1Star;
+
+  /// No description provided for @rating2Stars.
+  ///
+  /// In en, this message translates to:
+  /// **'Bad 😕'**
+  String get rating2Stars;
+
+  /// No description provided for @rating3Stars.
+  ///
+  /// In en, this message translates to:
+  /// **'Okay 🙂'**
+  String get rating3Stars;
+
+  /// No description provided for @rating4Stars.
+  ///
+  /// In en, this message translates to:
+  /// **'Good! 😊'**
+  String get rating4Stars;
+
+  /// No description provided for @rating5Stars.
+  ///
+  /// In en, this message translates to:
+  /// **'Amazing! 😍'**
+  String get rating5Stars;
 
   /// No description provided for @later.
   ///

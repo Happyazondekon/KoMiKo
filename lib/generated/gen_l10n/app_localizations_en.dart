@@ -546,10 +546,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rateAppDescription =>
-      'If you like the app, please leave us a rating on the store. It helps us a lot!';
+      'Your feedback helps us make the app even funnier!';
 
   @override
   String get rateNow => 'Rate Now';
+
+  @override
+  String get submitRating => 'Submit';
+
+  @override
+  String get rateOnPlayStore => 'Rate on Play Store';
+
+  @override
+  String get rateLater => 'Maybe later';
+
+  @override
+  String get noThanks => 'No thanks';
+
+  @override
+  String get thankYouForRating => 'Thank you for your feedback! ❤️';
+
+  @override
+  String get tapToRate => 'Tap a star to rate';
+
+  @override
+  String get rating1Star => 'Terrible 😠';
+
+  @override
+  String get rating2Stars => 'Bad 😕';
+
+  @override
+  String get rating3Stars => 'Okay 🙂';
+
+  @override
+  String get rating4Stars => 'Good! 😊';
+
+  @override
+  String get rating5Stars => 'Amazing! 😍';
 
   @override
   String get later => 'Later';

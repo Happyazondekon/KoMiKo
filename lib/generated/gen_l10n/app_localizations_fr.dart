@@ -550,10 +550,43 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get rateAppDescription =>
-      'Si vous appréciez l\'application, n\'hésitez pas à nous laisser une note sur le store. Cela nous aide énormément !';
+      'Votre avis nous aide à rendre l\'application encore plus drôle !';
 
   @override
   String get rateNow => 'Noter maintenant';
+
+  @override
+  String get submitRating => 'Envoyer';
+
+  @override
+  String get rateOnPlayStore => 'Noter sur le Play Store';
+
+  @override
+  String get rateLater => 'Plus tard';
+
+  @override
+  String get noThanks => 'Non merci';
+
+  @override
+  String get thankYouForRating => 'Merci pour votre retour ! ❤️';
+
+  @override
+  String get tapToRate => 'Appuyez sur une étoile pour noter';
+
+  @override
+  String get rating1Star => 'Terrible 😠';
+
+  @override
+  String get rating2Stars => 'Pas top 😕';
+
+  @override
+  String get rating3Stars => 'Pas mal 🙂';
+
+  @override
+  String get rating4Stars => 'Super ! 😊';
+
+  @override
+  String get rating5Stars => 'Incroyable ! 😍';
 
   @override
   String get later => 'Plus tard';

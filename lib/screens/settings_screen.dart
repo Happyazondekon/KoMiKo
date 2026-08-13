@@ -162,7 +162,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             icon: Icons.star_outline_rounded,
             title: l10n.rateNow,
             isDark: isDark,
-            onTap: () => RatingService().forceRequestReview(),
+            onTap: () => RatingService().forceRequestReview(context),
           ),
           const SizedBox(height: 28),
           BubbleButton(

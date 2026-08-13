@@ -46,13 +46,29 @@ class HelpSupportScreen extends StatelessWidget {
             content: l10n.contactUsDesc,
             cardBg: cardBg,
             border: border,
-            action: ElevatedButton.icon(
-              onPressed: _launchEmail,
-              icon: const Icon(Icons.email_outlined, size: 18),
-              label: const Text('heyhappyproject@gmail.com'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.black,
+            action: SizedBox(
+              width: double.infinity,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: ElevatedButton.icon(
+                  onPressed: _launchEmail,
+                  icon: const Icon(Icons.email_outlined, size: 18),
+                  label: Text(
+                    'heyhappyproject@gmail.com',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
