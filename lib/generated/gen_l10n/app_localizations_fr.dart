@@ -408,6 +408,29 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String notifFollowed(String actor) {
+    return '$actor s\'est abonné à vous';
+  }
+
+  @override
+  String get followers => 'Abonnés';
+
+  @override
+  String get following => 'Abonnements';
+
+  @override
+  String get likesReceived => 'Likes reçus';
+
+  @override
+  String get follow => 'S\'abonner';
+
+  @override
+  String get unfollow => 'Se désabonner';
+
+  @override
+  String get jokes => 'Blagues';
+
+  @override
   String get notifDailyJoke => 'La blague du jour vous attend !';
 
   @override

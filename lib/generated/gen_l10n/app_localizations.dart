@@ -854,6 +854,48 @@ abstract class AppLocalizations {
   /// **'{actor} commented on your joke'**
   String notifCommented(String actor);
 
+  /// No description provided for @notifFollowed.
+  ///
+  /// In en, this message translates to:
+  /// **'{actor} started following you'**
+  String notifFollowed(String actor);
+
+  /// No description provided for @followers.
+  ///
+  /// In en, this message translates to:
+  /// **'Followers'**
+  String get followers;
+
+  /// No description provided for @following.
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get following;
+
+  /// No description provided for @likesReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Likes'**
+  String get likesReceived;
+
+  /// No description provided for @follow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get follow;
+
+  /// No description provided for @unfollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow'**
+  String get unfollow;
+
+  /// No description provided for @jokes.
+  ///
+  /// In en, this message translates to:
+  /// **'Jokes'**
+  String get jokes;
+
   /// No description provided for @notifDailyJoke.
   ///
   /// In en, this message translates to:

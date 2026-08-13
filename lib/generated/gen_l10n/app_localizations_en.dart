@@ -404,6 +404,29 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String notifFollowed(String actor) {
+    return '$actor started following you';
+  }
+
+  @override
+  String get followers => 'Followers';
+
+  @override
+  String get following => 'Following';
+
+  @override
+  String get likesReceived => 'Likes';
+
+  @override
+  String get follow => 'Follow';
+
+  @override
+  String get unfollow => 'Unfollow';
+
+  @override
+  String get jokes => 'Jokes';
+
+  @override
   String get notifDailyJoke => 'The joke of the day is waiting for you!';
 
   @override

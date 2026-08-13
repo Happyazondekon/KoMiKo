@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/models/comment_model.dart';
 import 'package:komiko/models/joke_model.dart';
+import 'package:komiko/screens/user_profile_screen.dart';
 import 'package:komiko/services/joke_service.dart';
 import 'package:komiko/services/notification_service.dart';
 import 'package:komiko/services/rating_service.dart';
@@ -187,68 +188,75 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // ── Author row ──────────────────────────────────────────
-                      Row(
-                        children: [
-                          AuthorAvatar(
-                            url: joke.authorAvatarUrl,
-                            name: joke.authorName,
-                            radius: 20,
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      joke.authorName,
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14,
-                                      ),
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => UserProfileScreen(userId: joke.authorId)),
+                    ),
+                    child: Row(
+                      children: [
+                        AuthorAvatar(
+                          url: joke.authorAvatarUrl,
+                          name: joke.authorName,
+                          radius: 20,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    joke.authorName,
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
                                     ),
-                                    if (joke.isAuthorVerified) ...[
-                                      const SizedBox(width: 4),
-                                      Tooltip(
-                                        message: l10n.verifiedAccount,
-                                        child: const Icon(Icons.verified,
-                                            color: AppColors.primary,
-                                            size: 15),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                                Text(
-                                  timeAgo(joke.createdAt, langCode),
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 11,
-                                    color: AppColors.textSecondaryDark,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Category chip
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: AppColors.forCategory(joke.category)
-                                  .withValues(alpha: 0.85),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              categoryLabel,
-                              style: GoogleFonts.poppins(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                                  if (joke.isAuthorVerified) ...[
+                                    const SizedBox(width: 4),
+                                    Tooltip(
+                                      message: l10n.verifiedAccount,
+                                      child: const Icon(Icons.verified,
+                                          color: AppColors.primary,
+                                          size: 15),
+                                    ),
+                                  ],
+                                ],
                               ),
+                              Text(
+                                timeAgo(joke.createdAt, langCode),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  color: AppColors.textSecondaryDark,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Category chip
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: AppColors.forCategory(joke.category)
+                                .withValues(alpha: 0.85),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            categoryLabel,
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
+                  ),
                       const SizedBox(height: 28),
                       // ── Decorative quote ────────────────────────────────────
                       Text(

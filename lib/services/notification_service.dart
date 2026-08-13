@@ -251,6 +251,29 @@ class NotificationService {
     } catch (_) {}
   }
 
+  /// Call after a follow action.
+  static Future<void> createFollowNotification({
+    required String recipientId,
+    required String actorId,
+    required String actorName,
+    String? actorAvatarUrl,
+  }) async {
+    if (recipientId == actorId) return;
+    try {
+      final notif = AppNotification(
+        id: '',
+        recipientId: recipientId,
+        type: 'follow',
+        actorId: actorId,
+        actorName: actorName,
+        actorAvatarUrl: actorAvatarUrl,
+        jokeId: '',
+        createdAt: DateTime.now(),
+      );
+      await _db.collection('notifications').add(notif.toMap());
+    } catch (_) {}
+  }
+
   /// Stream of notifications for a given user, newest first.
   static Stream<List<AppNotification>> getNotificationsStream(String userId) {
     return _db

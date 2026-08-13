@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/models/notification_model.dart';
 import 'package:komiko/screens/joke_detail_screen.dart';
+import 'package:komiko/screens/user_profile_screen.dart';
 import 'package:komiko/services/auth_service.dart';
 import 'package:komiko/services/joke_service.dart';
 import 'package:komiko/services/notification_service.dart';
@@ -133,20 +134,31 @@ class _NotifTile extends StatelessWidget {
 
     final message = notif.type == 'like'
         ? l10n.notifLiked(notif.actorName)
-        : l10n.notifCommented(notif.actorName);
+        : notif.type == 'follow'
+            ? l10n.notifFollowed(notif.actorName)
+            : l10n.notifCommented(notif.actorName);
 
     return InkWell(
       onTap: () {
         NotificationService.markRead(notif.id);
-        JokeService().jokesStream.first.then((jokes) {
-          final joke = jokes.where((j) => j.id == notif.jokeId).firstOrNull;
-          if (joke != null && context.mounted) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => JokeDetailScreen(joke: joke)),
-            );
-          }
-        });
+        if (notif.type == 'follow') {
+          // Navigate to actor's profile
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => UserProfileScreen(userId: notif.actorId)),
+          );
+        } else {
+          JokeService().jokesStream.first.then((jokes) {
+            final joke = jokes.where((j) => j.id == notif.jokeId).firstOrNull;
+            if (joke != null && context.mounted) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => JokeDetailScreen(joke: joke)),
+              );
+            }
+          });
+        }
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),

@@ -175,6 +175,20 @@
       }
     }
   },
+  "notifFollowed": "{actor} s'est abonné à vous",
+  "@notifFollowed": {
+    "placeholders": {
+      "actor": {
+        "type": "String"
+      }
+    }
+  },
+  "followers": "Abonnés",
+  "following": "Abonnements",
+  "likesReceived": "Likes reçus",
+  "follow": "S'abonner",
+  "unfollow": "Se désabonner",
+  "jokes": "Blagues",
   "seeMore": "Voir plus",
   "seeLess": "Voir moins",
   "search": "Rechercher",

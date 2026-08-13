@@ -10,6 +10,8 @@ class UserModel {
   final bool isVerified;
   /// Role: 'user' | 'komiko' | 'premium'
   final String role;
+  final int followersCount;
+  final int followingCount;
 
   UserModel({
     required this.uid,
@@ -20,6 +22,8 @@ class UserModel {
     this.createdAt,
     this.isVerified = false,
     this.role = 'user',
+    this.followersCount = 0,
+    this.followingCount = 0,
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
@@ -33,6 +37,8 @@ class UserModel {
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
       isVerified: data['isVerified'] as bool? ?? false,
       role: data['role'] as String? ?? 'user',
+      followersCount: data['followersCount'] as int? ?? 0,
+      followingCount: data['followingCount'] as int? ?? 0,
     );
   }
 
@@ -47,6 +53,8 @@ class UserModel {
           : FieldValue.serverTimestamp(),
       'isVerified': isVerified,
       'role': role,
+      'followersCount': followersCount,
+      'followingCount': followingCount,
     };
   }
 
@@ -59,6 +67,8 @@ class UserModel {
     DateTime? createdAt,
     bool? isVerified,
     String? role,
+    int? followersCount,
+    int? followingCount,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -69,6 +79,8 @@ class UserModel {
       createdAt: createdAt ?? this.createdAt,
       isVerified: isVerified ?? this.isVerified,
       role: role ?? this.role,
+      followersCount: followersCount ?? this.followersCount,
+      followingCount: followingCount ?? this.followingCount,
     );
   }
 }

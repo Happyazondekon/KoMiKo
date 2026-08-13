@@ -277,22 +277,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
             return Row(
               children: [
                 _buildStatCard(
-                    '${stats['jokesCount'] ?? 0}',
-                    l10n.jokesShared,
+                    '${user?.followersCount ?? 0}',
+                    l10n.followers,
+                    cardBg,
+                    border,
+                    isDark),
+                const SizedBox(width: 10),
+                _buildStatCard(
+                    '${user?.followingCount ?? 0}',
+                    l10n.following,
                     cardBg,
                     border,
                     isDark),
                 const SizedBox(width: 10),
                 _buildStatCard(
                     '${stats['totalLikes'] ?? 0}',
-                    l10n.totalLikes,
-                    cardBg,
-                    border,
-                    isDark),
-                const SizedBox(width: 10),
-                _buildStatCard(
-                    '${stats['totalComments'] ?? 0}',
-                    l10n.commentsReceived,
+                    l10n.likesReceived,
                     cardBg,
                     border,
                     isDark),

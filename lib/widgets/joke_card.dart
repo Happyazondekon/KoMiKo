@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/models/joke_model.dart';
 import 'package:komiko/screens/joke_detail_screen.dart';
+import 'package:komiko/screens/user_profile_screen.dart';
 import 'package:komiko/services/auth_service.dart';
 import 'package:komiko/services/joke_service.dart';
 import 'package:komiko/services/notification_service.dart';
@@ -110,76 +111,83 @@ class _JokeCardState extends State<JokeCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ── Author row ──────────────────────────────────────────
-              Row(
-                children: [
-                  AuthorAvatar(
-                    url: joke.authorAvatarUrl,
-                    name: joke.authorName,
-                    radius: 18,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                joke.authorName,
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14,
-                                  color: isDark
-                                      ? AppColors.textPrimaryDark
-                                      : AppColors.textPrimaryLight,
+              GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => UserProfileScreen(userId: joke.authorId)),
+                ),
+                child: Row(
+                  children: [
+                    AuthorAvatar(
+                      url: joke.authorAvatarUrl,
+                      name: joke.authorName,
+                      radius: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  joke.authorName,
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    color: isDark
+                                        ? AppColors.textPrimaryDark
+                                        : AppColors.textPrimaryLight,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            if (joke.isAuthorVerified) ...
-                              [
+                              if (joke.isAuthorVerified) ...[
                                 const SizedBox(width: 4),
                                 const Icon(Icons.verified,
                                     color: AppColors.primary, size: 14),
                               ],
-                          ],
-                        ),
-                        Text(
-                          '$ago • $categoryLabel',
-                          style: GoogleFonts.poppins(
-                            fontSize: 11,
-                            color: AppColors.textSecondaryDark,
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Share icon
-                  _isSharing
-                      ? const SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: Center(
-                            child: SizedBox(
-                              width: 14,
-                              height: 14,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2, color: AppColors.primary),
+                          Text(
+                            '$ago • $categoryLabel',
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              color: AppColors.textSecondaryDark,
                             ),
                           ),
-                        )
-                      : IconButton(
-                          icon: Icon(
-                            Icons.share_outlined,
-                            size: 18,
-                            color: isDark ? Colors.grey[500] : Colors.grey[600],
+                        ],
+                      ),
+                    ),
+                    // Share icon
+                    _isSharing
+                        ? const SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: Center(
+                              child: SizedBox(
+                                width: 14,
+                                height: 14,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: AppColors.primary),
+                              ),
+                            ),
+                          )
+                        : IconButton(
+                            icon: Icon(
+                              Icons.share_outlined,
+                              size: 18,
+                              color:
+                                  isDark ? Colors.grey[500] : Colors.grey[600],
+                            ),
+                            onPressed: _shareJokeAsImage,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
                           ),
-                          onPressed: _shareJokeAsImage,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 14),
               // ── Joke content ────────────────────────────────────────

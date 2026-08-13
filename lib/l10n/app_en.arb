@@ -170,6 +170,20 @@
       }
     }
   },
+  "notifFollowed": "{actor} started following you",
+  "@notifFollowed": {
+    "placeholders": {
+      "actor": {
+        "type": "String"
+      }
+    }
+  },
+  "followers": "Followers",
+  "following": "Following",
+  "likesReceived": "Likes",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "jokes": "Jokes",
   "notifDailyJoke": "The joke of the day is waiting for you!",
   "markAllRead": "Mark all as read",
   "selectAvatar": "Select an avatar",
