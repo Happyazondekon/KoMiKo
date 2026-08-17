@@ -99,7 +99,7 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
         id: '',
         jokeId: widget.joke.id,
         content: content,
-        authorName: user.username ?? context.read<AppLocalizations>().anonymous,
+        authorName: user.username ?? AppLocalizations.of(context)!.anonymous,
         authorId: user.uid,
         authorAvatarUrl: user.avatarUrl,
         createdAt: DateTime.now(),
@@ -480,18 +480,14 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
               // ── Comment input ───────────────────────────────────────────────
               SafeArea(
                 top: false,
+                bottom: true,
                 child: Container(
                   decoration: BoxDecoration(
                     color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
                     border: Border(
                         top: BorderSide(color: border)),
                   ),
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom + 8,
-                    left: 16,
-                    right: 16,
-                    top: 10,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
                     children: [
                       Expanded(
