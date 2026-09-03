@@ -789,7 +789,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get jokeHiddenFromFeed => 'Blague signalée et masquée de votre fil 👍';
 
   @override
-  String get welcomeUsernameTitle => 'Bienvenue sur Komiko ! 🎉';
+  String get welcomeUsernameTitle => 'Bienvenue sur Komiko !';
 
   @override
   String get welcomeUsernameSubtitle =>

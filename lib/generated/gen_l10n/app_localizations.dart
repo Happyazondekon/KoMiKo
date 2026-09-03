@@ -1565,7 +1565,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeUsernameTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Komiko! 🎉'**
+  /// **'Welcome to Komiko!'**
   String get welcomeUsernameTitle;
 
   /// No description provided for @welcomeUsernameSubtitle.

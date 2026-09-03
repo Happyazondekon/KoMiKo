@@ -324,7 +324,7 @@
   "reportCommentHint": "Précisez la raison (optionnel)...",
   "submitReport": "Signaler et masquer",
   "jokeHiddenFromFeed": "Blague signalée et masquée de votre fil 👍",
-  "welcomeUsernameTitle": "Bienvenue sur Komiko ! 🎉",
+  "welcomeUsernameTitle": "Bienvenue sur Komiko !",
   "welcomeUsernameSubtitle": "Voici votre nom d'utilisateur. Vous pouvez le garder ou le modifier dès maintenant :",
   "usernameFieldLabel": "Votre pseudo",
   "usernameFieldHint": "Ex: Alex, RieurDuNet...",

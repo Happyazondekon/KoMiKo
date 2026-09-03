@@ -785,7 +785,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jokeHiddenFromFeed => 'Joke reported and hidden from your feed 👍';
 
   @override
-  String get welcomeUsernameTitle => 'Welcome to Komiko! 🎉';
+  String get welcomeUsernameTitle => 'Welcome to Komiko!';
 
   @override
   String get welcomeUsernameSubtitle =>
