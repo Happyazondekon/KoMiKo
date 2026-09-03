@@ -566,7 +566,7 @@ class JokeShareTemplate extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
-                    'assets/images/Komiko nobg.webp',
+                    AppAssets.komikoLogoForDark(isDark),
                     height: 32,
                   ),
                 ],

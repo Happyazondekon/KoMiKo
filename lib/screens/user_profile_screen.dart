@@ -54,8 +54,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final currentUser = context.watch<UserService>().currentUser;
     final isMe = currentUser?.uid == widget.userId;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardBg = isDark ? AppColors.darkCard : AppColors.lightCard;
-    final border = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
     return FutureBuilder<UserModel?>(
       future: _userFuture,

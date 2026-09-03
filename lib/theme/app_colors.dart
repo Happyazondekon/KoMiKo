@@ -65,3 +65,21 @@ class AppColors {
     }
   }
 }
+
+/// Helper pour les assets dynamiques selon le thème (sombre / clair).
+class AppAssets {
+  AppAssets._();
+
+  /// Logo Komiko sans fond adapté au mode actif :
+  /// - Dark mode  -> assets/images/Komiko nobg.webp
+  /// - Light mode -> assets/images/Komiko wht no bg.webp
+  static String komikoLogo(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? 'assets/images/Komiko nobg.webp' : 'assets/images/Komiko wht no bg.webp';
+  }
+
+  /// Logo Komiko sans fond à partir d'un booléen isDark.
+  static String komikoLogoForDark(bool isDark) {
+    return isDark ? 'assets/images/Komiko nobg.webp' : 'assets/images/Komiko wht no bg.webp';
+  }
+}

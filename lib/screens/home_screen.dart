@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         title: Image.asset(
-          'assets/images/Komiko nobg.webp',
+          AppAssets.komikoLogoForDark(isDark),
           height: 30,
           fit: BoxFit.contain,
         ),

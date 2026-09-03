@@ -81,6 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -92,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             // Logo image
             Center(
               child: Image.asset(
-                'assets/images/Komiko nobg.webp',
+                AppAssets.komikoLogoForDark(isDark),
                 height: 80,
                 fit: BoxFit.contain,
               ),

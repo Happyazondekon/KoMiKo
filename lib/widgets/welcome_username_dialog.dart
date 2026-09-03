@@ -120,7 +120,7 @@ class _WelcomeUsernameDialogState extends State<WelcomeUsernameDialog> {
             children: [
               // Logo ou Illustration
               Image.asset(
-                'assets/images/Komiko nobg.webp',
+                AppAssets.komikoLogoForDark(isDark),
                 height: 65,
                 fit: BoxFit.contain,
               ),

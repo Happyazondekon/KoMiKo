@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // Logo image
               Center(
                 child: Image.asset(
-                  'assets/images/Komiko nobg.webp',
+                  AppAssets.komikoLogoForDark(isDark),
                   height: 80,
                   fit: BoxFit.contain,
                 ),
