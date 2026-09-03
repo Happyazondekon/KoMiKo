@@ -335,7 +335,7 @@ abstract class AppLocalizations {
   /// No description provided for @choosePhoto.
   ///
   /// In en, this message translates to:
-  /// **'Choose Photo'**
+  /// **'Choose a photo'**
   String get choosePhoto;
 
   /// No description provided for @gallery.
@@ -1249,6 +1249,600 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Read the full joke on the app!'**
   String get readFullOnKomiko;
+
+  /// No description provided for @feedForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'For you'**
+  String get feedForYou;
+
+  /// No description provided for @feedSelectedForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected for you'**
+  String get feedSelectedForYou;
+
+  /// No description provided for @featured.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured'**
+  String get featured;
+
+  /// No description provided for @reportJoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Report joke'**
+  String get reportJoke;
+
+  /// No description provided for @jokeReported.
+  ///
+  /// In en, this message translates to:
+  /// **'Joke reported. Thank you! 💪'**
+  String get jokeReported;
+
+  /// No description provided for @komikoPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Komiko Pro'**
+  String get komikoPro;
+
+  /// No description provided for @komikoProBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Komiko Pro ✨'**
+  String get komikoProBadge;
+
+  /// No description provided for @komikoProUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock the full power of Komiko'**
+  String get komikoProUnlock;
+
+  /// No description provided for @proFeaturePhotoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos in your jokes'**
+  String get proFeaturePhotoTitle;
+
+  /// No description provided for @proFeaturePhotoDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclusive to Pro & Verified members • Tap to unlock'**
+  String get proFeaturePhotoDesc;
+
+  /// No description provided for @proFeatureBoostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Boosted posts'**
+  String get proFeatureBoostTitle;
+
+  /// No description provided for @proFeatureBoostDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your joke gets boosted in everyone\'s feed'**
+  String get proFeatureBoostDesc;
+
+  /// No description provided for @proFeatureBadgeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified Pro Badge'**
+  String get proFeatureBadgeTitle;
+
+  /// No description provided for @proFeatureBadgeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Display your status with the golden ✓ badge on your posts'**
+  String get proFeatureBadgeDesc;
+
+  /// No description provided for @proFeaturePriorityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Feed priority'**
+  String get proFeaturePriorityTitle;
+
+  /// No description provided for @proFeaturePriorityDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your recent jokes naturally rank higher'**
+  String get proFeaturePriorityDesc;
+
+  /// No description provided for @planMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get planMonthly;
+
+  /// No description provided for @planAnnual.
+  ///
+  /// In en, this message translates to:
+  /// **'Annual'**
+  String get planAnnual;
+
+  /// No description provided for @planPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'/ month'**
+  String get planPerMonth;
+
+  /// No description provided for @planPerYear.
+  ///
+  /// In en, this message translates to:
+  /// **'/ year'**
+  String get planPerYear;
+
+  /// No description provided for @savePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Save ~37% ✨'**
+  String get savePercent;
+
+  /// No description provided for @popular.
+  ///
+  /// In en, this message translates to:
+  /// **'Popular'**
+  String get popular;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get comingSoon;
+
+  /// No description provided for @restorePurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore purchases'**
+  String get restorePurchases;
+
+  /// No description provided for @autoRenewDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-renewable subscription. Cancel anytime.'**
+  String get autoRenewDisclaimer;
+
+  /// No description provided for @proUpgradeBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Komiko Pro ✨'**
+  String get proUpgradeBannerTitle;
+
+  /// No description provided for @proUpgradeBannerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get your verified badge and boost your jokes'**
+  String get proUpgradeBannerSubtitle;
+
+  /// No description provided for @addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo'**
+  String get addPhoto;
+
+  /// No description provided for @zoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand'**
+  String get zoomIn;
+
+  /// No description provided for @maxPhotoSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Max ~750 KB'**
+  String get maxPhotoSize;
+
+  /// No description provided for @imageTooHeavy.
+  ///
+  /// In en, this message translates to:
+  /// **'Image is too large. Please select a smaller image (max ~750 KB).'**
+  String get imageTooHeavy;
+
+  /// No description provided for @errorLoadingImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading image'**
+  String get errorLoadingImage;
+
+  /// No description provided for @boostInFeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature post'**
+  String get boostInFeed;
+
+  /// No description provided for @boostInFeedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your joke will be boosted in the feed'**
+  String get boostInFeedDesc;
+
+  /// No description provided for @accountRestrictedMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is restricted. You cannot publish at this time.'**
+  String get accountRestrictedMsg;
+
+  /// No description provided for @adminDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Dashboard'**
+  String get adminDashboard;
+
+  /// No description provided for @adminPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Posts'**
+  String get adminPosts;
+
+  /// No description provided for @adminUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get adminUsers;
+
+  /// No description provided for @adminReported.
+  ///
+  /// In en, this message translates to:
+  /// **'Reported'**
+  String get adminReported;
+
+  /// No description provided for @noReportedContent.
+  ///
+  /// In en, this message translates to:
+  /// **'No reported content 🎉'**
+  String get noReportedContent;
+
+  /// No description provided for @aiRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended for you'**
+  String get aiRecommended;
+
+  /// No description provided for @aiCuratedForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Specially curated for your taste'**
+  String get aiCuratedForYou;
+
+  /// No description provided for @reportJokeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report this joke'**
+  String get reportJokeTitle;
+
+  /// No description provided for @reportJokeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a reason. This joke will no longer be shown in your feed.'**
+  String get reportJokeSubtitle;
+
+  /// No description provided for @reportReasonInappropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'Inappropriate or offensive content'**
+  String get reportReasonInappropriate;
+
+  /// No description provided for @reportReasonHarassment.
+  ///
+  /// In en, this message translates to:
+  /// **'Harassment or hate speech'**
+  String get reportReasonHarassment;
+
+  /// No description provided for @reportReasonSpam.
+  ///
+  /// In en, this message translates to:
+  /// **'Spam or misleading content'**
+  String get reportReasonSpam;
+
+  /// No description provided for @reportReasonCopyright.
+  ///
+  /// In en, this message translates to:
+  /// **'Plagiarism or copyright violation'**
+  String get reportReasonCopyright;
+
+  /// No description provided for @reportReasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other reason'**
+  String get reportReasonOther;
+
+  /// No description provided for @reportCommentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add details (optional)...'**
+  String get reportCommentHint;
+
+  /// No description provided for @submitReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report & hide'**
+  String get submitReport;
+
+  /// No description provided for @jokeHiddenFromFeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Joke reported and hidden from your feed 👍'**
+  String get jokeHiddenFromFeed;
+
+  /// No description provided for @welcomeUsernameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Komiko! 🎉'**
+  String get welcomeUsernameTitle;
+
+  /// No description provided for @welcomeUsernameSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Here is your username. You can keep it or change it now:'**
+  String get welcomeUsernameSubtitle;
+
+  /// No description provided for @usernameFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your username'**
+  String get usernameFieldLabel;
+
+  /// No description provided for @usernameFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. Alex, LaughMaster...'**
+  String get usernameFieldHint;
+
+  /// No description provided for @usernameEmptyError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid username'**
+  String get usernameEmptyError;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s go!'**
+  String get continueButton;
+
+  /// No description provided for @usernameConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile ready! Welcome aboard!'**
+  String get usernameConfirmed;
+
+  /// No description provided for @tutorialStepFeedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The News Feed'**
+  String get tutorialStepFeedTitle;
+
+  /// No description provided for @tutorialStepFeedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover the best jokes curated for you. Like, comment, and share your favorites as beautiful images!'**
+  String get tutorialStepFeedDesc;
+
+  /// No description provided for @tutorialStepProposeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share a Joke'**
+  String get tutorialStepProposeTitle;
+
+  /// No description provided for @tutorialStepProposeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Make the community laugh! Tap the + button to publish your own bilingual jokes.'**
+  String get tutorialStepProposeDesc;
+
+  /// No description provided for @tutorialStepCategoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Themed Categories'**
+  String get tutorialStepCategoriesTitle;
+
+  /// No description provided for @tutorialStepCategoriesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore jokes by topic: Toto, Geek, Dark humor, Short jokes, Animals, and much more!'**
+  String get tutorialStepCategoriesDesc;
+
+  /// No description provided for @tutorialStepFavoritesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Offline Favorites'**
+  String get tutorialStepFavoritesTitle;
+
+  /// No description provided for @tutorialStepFavoritesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Easily find all the jokes you loved to read them again even without an internet connection.'**
+  String get tutorialStepFavoritesDesc;
+
+  /// No description provided for @tutorialStepSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings & Profile'**
+  String get tutorialStepSettingsTitle;
+
+  /// No description provided for @tutorialStepSettingsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch between French and English, toggle dark mode, edit your profile, and discover Komiko Pro!'**
+  String get tutorialStepSettingsDesc;
+
+  /// No description provided for @tutorialNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get tutorialNext;
+
+  /// No description provided for @tutorialFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish tour'**
+  String get tutorialFinish;
+
+  /// No description provided for @tutorialSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get tutorialSkip;
+
+  /// No description provided for @replayTutorial.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay tutorial'**
+  String get replayTutorial;
+
+  /// No description provided for @enhanceJokeAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Komiko Assistant ✨'**
+  String get enhanceJokeAi;
+
+  /// No description provided for @enhanceJokeAiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Komiko Assistant ✨'**
+  String get enhanceJokeAiTitle;
+
+  /// No description provided for @enhanceJokeAiSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like to transform your joke?'**
+  String get enhanceJokeAiSubtitle;
+
+  /// No description provided for @enhanceEmptyWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Please write a draft of your joke first so Komiko Assistant can enhance it!'**
+  String get enhanceEmptyWarning;
+
+  /// No description provided for @enhanceOptionFunnier.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it funnier'**
+  String get enhanceOptionFunnier;
+
+  /// No description provided for @enhanceOptionFunnierDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds hilarious comedic twists and details'**
+  String get enhanceOptionFunnierDesc;
+
+  /// No description provided for @enhanceOptionPunchy.
+  ///
+  /// In en, this message translates to:
+  /// **'Shorter & punchier'**
+  String get enhanceOptionPunchy;
+
+  /// No description provided for @enhanceOptionPunchyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Cuts the fluff for instant impact'**
+  String get enhanceOptionPunchyDesc;
+
+  /// No description provided for @enhanceOptionPunchline.
+  ///
+  /// In en, this message translates to:
+  /// **'Explosive punchline'**
+  String get enhanceOptionPunchline;
+
+  /// No description provided for @enhanceOptionPunchlineDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Crafts an unexpected, unforgettable finish'**
+  String get enhanceOptionPunchlineDesc;
+
+  /// No description provided for @enhanceOptionClean.
+  ///
+  /// In en, this message translates to:
+  /// **'Refine & polish'**
+  String get enhanceOptionClean;
+
+  /// No description provided for @enhanceOptionCleanDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Flawless grammar and smooth comedic timing'**
+  String get enhanceOptionCleanDesc;
+
+  /// No description provided for @enhanceOptionCrazy.
+  ///
+  /// In en, this message translates to:
+  /// **'Absurd & wacky'**
+  String get enhanceOptionCrazy;
+
+  /// No description provided for @enhanceOptionCrazyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Offbeat tone and delightful surprises'**
+  String get enhanceOptionCrazyDesc;
+
+  /// No description provided for @enhanceOptionDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark & sarcastic humor'**
+  String get enhanceOptionDark;
+
+  /// No description provided for @enhanceOptionDarkDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Edgy, cynical and biting punchline'**
+  String get enhanceOptionDarkDesc;
+
+  /// No description provided for @aiGeneratingProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'Komiko Assistant is polishing your joke...'**
+  String get aiGeneratingProposal;
+
+  /// No description provided for @applyAiSuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply to my joke'**
+  String get applyAiSuggestion;
+
+  /// No description provided for @tryAnotherStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another style'**
+  String get tryAnotherStyle;
+
+  /// No description provided for @originalVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Original version'**
+  String get originalVersion;
+
+  /// No description provided for @enhancedVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Enhanced version'**
+  String get enhancedVersion;
+
+  /// No description provided for @freeUsesLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Last free trial!} other{{count} free trials remaining}}'**
+  String freeUsesLeft(int count);
+
+  /// No description provided for @freeQuotaExhaustedPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'You have used your 5 free photos. Upgrade to Komiko Pro for unlimited access!'**
+  String get freeQuotaExhaustedPhoto;
+
+  /// No description provided for @freeQuotaExhaustedAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'You have used your 5 free trials with Komiko Assistant. Upgrade to Pro for unlimited access!'**
+  String get freeQuotaExhaustedAssistant;
+
+  /// No description provided for @freeBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get freeBadge;
+
+  /// No description provided for @freeTrialsRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/5'**
+  String freeTrialsRemaining(int count);
 }
 
 class _AppLocalizationsDelegate

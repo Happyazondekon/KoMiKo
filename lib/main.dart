@@ -22,6 +22,7 @@ import 'package:komiko/auth/screens/email_verification_screen.dart';
 
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/services/remote_config_service.dart';
+import 'package:komiko/services/purchase_service.dart';
 import 'package:komiko/screens/update_required_screen.dart';
 
 void main() async {
@@ -49,6 +50,11 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => LocalizationService()),
         ChangeNotifierProvider(create: (_) => UserService()),
+        ChangeNotifierProvider(create: (_) {
+          final ps = PurchaseService();
+          ps.initialize(); // Démarre l'initialisation en arrière-plan
+          return ps;
+        }),
         Provider(create: (_) => AuthService()),
         StreamProvider<User?>(
           create: (context) => Provider.of<AuthService>(context, listen: false).userStream,

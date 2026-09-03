@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
@@ -6,6 +6,7 @@ import 'package:komiko/models/user_model.dart';
 import 'package:komiko/providers/theme_provider.dart';
 import 'package:komiko/screens/edit_profile_screen.dart';
 import 'package:komiko/screens/help_support_screen.dart';
+import 'package:komiko/screens/main_screen.dart';
 import 'package:komiko/screens/my_jokes_screen.dart';
 import 'package:komiko/screens/notifications_screen.dart';
 import 'package:komiko/services/auth_service.dart';
@@ -156,6 +157,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               context,
               MaterialPageRoute(builder: (_) => const HelpSupportScreen()),
             ),
+          ),
+          _buildSettingTile(
+            context,
+            icon: Icons.explore_outlined,
+            title: l10n.replayTutorial,
+            isDark: isDark,
+            onTap: () => MainScreen.startTutorial(context),
           ),
           _buildSettingTile(
             context,

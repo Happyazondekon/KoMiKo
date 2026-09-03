@@ -61,8 +61,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
       
       if (result != null) {
-        // Update display name
-        await result.user?.updateDisplayName(_nameController.text.trim());
+        final name = _nameController.text.trim();
+        if (name.isNotEmpty) {
+          await result.user?.updateDisplayName(name);
+          await result.user?.reload();
+        }
         // Send email verification
         await authService.sendEmailVerification();
       } else if (mounted) {

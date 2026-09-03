@@ -126,7 +126,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
-  String get choosePhoto => 'Choose Photo';
+  String get choosePhoto => 'Choose a photo';
 
   @override
   String get gallery => 'Gallery';
@@ -618,4 +618,334 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get readFullOnKomiko => 'Read the full joke on the app!';
+
+  @override
+  String get feedForYou => 'For you';
+
+  @override
+  String get feedSelectedForYou => 'Selected for you';
+
+  @override
+  String get featured => 'Featured';
+
+  @override
+  String get reportJoke => 'Report joke';
+
+  @override
+  String get jokeReported => 'Joke reported. Thank you! 💪';
+
+  @override
+  String get komikoPro => 'Komiko Pro';
+
+  @override
+  String get komikoProBadge => 'Komiko Pro ✨';
+
+  @override
+  String get komikoProUnlock => 'Unlock the full power of Komiko';
+
+  @override
+  String get proFeaturePhotoTitle => 'Photos in your jokes';
+
+  @override
+  String get proFeaturePhotoDesc =>
+      'Exclusive to Pro & Verified members • Tap to unlock';
+
+  @override
+  String get proFeatureBoostTitle => 'Boosted posts';
+
+  @override
+  String get proFeatureBoostDesc =>
+      'Your joke gets boosted in everyone\'s feed';
+
+  @override
+  String get proFeatureBadgeTitle => 'Verified Pro Badge';
+
+  @override
+  String get proFeatureBadgeDesc =>
+      'Display your status with the golden ✓ badge on your posts';
+
+  @override
+  String get proFeaturePriorityTitle => 'Feed priority';
+
+  @override
+  String get proFeaturePriorityDesc =>
+      'Your recent jokes naturally rank higher';
+
+  @override
+  String get planMonthly => 'Monthly';
+
+  @override
+  String get planAnnual => 'Annual';
+
+  @override
+  String get planPerMonth => '/ month';
+
+  @override
+  String get planPerYear => '/ year';
+
+  @override
+  String get savePercent => 'Save ~37% ✨';
+
+  @override
+  String get popular => 'Popular';
+
+  @override
+  String get comingSoon => 'Coming soon';
+
+  @override
+  String get restorePurchases => 'Restore purchases';
+
+  @override
+  String get autoRenewDisclaimer =>
+      'Auto-renewable subscription. Cancel anytime.';
+
+  @override
+  String get proUpgradeBannerTitle => 'Upgrade to Komiko Pro ✨';
+
+  @override
+  String get proUpgradeBannerSubtitle =>
+      'Get your verified badge and boost your jokes';
+
+  @override
+  String get addPhoto => 'Add a photo';
+
+  @override
+  String get zoomIn => 'Expand';
+
+  @override
+  String get maxPhotoSize => 'Max ~750 KB';
+
+  @override
+  String get imageTooHeavy =>
+      'Image is too large. Please select a smaller image (max ~750 KB).';
+
+  @override
+  String get errorLoadingImage => 'Error loading image';
+
+  @override
+  String get boostInFeed => 'Feature post';
+
+  @override
+  String get boostInFeedDesc => 'Your joke will be boosted in the feed';
+
+  @override
+  String get accountRestrictedMsg =>
+      'Your account is restricted. You cannot publish at this time.';
+
+  @override
+  String get adminDashboard => 'Admin Dashboard';
+
+  @override
+  String get adminPosts => 'Posts';
+
+  @override
+  String get adminUsers => 'Users';
+
+  @override
+  String get adminReported => 'Reported';
+
+  @override
+  String get noReportedContent => 'No reported content 🎉';
+
+  @override
+  String get aiRecommended => 'Recommended for you';
+
+  @override
+  String get aiCuratedForYou => 'Specially curated for your taste';
+
+  @override
+  String get reportJokeTitle => 'Report this joke';
+
+  @override
+  String get reportJokeSubtitle =>
+      'Select a reason. This joke will no longer be shown in your feed.';
+
+  @override
+  String get reportReasonInappropriate => 'Inappropriate or offensive content';
+
+  @override
+  String get reportReasonHarassment => 'Harassment or hate speech';
+
+  @override
+  String get reportReasonSpam => 'Spam or misleading content';
+
+  @override
+  String get reportReasonCopyright => 'Plagiarism or copyright violation';
+
+  @override
+  String get reportReasonOther => 'Other reason';
+
+  @override
+  String get reportCommentHint => 'Add details (optional)...';
+
+  @override
+  String get submitReport => 'Report & hide';
+
+  @override
+  String get jokeHiddenFromFeed => 'Joke reported and hidden from your feed 👍';
+
+  @override
+  String get welcomeUsernameTitle => 'Welcome to Komiko! 🎉';
+
+  @override
+  String get welcomeUsernameSubtitle =>
+      'Here is your username. You can keep it or change it now:';
+
+  @override
+  String get usernameFieldLabel => 'Your username';
+
+  @override
+  String get usernameFieldHint => 'E.g. Alex, LaughMaster...';
+
+  @override
+  String get usernameEmptyError => 'Please enter a valid username';
+
+  @override
+  String get continueButton => 'Let\'s go!';
+
+  @override
+  String get usernameConfirmed => 'Profile ready! Welcome aboard!';
+
+  @override
+  String get tutorialStepFeedTitle => 'The News Feed';
+
+  @override
+  String get tutorialStepFeedDesc =>
+      'Discover the best jokes curated for you. Like, comment, and share your favorites as beautiful images!';
+
+  @override
+  String get tutorialStepProposeTitle => 'Share a Joke';
+
+  @override
+  String get tutorialStepProposeDesc =>
+      'Make the community laugh! Tap the + button to publish your own bilingual jokes.';
+
+  @override
+  String get tutorialStepCategoriesTitle => 'Themed Categories';
+
+  @override
+  String get tutorialStepCategoriesDesc =>
+      'Explore jokes by topic: Toto, Geek, Dark humor, Short jokes, Animals, and much more!';
+
+  @override
+  String get tutorialStepFavoritesTitle => 'Your Offline Favorites';
+
+  @override
+  String get tutorialStepFavoritesDesc =>
+      'Easily find all the jokes you loved to read them again even without an internet connection.';
+
+  @override
+  String get tutorialStepSettingsTitle => 'Settings & Profile';
+
+  @override
+  String get tutorialStepSettingsDesc =>
+      'Switch between French and English, toggle dark mode, edit your profile, and discover Komiko Pro!';
+
+  @override
+  String get tutorialNext => 'Next';
+
+  @override
+  String get tutorialFinish => 'Finish tour';
+
+  @override
+  String get tutorialSkip => 'Skip';
+
+  @override
+  String get replayTutorial => 'Replay tutorial';
+
+  @override
+  String get enhanceJokeAi => 'Komiko Assistant ✨';
+
+  @override
+  String get enhanceJokeAiTitle => 'Komiko Assistant ✨';
+
+  @override
+  String get enhanceJokeAiSubtitle =>
+      'How would you like to transform your joke?';
+
+  @override
+  String get enhanceEmptyWarning =>
+      'Please write a draft of your joke first so Komiko Assistant can enhance it!';
+
+  @override
+  String get enhanceOptionFunnier => 'Make it funnier';
+
+  @override
+  String get enhanceOptionFunnierDesc =>
+      'Adds hilarious comedic twists and details';
+
+  @override
+  String get enhanceOptionPunchy => 'Shorter & punchier';
+
+  @override
+  String get enhanceOptionPunchyDesc => 'Cuts the fluff for instant impact';
+
+  @override
+  String get enhanceOptionPunchline => 'Explosive punchline';
+
+  @override
+  String get enhanceOptionPunchlineDesc =>
+      'Crafts an unexpected, unforgettable finish';
+
+  @override
+  String get enhanceOptionClean => 'Refine & polish';
+
+  @override
+  String get enhanceOptionCleanDesc =>
+      'Flawless grammar and smooth comedic timing';
+
+  @override
+  String get enhanceOptionCrazy => 'Absurd & wacky';
+
+  @override
+  String get enhanceOptionCrazyDesc => 'Offbeat tone and delightful surprises';
+
+  @override
+  String get enhanceOptionDark => 'Dark & sarcastic humor';
+
+  @override
+  String get enhanceOptionDarkDesc => 'Edgy, cynical and biting punchline';
+
+  @override
+  String get aiGeneratingProposal =>
+      'Komiko Assistant is polishing your joke...';
+
+  @override
+  String get applyAiSuggestion => 'Apply to my joke';
+
+  @override
+  String get tryAnotherStyle => 'Try another style';
+
+  @override
+  String get originalVersion => 'Original version';
+
+  @override
+  String get enhancedVersion => 'Enhanced version';
+
+  @override
+  String freeUsesLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count free trials remaining',
+      one: 'Last free trial!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get freeQuotaExhaustedPhoto =>
+      'You have used your 5 free photos. Upgrade to Komiko Pro for unlimited access!';
+
+  @override
+  String get freeQuotaExhaustedAssistant =>
+      'You have used your 5 free trials with Komiko Assistant. Upgrade to Pro for unlimited access!';
+
+  @override
+  String get freeBadge => 'Free';
+
+  @override
+  String freeTrialsRemaining(int count) {
+    return '$count/5';
+  }
 }

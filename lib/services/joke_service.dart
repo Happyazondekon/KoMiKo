@@ -2,9 +2,115 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:komiko/models/joke_model.dart';
 import 'package:komiko/models/comment_model.dart';
+import 'package:komiko/services/content_moderation_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class JokeService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final _moderation = ContentModerationService.instance;
+
+  // ── Feed intelligent (style Facebook/Instagram/X + IA Groq) ──────────────────────────
+
+  /// Calcule le score de pertinence d'une blague pour le feed.
+  ///
+  /// Score = (likesCount × 3) + (commentsCount × 2) + RecenceBonus
+  ///         + FeaturedBonus + VerifiedAuthorBonus + OwnPostBonus + CategoryAffinityBonus
+  ///
+  /// - RecenceBonus : max(0, 100 - heures_depuis_publication × 2)
+  /// - FeaturedBonus : +500 si la blague est mise en vedette
+  /// - VerifiedAuthorBonus : +250 pour valoriser les créateurs vérifiés & Pro
+  /// - OwnPostBonus : +3000 si c'est le dernier post de l'utilisateur connecté (apparaît en premier)
+  /// - CategoryAffinityBonus : +350 si la catégorie correspond aux goûts habituels de l'utilisateur
+  double _computeScore(
+    Joke joke, {
+    String? currentUserId,
+    String? lastOwnPostId,
+    Set<String>? favoriteCategories,
+  }) {
+    final hoursSincePost = DateTime.now().difference(joke.createdAt).inHours;
+    final recenceBonus = (100 - hoursSincePost * 2).clamp(0, 100).toDouble();
+    final featuredBonus = joke.isFeatured ? 500.0 : 0.0;
+    final verifiedBonus = joke.isAuthorVerified ? 250.0 : 0.0;
+    final ownPostBonus = (lastOwnPostId != null && joke.id == lastOwnPostId) ? 3000.0 : 0.0;
+    final categoryAffinityBonus =
+        (favoriteCategories != null && favoriteCategories.contains(joke.category))
+            ? 350.0
+            : 0.0;
+
+    return (joke.likesCount * 3) +
+        (joke.commentsCount * 2) +
+        recenceBonus +
+        featuredBonus +
+        verifiedBonus +
+        ownPostBonus +
+        categoryAffinityBonus;
+  }
+
+  /// Feed principal — retourne les blagues triées par score Komiko et affinité IA.
+  ///
+  /// - Récupère les 200 dernières blagues
+  /// - Déduit les catégories préférées de l'utilisateur d'après ses likes
+  /// - Filtre les blagues masquées par l'admin
+  /// - Met en avant les posts des créateurs vérifiés et Pro
+  /// - Le dernier post de l'utilisateur connecté apparaît toujours en premier
+  Stream<List<Joke>> feedStream({String? currentUserId}) {
+    return _db
+        .collection('jokes')
+        .orderBy('createdAt', descending: true)
+        .limit(200)
+        .snapshots()
+        .asyncMap((snapshot) async {
+      String? lastOwnPostId;
+      Set<String> favoriteCategories = {};
+
+      if (currentUserId != null && currentUserId.isNotEmpty) {
+        // 1. Trouver le dernier post de l'utilisateur
+        final ownJokes = snapshot.docs
+            .where((d) => (d.data()['authorId'] as String?) == currentUserId)
+            .toList();
+        if (ownJokes.isNotEmpty) {
+          lastOwnPostId = ownJokes.first.id;
+        }
+
+        // 2. Déduire les préférences d'humour de l'utilisateur d'après ses blagues likées
+        final userLikedJokes = snapshot.docs.where((d) {
+          final likedBy = List<String>.from(d.data()['likedBy'] as List? ?? []);
+          return likedBy.contains(currentUserId);
+        });
+        for (final doc in userLikedJokes) {
+          final cat = doc.data()['category'] as String?;
+          if (cat != null && cat.isNotEmpty) {
+            favoriteCategories.add(cat);
+          }
+        }
+      }
+
+      final locallyHidden = await getLocallyHiddenJokeIds();
+      final jokes = snapshot.docs
+          .map(Joke.fromFirestore)
+          .where((j) => !j.isHidden && !locallyHidden.contains(j.id))
+          .toList();
+
+      // Trier par score décroissant en appliquant l'affinité personnalisée
+      jokes.sort((a, b) {
+        final scoreA = _computeScore(
+          a,
+          currentUserId: currentUserId,
+          lastOwnPostId: lastOwnPostId,
+          favoriteCategories: favoriteCategories,
+        );
+        final scoreB = _computeScore(
+          b,
+          currentUserId: currentUserId,
+          lastOwnPostId: lastOwnPostId,
+          favoriteCategories: favoriteCategories,
+        );
+        return scoreB.compareTo(scoreA);
+      });
+
+      return jokes;
+    });
+  }
 
   // ── Joke streams ──────────────────────────────────────────────────
 
@@ -122,12 +228,122 @@ class JokeService {
 
   // ── Joke CRUD ───────────────────────────────────────────────────
 
+  /// Ajoute une blague avec censure automatique du contenu.
   Future<void> addJoke(Joke joke) async {
-    await _db.collection('jokes').add(joke.toMap());
+    // Appliquer la censure sur le contenu avant publication
+    final censoredJoke = joke.copyWith(
+      contentFr: _moderation.censorText(joke.contentFr),
+      punchlineFr: joke.punchlineFr != null
+          ? _moderation.censorText(joke.punchlineFr!)
+          : null,
+      contentEn: joke.contentEn != null
+          ? _moderation.censorText(joke.contentEn!)
+          : null,
+      punchlineEn: joke.punchlineEn != null
+          ? _moderation.censorText(joke.punchlineEn!)
+          : null,
+    );
+    await _db.collection('jokes').add(censoredJoke.toMap());
   }
 
   Future<void> deleteJoke(String jokeId) async {
     await _db.collection('jokes').doc(jokeId).delete();
+  }
+
+  // ── Actions admin ──────────────────────────────────────────────
+
+  /// Met en vedette / retire une blague (admin uniquement).
+  Future<void> setFeatured(String jokeId, bool featured) async {
+    await _db.collection('jokes').doc(jokeId).update({'isFeatured': featured});
+  }
+
+  /// Cache / affiche une blague (admin uniquement).
+  Future<void> setHidden(String jokeId, bool hidden) async {
+    await _db.collection('jokes').doc(jokeId).update({'isHidden': hidden});
+  }
+
+  // ── Signalement & Masquage local ──────────────────────────────────────────
+
+  static const String _hiddenJokesKey = 'komiko_hidden_joke_ids';
+
+  /// Mémorise localement qu'une blague doit être masquée du feed de l'utilisateur.
+  static Future<void> hideJokeLocally(String jokeId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final list = prefs.getStringList(_hiddenJokesKey) ?? [];
+      if (!list.contains(jokeId)) {
+        list.add(jokeId);
+        await prefs.setStringList(_hiddenJokesKey, list);
+      }
+    } catch (_) {}
+  }
+
+  /// Récupère la liste des blagues masquées localement par l'utilisateur.
+  static Future<List<String>> getLocallyHiddenJokeIds() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getStringList(_hiddenJokesKey) ?? [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /// Signale une blague avec motif et commentaire optionnel, et la masque du feed.
+  Future<void> reportJoke({
+    required String jokeId,
+    required String userId,
+    required String reason,
+    String? comment,
+  }) async {
+    // 1. Incrémenter reportCount sur la blague
+    try {
+      await _db
+          .collection('jokes')
+          .doc(jokeId)
+          .update({'reportCount': FieldValue.increment(1)});
+    } catch (e) {
+      debugPrint('Error updating joke reportCount: $e');
+    }
+
+    // 2. Enregistrer le détail du signalement pour l'admin
+    try {
+      await _db.collection('reports').add({
+        'jokeId': jokeId,
+        'reporterId': userId,
+        'reason': reason,
+        'comment': comment?.trim() ?? '',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      debugPrint('Error saving report detail: $e');
+    }
+
+    // 3. Masquer localement du feed
+    await hideJokeLocally(jokeId);
+  }
+
+  /// Récupère les blagues signalées (reportCount > 0), triées par signalements.
+  Stream<List<Joke>> get reportedJokesStream {
+    return _db
+        .collection('jokes')
+        .where('reportCount', isGreaterThan: 0)
+        .orderBy('reportCount', descending: true)
+        .limit(50)
+        .snapshots()
+        .map((s) => s.docs.map(Joke.fromFirestore).toList());
+  }
+
+  /// Récupère les blagues avec photo.
+  Stream<List<Joke>> get jokesWithImageStream {
+    return _db
+        .collection('jokes')
+        .orderBy('createdAt', descending: true)
+        .limit(100)
+        .snapshots()
+        .map((s) => s.docs
+            .map(Joke.fromFirestore)
+            .where((j) => j.imageBase64 != null && j.imageBase64!.isNotEmpty)
+            .toList());
   }
 
   // ── Interactions ────────────────────────────────────────────────
@@ -165,11 +381,22 @@ class JokeService {
 
   /// Adds a comment and increments commentsCount atomically via WriteBatch.
   Future<void> addComment(Comment comment) async {
+    // Censurer le commentaire
+    final censoredComment = Comment(
+      id: comment.id,
+      jokeId: comment.jokeId,
+      authorId: comment.authorId,
+      authorName: comment.authorName,
+      authorAvatarUrl: comment.authorAvatarUrl,
+      content: _moderation.censorText(comment.content),
+      createdAt: comment.createdAt,
+    );
+
     final batch = _db.batch();
     final commentRef = _db.collection('comments').doc();
-    final jokeRef = _db.collection('jokes').doc(comment.jokeId);
+    final jokeRef = _db.collection('jokes').doc(censoredComment.jokeId);
 
-    batch.set(commentRef, comment.toMap());
+    batch.set(commentRef, censoredComment.toMap());
     batch.update(jokeRef, {'commentsCount': FieldValue.increment(1)});
 
     await batch.commit();

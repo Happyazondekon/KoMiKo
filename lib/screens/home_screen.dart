@@ -1,11 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/models/joke_model.dart';
 import 'package:komiko/providers/theme_provider.dart';
+import 'package:komiko/screens/admin_dashboard_screen.dart';
 import 'package:komiko/screens/edit_profile_screen.dart';
 import 'package:komiko/screens/joke_detail_screen.dart';
 import 'package:komiko/screens/my_jokes_screen.dart';
+import 'package:komiko/screens/pro_upgrade_screen.dart';
 import 'package:komiko/screens/propose_joke_screen.dart';
 import 'package:komiko/services/auth_service.dart';
 import 'package:komiko/services/joke_service.dart';
@@ -27,6 +29,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _refreshKey = GlobalKey<RefreshIndicatorState>();
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final langCode = Localizations.localeOf(context).languageCode;
     final jokeService = JokeService();
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final currentUser = context.watch<UserService>().currentUser;
 
     return Scaffold(
       drawer: const KomikoDrawer(),
@@ -97,171 +102,196 @@ class _HomeScreenState extends State<HomeScreen> {
         tooltip: l10n.proposeJoke,
         child: const Icon(Icons.add_rounded, size: 28),
       ),
-      body: CustomScrollView(
-        slivers: [
-          // ── Notification Permission Prompt ─────────────────────────
-          SliverToBoxAdapter(
-            child: FutureBuilder<PermissionStatus>(
-              future: Permission.notification.status,
-              builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data != PermissionStatus.granted) {
-                  return _NotificationPromptCard(l10n: l10n, isDark: isDark);
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-          ),
-          // ── A LA UNE hero card ─────────────────────────────────────
-          SliverToBoxAdapter(
-            child: StreamBuilder<Joke?>(
-              stream: jokeService.dailyJokeStream,
-              builder: (context, snapshot) {
-                final joke = snapshot.data;
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                  child: GestureDetector(
-                    onTap: joke != null
-                        ? () => Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    JokeDetailScreen(joke: joke)))
-                        : null,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      padding: const EdgeInsets.all(20),
-                      child: joke == null
-                          ? const Center(
-                              child: Padding(
-                                padding:
-                                    EdgeInsets.symmetric(vertical: 24),
-                                child: CircularProgressIndicator(
-                                    color: Colors.black54),
-                              ),
-                            )
-                          : _DailyJokeContent(
-                              joke: joke, langCode: langCode, l10n: l10n),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-
-          // ── Section header ─────────────────────────────────────────
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.bestJokes,
-                          style: GoogleFonts.poppins(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                            color: isDark
-                                ? AppColors.textPrimaryDark
-                                : AppColors.textPrimaryLight,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Text('✨', style: TextStyle(fontSize: 20)),
-                ],
+      body: RefreshIndicator(
+        key: _refreshKey,
+        color: AppColors.primary,
+        onRefresh: () async {
+          // Le stream Firestore se rafraîchit automatiquement.
+          // On force juste un court délai pour l'animation.
+          await Future.delayed(const Duration(milliseconds: 800));
+        },
+        child: CustomScrollView(
+          slivers: [
+            // ── Notification Permission Prompt ─────────────────────────
+            SliverToBoxAdapter(
+              child: FutureBuilder<PermissionStatus>(
+                future: Permission.notification.status,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data != PermissionStatus.granted) {
+                    return _NotificationPromptCard(l10n: l10n, isDark: isDark);
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
             ),
-          ),
-
-          // ── Best jokes list ─────────────────────────────────────────
-          StreamBuilder<List<Joke>>(
-            stream: jokeService.bestJokesStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return SliverToBoxAdapter(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Text('${l10n.error}: ${snapshot.error}'),
+            // ── A LA UNE hero card ─────────────────────────────────────
+            SliverToBoxAdapter(
+              child: StreamBuilder<Joke?>(
+                stream: jokeService.dailyJokeStream,
+                builder: (context, snapshot) {
+                  final joke = snapshot.data;
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                    child: GestureDetector(
+                      onTap: joke != null
+                          ? () => Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      JokeDetailScreen(joke: joke)))
+                          : null,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        padding: const EdgeInsets.all(20),
+                        child: joke == null
+                            ? const Center(
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(vertical: 24),
+                                  child: CircularProgressIndicator(
+                                      color: Colors.black54),
+                                ),
+                              )
+                            : _DailyJokeContent(
+                                joke: joke, langCode: langCode, l10n: l10n),
+                      ),
                     ),
-                  ),
-                );
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SliverToBoxAdapter(
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(40),
-                      child: CircularProgressIndicator(
-                          color: AppColors.primary),
-                    ),
-                  ),
-                );
-              }
-              final jokes = snapshot.data ?? [];
-              if (jokes.isEmpty) {
-                return SliverToBoxAdapter(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(40),
-                      child: Text(l10n.noJokes),
-                    ),
-                  ),
-                );
-              }
-              return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => JokeCard(joke: jokes[index]),
-                  childCount: jokes.length,
-                ),
-              );
-            },
-          ),
-
-          // ── Random joke button ──────────────────────────────────────
-          SliverToBoxAdapter(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              child: BubbleButton(
-                onTap: () async {
-                  final random = await jokeService.getRandomJoke();
-                  if (random != null && context.mounted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => JokeDetailScreen(joke: random)),
-                    );
-                  }
+                  );
                 },
-                label: l10n.randomJoke,
-                fullWidth: true,
+              ),
+            ),
+
+            // ── Section header ─────────────────────────────────────────
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.casino_rounded, size: 20, color: Colors.black),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.randomJoke,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16,
-                        color: Colors.black,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.feedForYou,
+                            style: GoogleFonts.poppins(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: isDark
+                                  ? AppColors.textPrimaryDark
+                                  : AppColors.textPrimaryLight,
+                            ),
+                          ),
+                          Text(
+                            l10n.feedSelectedForYou,
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: AppColors.textSecondaryDark,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 8)),
-        ],
+
+            // ── Smart Feed ─────────────────────────────────────────────
+            StreamBuilder<List<Joke>>(
+              stream: jokeService.feedStream(currentUserId: currentUser?.uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(32),
+                        child: Text('${l10n.error}: ${snapshot.error}'),
+                      ),
+                    ),
+                  );
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(40),
+                        child: CircularProgressIndicator(
+                            color: AppColors.primary),
+                      ),
+                    ),
+                  );
+                }
+                final jokes = snapshot.data ?? [];
+                if (jokes.isEmpty) {
+                  return SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(40),
+                        child: Text(l10n.noJokes),
+                      ),
+                    ),
+                  );
+                }
+                final isProUser = currentUser?.hasActivePro ?? false;
+                final showAiCard = !isProUser && jokes.length >= 3;
+                final totalCount = showAiCard ? jokes.length + 1 : jokes.length;
+
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      if (showAiCard && index == 3) {
+                        return const _ProPromoFeedCard();
+                      }
+                      final jokeIndex = (showAiCard && index > 3) ? index - 1 : index;
+                      return JokeCard(joke: jokes[jokeIndex]);
+                    },
+                    childCount: totalCount,
+                  ),
+                );
+              },
+            ),
+
+            // ── Random joke button ──────────────────────────────────────
+            SliverToBoxAdapter(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                child: BubbleButton(
+                  onTap: () async {
+                    final random = await jokeService.getRandomJoke();
+                    if (random != null && context.mounted) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => JokeDetailScreen(joke: random)),
+                      );
+                    }
+                  },
+                  label: l10n.randomJoke,
+                  fullWidth: true,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.casino_rounded, size: 20, color: Colors.black),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.randomJoke,
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 8)),
+          ],
+        ),
       ),
     );
   }
@@ -592,6 +622,42 @@ class KomikoDrawer extends StatelessWidget {
                     cardBg: cardBg,
                     border: border,
                   ),
+                  // ── Komiko Pro (élément visible pour les non-Pro) ────
+                  if (!(user?.hasActivePro ?? false))
+                    _DrawerTile(
+                      icon: Icons.workspace_premium_rounded,
+                      label: l10n.komikoProBadge,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const ProUpgradeScreen()),
+                        );
+                      },
+                      cardBg: AppColors.primary.withValues(alpha: 0.08),
+                      border: AppColors.primary.withValues(alpha: 0.3),
+                      iconColor: AppColors.primary,
+                      labelColor: AppColors.primary,
+                    ),
+                  // ── Admin Dashboard (visible uniquement pour Komiko) ────
+                  if (user?.role == 'komiko' || user?.uid == 'UK42noQ7qiVt63v3PHHywdZQajS2')
+                    _DrawerTile(
+                      icon: Icons.admin_panel_settings_rounded,
+                      label: l10n.adminDashboard,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const AdminDashboardScreen()),
+                        );
+                      },
+                      cardBg: Colors.purple.withValues(alpha: 0.08),
+                      border: Colors.purple.withValues(alpha: 0.3),
+                      iconColor: Colors.purple,
+                      labelColor: Colors.purple,
+                    ),
                   _DrawerTile(
                     icon: isDark
                         ? Icons.dark_mode_rounded
@@ -673,7 +739,7 @@ class KomikoDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(12),
               child: Text(
-                'Komiko v1.0',
+                'Komiko v1.1.0',
                 style: GoogleFonts.poppins(
                     fontSize: 11,
                     color: AppColors.textSecondaryDark),
@@ -861,6 +927,120 @@ class JokeSearchDelegate extends SearchDelegate<Joke?> {
           itemBuilder: (context, i) => JokeCard(joke: results[i]),
         );
       },
+    );
+  }
+}
+
+// ── Carte promotionnelle Pro dans le Feed ────────────────────────────────────
+
+class _ProPromoFeedCard extends StatefulWidget {
+  const _ProPromoFeedCard();
+
+  @override
+  State<_ProPromoFeedCard> createState() => _ProPromoFeedCardState();
+}
+
+class _ProPromoFeedCardState extends State<_ProPromoFeedCard> {
+  bool _dismissed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_dismissed) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primary.withValues(alpha: 0.18),
+            const Color(0xFFFFD700).withValues(alpha: 0.08),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.4),
+          width: 1.5,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.workspace_premium_rounded, size: 13, color: Colors.black),
+                      const SizedBox(width: 4),
+                      Text(
+                        l10n.komikoPro,
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () => setState(() => _dismissed = true),
+                  child: Icon(Icons.close_rounded,
+                      size: 16,
+                      color: isDark ? AppColors.textSecondaryDark : Colors.grey[600]),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              l10n.proUpgradeBannerSubtitle,
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProUpgradeScreen()),
+                );
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.proUpgradeBannerTitle,
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.arrow_forward_rounded, size: 14, color: AppColors.primary),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

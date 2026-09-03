@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +13,8 @@ import 'package:komiko/services/rating_service.dart';
 import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
 import 'package:komiko/utils/joke_categories.dart';
+import 'package:komiko/widgets/full_screen_image_viewer.dart';
+import 'package:komiko/widgets/report_joke_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -30,6 +32,7 @@ class JokeCard extends StatefulWidget {
 class _JokeCardState extends State<JokeCard> {
   final _screenshotController = ScreenshotController();
   bool _isSharing = false;
+  bool _isReportedAndHidden = false;
 
   Future<void> _shareJokeAsImage() async {
     setState(() => _isSharing = true);
@@ -80,6 +83,10 @@ class _JokeCardState extends State<JokeCard> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isReportedAndHidden) {
+      return const SizedBox.shrink();
+    }
+
     final joke = widget.joke;
     final l10n = AppLocalizations.of(context)!;
     final langCode = Localizations.localeOf(context).languageCode;
@@ -102,15 +109,44 @@ class _JokeCardState extends State<JokeCard> {
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkCard : AppColors.lightCard,
           borderRadius: BorderRadius.circular(20),
-          border: isDark
-              ? Border.all(color: AppColors.darkBorder, width: 1)
-              : Border.all(color: AppColors.lightBorder, width: 1),
+          border: joke.isFeatured
+              ? Border.all(color: AppColors.primary.withValues(alpha: 0.6), width: 1.5)
+              : (isDark
+                  ? Border.all(color: AppColors.darkBorder, width: 1)
+                  : Border.all(color: AppColors.lightBorder, width: 1)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ── Bandeau "En vedette" ───────────────────────────────────
+              if (joke.isFeatured) ...
+                [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.star_rounded, color: AppColors.primary, size: 14),
+                        const SizedBox(width: 4),
+                        Text(
+                          l10n.featured,
+                          style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               // ── Author row ──────────────────────────────────────────
               GestureDetector(
                 onTap: () => Navigator.push(
@@ -217,6 +253,61 @@ class _JokeCardState extends State<JokeCard> {
                     ),
                   ),
                 ],
+              // ── Image base64 (Pro) ────────────────────────────────────
+              if (joke.imageBase64 != null && joke.imageBase64!.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                GestureDetector(
+                  onTap: () => FullScreenImageViewer.open(
+                    context,
+                    base64String: joke.imageBase64!,
+                    tag: 'joke_card_image_${joke.id}',
+                  ),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Hero(
+                          tag: 'joke_card_image_${joke.id}',
+                          child: Image.memory(
+                            base64Decode(joke.imageBase64!),
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 200,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 8,
+                        right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.65),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.fullscreen_rounded,
+                                  color: Colors.white, size: 16),
+                              const SizedBox(width: 4),
+                              Text(
+                                l10n.zoomIn,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 14),
               // ── Actions ───────────────────────────────────────────────
               Row(
@@ -259,6 +350,35 @@ class _JokeCardState extends State<JokeCard> {
                     count: joke.commentsCount,
                     color: AppColors.blue,
                   ),
+                  const Spacer(),
+                  // Bouton signaler
+                  if (userId.isNotEmpty && joke.authorId != userId)
+                    Tooltip(
+                      message: l10n.reportJoke,
+                      child: GestureDetector(
+                        onTap: () async {
+                          final reported = await ReportJokeDialog.show(
+                            context,
+                            jokeId: joke.id,
+                            userId: userId,
+                          );
+                          if (reported == true && context.mounted) {
+                            setState(() => _isReportedAndHidden = true);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.jokeHiddenFromFeed),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+                          }
+                        },
+                        child: Icon(
+                          Icons.flag_outlined,
+                          size: 18,
+                          color: isDark ? Colors.grey[600] : Colors.grey[400],
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ],

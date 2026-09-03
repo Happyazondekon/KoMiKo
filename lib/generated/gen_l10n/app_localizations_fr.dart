@@ -622,4 +622,335 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get readFullOnKomiko => 'Découvrez la suite sur l\'app !';
+
+  @override
+  String get feedForYou => 'Pour toi';
+
+  @override
+  String get feedSelectedForYou => 'Sélectionné pour vous';
+
+  @override
+  String get featured => 'En vedette';
+
+  @override
+  String get reportJoke => 'Signaler la blague';
+
+  @override
+  String get jokeReported => 'Blague signalée. Merci ! 💪';
+
+  @override
+  String get komikoPro => 'Komiko Pro';
+
+  @override
+  String get komikoProBadge => 'Komiko Pro ✨';
+
+  @override
+  String get komikoProUnlock => 'Débloquez toute la puissance de Komiko';
+
+  @override
+  String get proFeaturePhotoTitle => 'Photos dans vos blagues';
+
+  @override
+  String get proFeaturePhotoDesc =>
+      'Réservé aux membres Pro & Vérifiés • Cliquez pour débloquer';
+
+  @override
+  String get proFeatureBoostTitle => 'Posts mis en avant';
+
+  @override
+  String get proFeatureBoostDesc =>
+      'Votre blague booste dans le feed de tous les utilisateurs';
+
+  @override
+  String get proFeatureBadgeTitle => 'Badge Pro vérifié';
+
+  @override
+  String get proFeatureBadgeDesc =>
+      'Affichez votre statut avec le badge ✓ doré sur vos posts';
+
+  @override
+  String get proFeaturePriorityTitle => 'Priorité dans le feed';
+
+  @override
+  String get proFeaturePriorityDesc =>
+      'Vos blagues récentes remontent naturellement plus haut';
+
+  @override
+  String get planMonthly => 'Mensuel';
+
+  @override
+  String get planAnnual => 'Annuel';
+
+  @override
+  String get planPerMonth => '/ mois';
+
+  @override
+  String get planPerYear => '/ an';
+
+  @override
+  String get savePercent => 'Économisez ~37% ✨';
+
+  @override
+  String get popular => 'Populaire';
+
+  @override
+  String get comingSoon => 'Bientôt';
+
+  @override
+  String get restorePurchases => 'Restaurer mes achats';
+
+  @override
+  String get autoRenewDisclaimer =>
+      'Abonnement renouvelé automatiquement. Annulable à tout moment.';
+
+  @override
+  String get proUpgradeBannerTitle => 'Passez à Komiko Pro ✨';
+
+  @override
+  String get proUpgradeBannerSubtitle =>
+      'Obtenez le badge vérifié et boostez vos blagues';
+
+  @override
+  String get addPhoto => 'Ajouter une photo';
+
+  @override
+  String get zoomIn => 'Agrandir';
+
+  @override
+  String get maxPhotoSize => 'Max ~750 Ko';
+
+  @override
+  String get imageTooHeavy =>
+      'Image trop lourde. Veuillez choisir une image plus petite (max ~750 Ko).';
+
+  @override
+  String get errorLoadingImage => 'Erreur lors du chargement de l\'image';
+
+  @override
+  String get boostInFeed => 'Mettre en avant';
+
+  @override
+  String get boostInFeedDesc => 'Votre blague sera boostée dans le feed';
+
+  @override
+  String get accountRestrictedMsg =>
+      'Votre compte est restreint. Vous ne pouvez pas publier pour le moment.';
+
+  @override
+  String get adminDashboard => 'Dashboard Admin';
+
+  @override
+  String get adminPosts => 'Posts';
+
+  @override
+  String get adminUsers => 'Utilisateurs';
+
+  @override
+  String get adminReported => 'Signalés';
+
+  @override
+  String get noReportedContent => 'Aucun contenu signalé 🎉';
+
+  @override
+  String get aiRecommended => 'Recommandé pour vous';
+
+  @override
+  String get aiCuratedForYou => 'Sélectionné spécialement selon vos goûts';
+
+  @override
+  String get reportJokeTitle => 'Signaler cette blague';
+
+  @override
+  String get reportJokeSubtitle =>
+      'Sélectionnez le motif. Cette blague ne vous sera plus montrée.';
+
+  @override
+  String get reportReasonInappropriate => 'Contenu inapproprié ou vulgaire';
+
+  @override
+  String get reportReasonHarassment => 'Harcèlement ou propos haineux';
+
+  @override
+  String get reportReasonSpam => 'Spam ou contenu indésirable';
+
+  @override
+  String get reportReasonCopyright => 'Plagiat ou atteinte aux droits';
+
+  @override
+  String get reportReasonOther => 'Autre motif';
+
+  @override
+  String get reportCommentHint => 'Précisez la raison (optionnel)...';
+
+  @override
+  String get submitReport => 'Signaler et masquer';
+
+  @override
+  String get jokeHiddenFromFeed => 'Blague signalée et masquée de votre fil 👍';
+
+  @override
+  String get welcomeUsernameTitle => 'Bienvenue sur Komiko ! 🎉';
+
+  @override
+  String get welcomeUsernameSubtitle =>
+      'Voici votre nom d\'utilisateur. Vous pouvez le garder ou le modifier dès maintenant :';
+
+  @override
+  String get usernameFieldLabel => 'Votre pseudo';
+
+  @override
+  String get usernameFieldHint => 'Ex: Alex, RieurDuNet...';
+
+  @override
+  String get usernameEmptyError => 'Veuillez entrer un pseudo valide';
+
+  @override
+  String get continueButton => 'C\'est parti !';
+
+  @override
+  String get usernameConfirmed => 'Profil prêt ! Bienvenue !';
+
+  @override
+  String get tutorialStepFeedTitle => 'Le fil d\'actualités';
+
+  @override
+  String get tutorialStepFeedDesc =>
+      'Découvrez les meilleures blagues sélectionnées pour vous. Likez, commentez et partagez vos préférées en belle image !';
+
+  @override
+  String get tutorialStepProposeTitle => 'Proposer une blague';
+
+  @override
+  String get tutorialStepProposeDesc =>
+      'Faites rire la communauté ! Appuyez sur le bouton + pour publier vos propres blagues bilingues.';
+
+  @override
+  String get tutorialStepCategoriesTitle => 'Catégories thématiques';
+
+  @override
+  String get tutorialStepCategoriesDesc =>
+      'Explorez les blagues par thème : Toto, Geek, Humour noir, Blagues courtes, Animaux et bien plus !';
+
+  @override
+  String get tutorialStepFavoritesTitle => 'Vos favoris hors-ligne';
+
+  @override
+  String get tutorialStepFavoritesDesc =>
+      'Retrouvez facilement toutes les blagues que vous avez aimées pour les relire même sans connexion internet.';
+
+  @override
+  String get tutorialStepSettingsTitle => 'Paramètres & Profil';
+
+  @override
+  String get tutorialStepSettingsDesc =>
+      'Basculez entre le Français et l\'Anglais, activez le mode sombre, modifiez votre profil et découvrez Komiko Pro !';
+
+  @override
+  String get tutorialNext => 'Suivant';
+
+  @override
+  String get tutorialFinish => 'Terminer la visite';
+
+  @override
+  String get tutorialSkip => 'Passer';
+
+  @override
+  String get replayTutorial => 'Revoir le didacticiel';
+
+  @override
+  String get enhanceJokeAi => 'Assistant Komiko ✨';
+
+  @override
+  String get enhanceJokeAiTitle => 'Assistant Komiko ✨';
+
+  @override
+  String get enhanceJokeAiSubtitle =>
+      'Comment voulez-vous transformer votre blague ?';
+
+  @override
+  String get enhanceEmptyWarning =>
+      'Écrivez d\'abord une ébauche de blague pour que l\'Assistant Komiko puisse la sublimer !';
+
+  @override
+  String get enhanceOptionFunnier => 'Rendre plus hilarante';
+
+  @override
+  String get enhanceOptionFunnierDesc =>
+      'Ajoute des tournures et détails ultra-comiques';
+
+  @override
+  String get enhanceOptionPunchy => 'Plus courte & percutante';
+
+  @override
+  String get enhanceOptionPunchyDesc =>
+      'Supprime les longueurs pour un impact direct';
+
+  @override
+  String get enhanceOptionPunchline => 'Punchline explosive';
+
+  @override
+  String get enhanceOptionPunchlineDesc =>
+      'Crée une chute inattendue et mémorable';
+
+  @override
+  String get enhanceOptionClean => 'Sublimer & corriger';
+
+  @override
+  String get enhanceOptionCleanDesc => 'Orthographe parfaite et style raffiné';
+
+  @override
+  String get enhanceOptionCrazy => 'Absurde & délirante';
+
+  @override
+  String get enhanceOptionCrazyDesc => 'Tonalité décalée et humour inattendu';
+
+  @override
+  String get enhanceOptionDark => 'Humour noir & grinçant';
+
+  @override
+  String get enhanceOptionDarkDesc =>
+      'Tonalité piquante, sarcastique et cynique';
+
+  @override
+  String get aiGeneratingProposal =>
+      'L\'Assistant Komiko peaufine votre blague...';
+
+  @override
+  String get applyAiSuggestion => 'Appliquer à ma blague';
+
+  @override
+  String get tryAnotherStyle => 'Essayer un autre style';
+
+  @override
+  String get originalVersion => 'Version originale';
+
+  @override
+  String get enhancedVersion => 'Version sublimée';
+
+  @override
+  String freeUsesLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count essais gratuits restants',
+      one: 'Dernier essai gratuit !',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get freeQuotaExhaustedPhoto =>
+      'Vous avez utilisé vos 5 photos gratuites. Passez à Komiko Pro pour continuer en illimité !';
+
+  @override
+  String get freeQuotaExhaustedAssistant =>
+      'Vous avez utilisé vos 5 essais gratuits avec l\'Assistant Komiko. Passez à Pro pour continuer en illimité !';
+
+  @override
+  String get freeBadge => 'Gratuit';
+
+  @override
+  String freeTrialsRemaining(int count) {
+    return '$count/5';
+  }
 }

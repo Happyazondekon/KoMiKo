@@ -1,7 +1,9 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/theme/app_colors.dart';
+import 'package:komiko/widgets/app_tutorial_tour_overlay.dart';
+import 'package:komiko/widgets/welcome_username_dialog.dart';
 import 'home_screen.dart';
 import 'categories_screen.dart';
 import 'favorites_screen.dart';
@@ -10,12 +12,19 @@ import 'settings_screen.dart';
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
+  /// Permet de relancer le didacticiel depuis n'importe quel écran (ex: Settings)
+  static void startTutorial(BuildContext context) {
+    final state = context.findAncestorStateOfType<_MainScreenState>();
+    state?.restartTutorial();
+  }
+
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  bool _showTutorial = false;
 
   final List<Widget> _screens = [
     const HomeScreen(),
@@ -25,32 +34,86 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkFirstTimeFlow();
+    });
+  }
+
+  Future<void> _checkFirstTimeFlow() async {
+    // 1. Étape nom d'utilisateur (si pas encore validé)
+    final needsUsername = await WelcomeUsernameDialog.shouldShow();
+    if (needsUsername && mounted) {
+      await WelcomeUsernameDialog.showIfNeeded(context);
+    }
+
+    // 2. Étape parcours didacticiel des onglets (si pas encore complété)
+    final needsTutorial = await AppTutorialTourOverlay.shouldShow();
+    if (needsTutorial && mounted) {
+      setState(() {
+        _currentIndex = 0;
+        _showTutorial = true;
+      });
+    }
+  }
+
+  void restartTutorial() {
+    setState(() {
+      _currentIndex = 0;
+      _showTutorial = true;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: _KomikoBottomNav(
-        currentIndex: _currentIndex,
-        isDark: isDark,
-        labels: [
-          l10n.home,
-          l10n.categories,
-          l10n.favorites,
-          l10n.settings,
-        ],
-        icons: const [
-          Icons.home_rounded,
-          Icons.grid_view_rounded,
-          Icons.favorite_rounded,
-          Icons.settings_rounded,
-        ],
-        onTap: (i) => setState(() => _currentIndex = i),
-      ),
+    return Stack(
+      children: [
+        Scaffold(
+          body: IndexedStack(
+            index: _currentIndex,
+            children: _screens,
+          ),
+          bottomNavigationBar: _KomikoBottomNav(
+            currentIndex: _currentIndex,
+            isDark: isDark,
+            labels: [
+              l10n.home,
+              l10n.categories,
+              l10n.favorites,
+              l10n.settings,
+            ],
+            icons: const [
+              Icons.home_rounded,
+              Icons.grid_view_rounded,
+              Icons.favorite_rounded,
+              Icons.settings_rounded,
+            ],
+            onTap: (i) {
+              if (!_showTutorial) {
+                setState(() => _currentIndex = i);
+              }
+            },
+          ),
+        ),
+
+        // Overlay didacticiel interactif
+        if (_showTutorial)
+          AppTutorialTourOverlay(
+            onTabChangeRequested: (tabIndex) {
+              setState(() => _currentIndex = tabIndex);
+            },
+            onFinished: () {
+              setState(() {
+                _showTutorial = false;
+                _currentIndex = 0;
+              });
+            },
+          ),
+      ],
     );
   }
 }

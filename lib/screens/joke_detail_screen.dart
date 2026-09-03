@@ -1,6 +1,8 @@
-﻿import 'dart:io';
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:komiko/widgets/full_screen_image_viewer.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/models/comment_model.dart';
 import 'package:komiko/models/joke_model.dart';
@@ -315,6 +317,61 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
                                 ],
                               ),
                             ),
+                          ),
+                        ),
+                      ],
+                      // ── Image attachée (si présente) ─────────────────────────
+                      if (joke.imageBase64 != null && joke.imageBase64!.isNotEmpty) ...[
+                        const SizedBox(height: 20),
+                        GestureDetector(
+                          onTap: () => FullScreenImageViewer.open(
+                            context,
+                            base64String: joke.imageBase64!,
+                            tag: 'joke_detail_image_${joke.id}',
+                          ),
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: Hero(
+                                  tag: 'joke_detail_image_${joke.id}',
+                                  child: Image.memory(
+                                    base64Decode(joke.imageBase64!),
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 240,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 10,
+                                right: 10,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.65),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.zoom_in_rounded,
+                                          color: Colors.white, size: 16),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        l10n.zoomIn,
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

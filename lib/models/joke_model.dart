@@ -21,6 +21,19 @@ class Joke {
   final int commentsCount;
   final List<String> likedBy;
 
+  // ── v1.1.0 fields ─────────────────────────────────────────────────────────
+  /// Base64-encoded image (Pro feature). Max ~750 KB before encoding → ~1 MB after.
+  final String? imageBase64;
+
+  /// Whether this joke is featured/boosted by admin or author (Pro).
+  final bool isFeatured;
+
+  /// Hidden by admin (moderation).
+  final bool isHidden;
+
+  /// Number of user reports on this joke.
+  final int reportCount;
+
   Joke({
     required this.id,
     required this.contentFr,
@@ -36,6 +49,10 @@ class Joke {
     this.likesCount = 0,
     this.commentsCount = 0,
     this.likedBy = const [],
+    this.imageBase64,
+    this.isFeatured = false,
+    this.isHidden = false,
+    this.reportCount = 0,
   });
 
   // ── Backward-compat getters ───────────────────────────────────────────────
@@ -82,6 +99,10 @@ class Joke {
       likesCount: data['likesCount'] as int? ?? 0,
       commentsCount: data['commentsCount'] as int? ?? 0,
       likedBy: List<String>.from(data['likedBy'] as List? ?? []),
+      imageBase64: data['imageBase64'] as String?,
+      isFeatured: data['isFeatured'] as bool? ?? false,
+      isHidden: data['isHidden'] as bool? ?? false,
+      reportCount: data['reportCount'] as int? ?? 0,
     );
   }
 
@@ -103,6 +124,52 @@ class Joke {
       'likesCount': likesCount,
       'commentsCount': commentsCount,
       'likedBy': likedBy,
+      'imageBase64': imageBase64,
+      'isFeatured': isFeatured,
+      'isHidden': isHidden,
+      'reportCount': reportCount,
     };
+  }
+
+  Joke copyWith({
+    String? id,
+    String? contentFr,
+    String? punchlineFr,
+    String? contentEn,
+    String? punchlineEn,
+    String? category,
+    String? authorName,
+    String? authorId,
+    String? authorAvatarUrl,
+    bool? isAuthorVerified,
+    DateTime? createdAt,
+    int? likesCount,
+    int? commentsCount,
+    List<String>? likedBy,
+    String? imageBase64,
+    bool? isFeatured,
+    bool? isHidden,
+    int? reportCount,
+  }) {
+    return Joke(
+      id: id ?? this.id,
+      contentFr: contentFr ?? this.contentFr,
+      punchlineFr: punchlineFr ?? this.punchlineFr,
+      contentEn: contentEn ?? this.contentEn,
+      punchlineEn: punchlineEn ?? this.punchlineEn,
+      category: category ?? this.category,
+      authorName: authorName ?? this.authorName,
+      authorId: authorId ?? this.authorId,
+      authorAvatarUrl: authorAvatarUrl ?? this.authorAvatarUrl,
+      isAuthorVerified: isAuthorVerified ?? this.isAuthorVerified,
+      createdAt: createdAt ?? this.createdAt,
+      likesCount: likesCount ?? this.likesCount,
+      commentsCount: commentsCount ?? this.commentsCount,
+      likedBy: likedBy ?? this.likedBy,
+      imageBase64: imageBase64 ?? this.imageBase64,
+      isFeatured: isFeatured ?? this.isFeatured,
+      isHidden: isHidden ?? this.isHidden,
+      reportCount: reportCount ?? this.reportCount,
+    );
   }
 }
