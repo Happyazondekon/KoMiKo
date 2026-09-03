@@ -1,5 +1,9 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// IDs des produits Google Play.
@@ -118,7 +122,13 @@ class PurchaseService extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final purchaseParam = PurchaseParam(productDetails: product);
+    late PurchaseParam purchaseParam;
+    if (Platform.isAndroid && product is GooglePlayProductDetails) {
+      purchaseParam = GooglePlayPurchaseParam(productDetails: product);
+    } else {
+      purchaseParam = PurchaseParam(productDetails: product);
+    }
+
     try {
       await _iap.buyNonConsumable(purchaseParam: purchaseParam);
     } catch (e) {
@@ -185,6 +195,21 @@ class PurchaseService extends ChangeNotifier {
         _isPro = true;
         _proExpiry = expiry;
         await _saveLocalProStatus(true, expiry);
+
+        // Mise à jour de Firestore pour attribuer tous les avantages Pro au compte utilisateur
+        final uid = FirebaseAuth.instance.currentUser?.uid;
+        if (uid != null) {
+          try {
+            await FirebaseFirestore.instance.collection('users').doc(uid).set({
+              'isPro': true,
+              'proExpiry': expiry != null ? Timestamp.fromDate(expiry) : null,
+            }, SetOptions(merge: true));
+            debugPrint('[PurchaseService] Profil Firestore $uid mis à jour avec le statut Pro !');
+          } catch (e) {
+            debugPrint('[PurchaseService] Erreur mise à jour Firestore: $e');
+          }
+        }
+
         _status = PurchaseStatus.purchasedPro;
       } else if (purchase.productID == KomikoProducts.boostPost) {
         _status = PurchaseStatus.purchasedBoost;

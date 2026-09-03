@@ -33,6 +33,7 @@ dependencies:
   screenshot: ^3.0.0
   path_provider: ^2.1.5
   in_app_purchase: ^3.3.0
+  in_app_purchase_android: ^0.5.2
   firebase_remote_config: ^5.5.0
   in_app_review: ^2.0.9
   package_info_plus: ^9.0.0
