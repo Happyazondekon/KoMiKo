@@ -46,14 +46,17 @@ class JokeEnhanceSheet extends StatefulWidget {
 class _JokeEnhanceSheetState extends State<JokeEnhanceSheet> {
   bool _isLoading = false;
   Map<String, String>? _enhancedResult;
+  String? _errorMessage;
 
   Future<void> _runEnhance(String tone) async {
     setState(() {
       _isLoading = true;
+      _errorMessage = null;
     });
     HapticFeedback.selectionClick();
 
     final langCode = Localizations.localeOf(context).languageCode;
+    final isFr = langCode == 'fr';
     final result = await GroqAiService.instance.enhanceJoke(
       content: widget.content,
       currentPunchline: widget.punchline,
@@ -65,6 +68,11 @@ class _JokeEnhanceSheetState extends State<JokeEnhanceSheet> {
       setState(() {
         _isLoading = false;
         _enhancedResult = result;
+        if (result == null) {
+          _errorMessage = isFr
+              ? "L'Assistant Komiko est momentanément indisponible. Vérifiez votre connexion internet ou réessayez dans un instant."
+              : "Komiko Assistant is temporarily unavailable. Please check your internet connection or try again shortly.";
+        }
       });
       if (result != null) {
         HapticFeedback.mediumImpact();
@@ -339,6 +347,33 @@ class _JokeEnhanceSheetState extends State<JokeEnhanceSheet> {
 
           // ── État 3 : Sélection du style ──────────────────────────────
           else ...[
+            if (_errorMessage != null) ...[
+              Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.error.withValues(alpha: 0.35)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.error_outline_rounded, color: AppColors.error, size: 20),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        _errorMessage!,
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          color: AppColors.error,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 440),
               child: ListView.separated(

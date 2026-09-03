@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:komiko/models/joke_model.dart';
@@ -7,15 +8,59 @@ import 'package:komiko/models/joke_model.dart';
 /// Service gérant les fonctionnalités d'Intelligence Artificielle de Komiko
 /// propulsé par l'API Groq (GPT OSS 20B / 120B).
 class GroqAiService {
-  /// Clé API Groq sécurisée : récupérée en priorité depuis --dart-define=GROQ_API_KEY
-  /// ou depuis Firebase Remote Config ('groq_api_key'), jamais committée en dur.
-  static String get _apiKey {
-    const envKey = String.fromEnvironment('GROQ_API_KEY');
-    if (envKey.isNotEmpty) return envKey;
+  static String? _cachedApiKey;
 
+  /// Récupère la clé API Groq de manière infaillible et réactive :
+  /// 1. Variable d'environnement de compilation (`--dart-define=GROQ_API_KEY=...`)
+  /// 2. Firebase Remote Config (`groq_api_key`)
+  /// 3. Document Firestore `config/ai` (`groq_api_key` ou `api_key`) disponible en temps réel
+  /// 4. Fetch forcé de Remote Config en cas de première ouverture
+  static Future<String> getApiKey() async {
+    if (_cachedApiKey != null && _cachedApiKey!.isNotEmpty) {
+      return _cachedApiKey!;
+    }
+
+    // 1. Variable d'environnement
+    const envKey = String.fromEnvironment('GROQ_API_KEY');
+    if (envKey.isNotEmpty) {
+      _cachedApiKey = envKey;
+      return envKey;
+    }
+
+    // 2. Remote Config (si déjà chargé)
     try {
       final remoteKey = FirebaseRemoteConfig.instance.getString('groq_api_key');
-      if (remoteKey.isNotEmpty) return remoteKey;
+      if (remoteKey.isNotEmpty) {
+        _cachedApiKey = remoteKey;
+        return remoteKey;
+      }
+    } catch (_) {}
+
+    // 3. Fallback temps réel Firestore (zéro délai de cache, instantané pour tous les users)
+    try {
+      final doc = await FirebaseFirestore.instance.collection('config').doc('ai').get();
+      if (doc.exists) {
+        final key = (doc.data()?['groq_api_key'] as String?)?.trim() ??
+            (doc.data()?['api_key'] as String?)?.trim();
+        if (key != null && key.isNotEmpty) {
+          _cachedApiKey = key;
+          debugPrint('[GroqAiService] Clé API Groq récupérée depuis Firestore config/ai.');
+          return key;
+        }
+      }
+    } catch (e) {
+      debugPrint('[GroqAiService] Firestore config/ai non disponible: $e');
+    }
+
+    // 4. Tentative fetchAndActivate forcé de Remote Config
+    try {
+      await FirebaseRemoteConfig.instance.fetchAndActivate();
+      final fetchedKey = FirebaseRemoteConfig.instance.getString('groq_api_key');
+      if (fetchedKey.isNotEmpty) {
+        _cachedApiKey = fetchedKey;
+        debugPrint('[GroqAiService] Clé API Groq récupérée après fetch RemoteConfig.');
+        return fetchedKey;
+      }
     } catch (_) {}
 
     return '';
@@ -64,16 +109,16 @@ class GroqAiService {
     required double temperature,
     required int maxTokens,
   }) async {
-    final key = _apiKey;
+    final key = await getApiKey();
     if (key.isEmpty) {
-      debugPrint('[GroqAiService] Clé API Groq non configurée (GROQ_API_KEY ou RemoteConfig).');
+      debugPrint('[GroqAiService] Clé API Groq introuvable (RemoteConfig ou Firestore config/ai non renseignés).');
       return null;
     }
 
     HttpClient? client;
     try {
-      client = HttpClient();
-      final request = await client.postUrl(Uri.parse(_apiUrl));
+      client = HttpClient()..connectionTimeout = const Duration(seconds: 15);
+      final request = await client.postUrl(Uri.parse(_apiUrl)).timeout(const Duration(seconds: 20));
       request.headers.set('Authorization', 'Bearer $key');
       request.headers.set('Content-Type', 'application/json; charset=utf-8');
 
