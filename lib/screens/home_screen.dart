@@ -34,10 +34,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _initNotifications();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _initNotifications();
+      }
+    });
   }
 
   Future<void> _initNotifications() async {
+    if (!mounted) return;
     // Schedule the 3 daily notifications on launch
     final l10n = AppLocalizations.of(context);
     if (l10n != null) {

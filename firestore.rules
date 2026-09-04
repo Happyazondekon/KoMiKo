@@ -32,9 +32,9 @@ service cloud.firestore {
         // Admin Komiko peut tout modifier (bannir, restreindre, vérifier, pro)
         isKomikoAdmin()
         ||
-        // Cas 1 : Propriétaire modifiant son profil (Bio, Nom, Avatar, etc.)
+        // Cas 1 : Propriétaire modifiant son profil (Bio, Nom, Avatar, Pro, etc.)
         (request.auth.uid == userId && (
-          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isVerified', 'role'])
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])
         ))
         ||
         // Cas 2 : Un tiers qui s'abonne (autorisé à modifier UNIQUEMENT followersCount)

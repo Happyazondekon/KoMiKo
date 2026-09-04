@@ -70,6 +70,11 @@ class UserModel {
     final rawEmail = data['email'] as String?;
     final isContact = rawEmail?.trim().toLowerCase() == 'contact@komiko.app';
 
+    final rawIsPro = isContact || (data['isPro'] as bool? ?? false);
+    final rawExpiry = (data['proExpiry'] as Timestamp?)?.toDate();
+    final hasActivePro = rawIsPro && (rawExpiry == null || rawExpiry.isAfter(DateTime.now()));
+    final isVerified = isContact || (data['isVerified'] as bool? ?? false) || hasActivePro;
+
     return UserModel(
       uid: doc.id,
       email: rawEmail,
@@ -81,12 +86,12 @@ class UserModel {
           ? (data['avatarUrl'] as String? ?? 'asset:assets/images/Komiko.webp')
           : data['avatarUrl'] as String?,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
-      isVerified: isContact || (data['isVerified'] as bool? ?? false),
+      isVerified: isVerified,
       role: isContact ? 'komiko' : (data['role'] as String? ?? 'user'),
       followersCount: data['followersCount'] as int? ?? 0,
       followingCount: data['followingCount'] as int? ?? 0,
-      isPro: isContact || (data['isPro'] as bool? ?? false),
-      proExpiry: (data['proExpiry'] as Timestamp?)?.toDate(),
+      isPro: rawIsPro,
+      proExpiry: rawExpiry,
       isRestricted: data['isRestricted'] as bool? ?? false,
       isBanned: data['isBanned'] as bool? ?? false,
       banReason: data['banReason'] as String?,

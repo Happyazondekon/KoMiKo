@@ -81,6 +81,13 @@ class PurchaseService extends ChangeNotifier {
 
     // Charger les produits
     await _loadProducts();
+
+    // Restaurer les achats pour synchroniser immédiatement un abonnement actif sur Google Play
+    try {
+      await _iap.restorePurchases();
+    } catch (e) {
+      debugPrint('[PurchaseService] Auto restore on init: $e');
+    }
   }
 
   Future<void> _loadLocalProStatus() async {
@@ -104,11 +111,6 @@ class PurchaseService extends ChangeNotifier {
             _isPro = true;
             _proExpiry = firestoreExpiry;
             await _saveLocalProStatus(true, firestoreExpiry);
-            if (data?['isVerified'] != true) {
-              await FirebaseFirestore.instance.collection('users').doc(uid).set({
-                'isVerified': true,
-              }, SetOptions(merge: true));
-            }
             JokeService().syncAuthorVerifiedJokes(uid, true);
             notifyListeners();
           }
@@ -230,7 +232,6 @@ class PurchaseService extends ChangeNotifier {
           try {
             await FirebaseFirestore.instance.collection('users').doc(uid).set({
               'isPro': true,
-              'isVerified': true,
               'proExpiry': expiry != null ? Timestamp.fromDate(expiry) : null,
             }, SetOptions(merge: true));
             debugPrint('[PurchaseService] Profil Firestore $uid mis à jour avec le statut Pro !');
@@ -245,6 +246,14 @@ class PurchaseService extends ChangeNotifier {
         _status = PurchaseStatus.purchasedBoost;
       }
     } else {
+      final errCode = purchase.error?.code ?? '';
+      final errMsg = purchase.error?.message.toLowerCase() ?? '';
+      // Si l'abonnement est déjà possédé sur Google Play (Billing responseCode 7), restaurer immédiatement
+      if (errCode == '7' || errCode.contains('7') || errMsg.contains('already') || errMsg.contains('owned')) {
+        debugPrint('[PurchaseService] Abonnement déjà possédé (code 7), restauration automatique...');
+        await _iap.restorePurchases();
+        return;
+      }
       _status = PurchaseStatus.error;
       _errorMessage = purchase.error?.message ?? 'Achat échoué';
     }
