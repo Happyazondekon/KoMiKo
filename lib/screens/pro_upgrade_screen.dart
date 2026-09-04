@@ -47,7 +47,7 @@ class _ProUpgradeScreenState extends State<ProUpgradeScreen> {
       // Recharger le profil utilisateur avec son statut Pro & badge vérifié
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid != null) {
-        context.read<UserService>().loadUserProfile(uid);
+        context.read<UserService>().loadUserProfile(uid, forceReload: true);
       }
 
       _purchaseService?.resetStatus();

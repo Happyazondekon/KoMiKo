@@ -150,6 +150,8 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
       builder: (context, snapshot) {
         final joke = snapshot.data ?? widget.joke;
         final isLiked = joke.likedBy.contains(user?.uid ?? '');
+        final isAuthorVerified = joke.isAuthorVerified ||
+            (user != null && user.uid == joke.authorId && user.effectiveIsVerified);
         
         return Scaffold(
           appBar: AppBar(
@@ -218,7 +220,7 @@ class _JokeDetailScreenState extends State<JokeDetailScreen> {
                                       fontSize: 14,
                                     ),
                                   ),
-                                  if (joke.isAuthorVerified) ...[
+                                  if (isAuthorVerified) ...[
                                     const SizedBox(width: 4),
                                     Tooltip(
                                       message: l10n.verifiedAccount,

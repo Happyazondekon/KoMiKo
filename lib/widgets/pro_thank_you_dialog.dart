@@ -111,36 +111,6 @@ class ProThankYouDialog extends StatelessWidget {
                   height: 1.4,
                 ),
               ),
-              const SizedBox(height: 20),
-
-              // ── Liste des avantages débloqués ───────────────────────────
-              _BenefitRow(
-                icon: Icons.verified_rounded,
-                text: l10n.proBenefitBadge,
-                color: const Color(0xFFFFD700),
-                isDark: isDark,
-              ),
-              const SizedBox(height: 10),
-              _BenefitRow(
-                icon: Icons.auto_awesome_rounded,
-                text: l10n.proBenefitAssistant,
-                color: const Color(0xFFFFD700),
-                isDark: isDark,
-              ),
-              const SizedBox(height: 10),
-              _BenefitRow(
-                icon: Icons.image_rounded,
-                text: l10n.proBenefitPhotos,
-                color: const Color(0xFFFFD700),
-                isDark: isDark,
-              ),
-              const SizedBox(height: 10),
-              _BenefitRow(
-                icon: Icons.rocket_launch_rounded,
-                text: l10n.proBenefitBoost,
-                color: const Color(0xFFFFD700),
-                isDark: isDark,
-              ),
               const SizedBox(height: 24),
 
               // ── Bouton d'action principal ───────────────────────────────
@@ -155,60 +125,6 @@ class ProThankYouDialog extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _BenefitRow extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final Color color;
-  final bool isDark;
-
-  const _BenefitRow({
-    required this.icon,
-    required this.text,
-    required this.color,
-    required this.isDark,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-      decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkSurface.withValues(alpha: 0.6)
-            : AppColors.lightBackground.withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-          width: 0.8,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: color, size: 16),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: GoogleFonts.poppins(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w600,
-                color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

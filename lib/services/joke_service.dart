@@ -469,10 +469,34 @@ class JokeService {
         .limit(200)
         .get();
 
-    if (snapshot.docs.isEmpty) return null;
-
     final list = snapshot.docs.map(Joke.fromFirestore).toList();
     list.shuffle();
     return list.first;
   }
+
+  /// Met à jour de façon atomique le badge vérifié sur toutes les blagues de l'auteur dans Firestore.
+  Future<void> syncAuthorVerifiedJokes(String authorId, bool isVerified) async {
+    try {
+      final query = await _db
+          .collection('jokes')
+          .where('authorId', isEqualTo: authorId)
+          .get();
+      if (query.docs.isEmpty) return;
+      final batch = _db.batch();
+      var updateCount = 0;
+      for (final doc in query.docs) {
+        if (doc.data()['isAuthorVerified'] != isVerified) {
+          batch.update(doc.reference, {'isAuthorVerified': isVerified});
+          updateCount++;
+        }
+      }
+      if (updateCount > 0) {
+        await batch.commit();
+        debugPrint('[JokeService] $updateCount blague(s) mise(s) à jour avec isAuthorVerified=$isVerified');
+      }
+    } catch (e) {
+      debugPrint('[JokeService] syncAuthorVerifiedJokes error: $e');
+    }
+  }
 }
+

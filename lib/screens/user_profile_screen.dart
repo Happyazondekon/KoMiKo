@@ -23,7 +23,6 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   final _jokeService = JokeService();
   final _followService = FollowService();
-  late Future<UserModel?> _userFuture;
   late Future<Map<String, int>> _statsFuture;
 
   @override
@@ -33,19 +32,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   void _refreshData() {
-    _userFuture = _loadUserData();
     _statsFuture = _jokeService.getUserStats(widget.userId);
-  }
-
-  Future<UserModel?> _loadUserData() async {
-    final doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.userId)
-        .get();
-    if (doc.exists) {
-      return UserModel.fromFirestore(doc);
-    }
-    return null;
   }
 
   @override
@@ -54,16 +41,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final currentUser = context.watch<UserService>().currentUser;
     final isMe = currentUser?.uid == widget.userId;
 
-    return FutureBuilder<UserModel?>(
-      future: _userFuture,
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userId)
+          .snapshots(),
       builder: (context, userSnap) {
-        if (userSnap.connectionState == ConnectionState.waiting) {
+        if (userSnap.connectionState == ConnectionState.waiting && !userSnap.hasData) {
           return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
-        final user = userSnap.data;
-        if (user == null) {
+        final doc = userSnap.data;
+        if (doc == null || !doc.exists) {
           return Scaffold(appBar: AppBar(), body: Center(child: Text(l10n.errorOops)));
         }
+        final user = UserModel.fromFirestore(doc);
 
         return Scaffold(
           appBar: AppBar(
@@ -152,9 +143,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     currentUserAvatar: currentUser?.avatarUrl,
                                   );
                                 }
-                                setState(() {
-                                  _userFuture = _loadUserData();
-                                });
                               },
                               variant: isFollowing
                                   ? BubbleVariant.secondary

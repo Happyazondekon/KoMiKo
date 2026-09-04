@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:komiko/services/joke_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// IDs des produits Google Play.
@@ -88,6 +89,33 @@ class PurchaseService extends ChangeNotifier {
     final expiryMs = prefs.getInt(_prefKeyProExpiry);
     if (expiryMs != null) {
       _proExpiry = DateTime.fromMillisecondsSinceEpoch(expiryMs);
+    }
+
+    // Si l'utilisateur est connecté, vérifier aussi Firestore pour synchroniser les droits
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      try {
+        final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        if (doc.exists) {
+          final data = doc.data();
+          final firestoreIsPro = data?['isPro'] as bool? ?? false;
+          final firestoreExpiry = (data?['proExpiry'] as Timestamp?)?.toDate();
+          if (firestoreIsPro) {
+            _isPro = true;
+            _proExpiry = firestoreExpiry;
+            await _saveLocalProStatus(true, firestoreExpiry);
+            if (data?['isVerified'] != true) {
+              await FirebaseFirestore.instance.collection('users').doc(uid).set({
+                'isVerified': true,
+              }, SetOptions(merge: true));
+            }
+            JokeService().syncAuthorVerifiedJokes(uid, true);
+            notifyListeners();
+          }
+        }
+      } catch (e) {
+        debugPrint('[PurchaseService] sync Firestore pro status error: $e');
+      }
     }
   }
 
@@ -202,9 +230,11 @@ class PurchaseService extends ChangeNotifier {
           try {
             await FirebaseFirestore.instance.collection('users').doc(uid).set({
               'isPro': true,
+              'isVerified': true,
               'proExpiry': expiry != null ? Timestamp.fromDate(expiry) : null,
             }, SetOptions(merge: true));
             debugPrint('[PurchaseService] Profil Firestore $uid mis à jour avec le statut Pro !');
+            JokeService().syncAuthorVerifiedJokes(uid, true);
           } catch (e) {
             debugPrint('[PurchaseService] Erreur mise à jour Firestore: $e');
           }

@@ -126,6 +126,8 @@ class _MyJokeTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final content = joke.localizedContent(langCode);
     final punchline = joke.localizedPunchline(langCode);
+    final currentUser = context.watch<UserService>().currentUser;
+    final isVerified = joke.isAuthorVerified || (currentUser?.effectiveIsVerified ?? false);
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -159,7 +161,7 @@ class _MyJokeTile extends StatelessWidget {
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            if (joke.isAuthorVerified) ...[
+                            if (isVerified) ...[
                               const SizedBox(width: 4),
                               const Icon(Icons.verified,
                                   color: Colors.amber, size: 16),

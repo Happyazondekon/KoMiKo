@@ -217,7 +217,7 @@ class _ProposeJokeScreenState extends State<ProposeJokeScreen> {
         authorName: user.username ?? l10n.anonymous,
         authorId: user.uid,
         authorAvatarUrl: user.avatarUrl,
-        isAuthorVerified: user.isVerified || user.hasActivePro,
+        isAuthorVerified: user.effectiveIsVerified,
         createdAt: DateTime.now(),
         imageBase64: _imageBase64,
         isFeatured: _isFeatured,

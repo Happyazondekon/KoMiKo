@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:komiko/models/user_model.dart';
+import 'package:komiko/services/joke_service.dart';
 
 class UserService extends ChangeNotifier {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   UserModel? _currentUser;
+  StreamSubscription<DocumentSnapshot>? _userSubscription;
 
   bool _isLoading = false;
 
@@ -40,10 +43,10 @@ class UserService extends ChangeNotifier {
     return 'Komikonaute';
   }
 
-  Future<void> loadUserProfile(String uid) async {
+  Future<void> loadUserProfile(String uid, {bool forceReload = false}) async {
     // Check if we already have the correct user or are already loading
     if (_isLoading) return;
-    if (_currentUser != null && _currentUser!.uid == uid) return;
+    if (!forceReload && _currentUser != null && _currentUser!.uid == uid) return;
 
     _isLoading = true;
     notifyListeners();
@@ -52,7 +55,23 @@ class UserService extends ChangeNotifier {
       DocumentSnapshot doc = await _db.collection('users').doc(uid).get();
       if (doc.exists) {
         _currentUser = UserModel.fromFirestore(doc);
+
+        // Écoute en temps réel pour synchroniser immédiatement les changements (ex: badge vérifié, statut Pro)
+        _userSubscription?.cancel();
+        _userSubscription = _db.collection('users').doc(uid).snapshots().listen((snapshot) {
+          if (snapshot.exists) {
+            _currentUser = UserModel.fromFirestore(snapshot);
+            if (_currentUser!.effectiveIsVerified) {
+              JokeService().syncAuthorVerifiedJokes(uid, true);
+            }
+            notifyListeners();
+          }
+        });
         
+        if (_currentUser!.effectiveIsVerified) {
+          JokeService().syncAuthorVerifiedJokes(uid, true);
+        }
+
         // Ensure official account data is always correct if it's missing or wrong
         final isContactAccount = uid == 'UK42noQ7qiVt63v3PHHywdZQajS2' ||
             authUser?.email?.trim().toLowerCase() == 'contact@komiko.app' ||
@@ -149,8 +168,16 @@ class UserService extends ChangeNotifier {
   }
 
   void clearCache() {
+    _userSubscription?.cancel();
+    _userSubscription = null;
     _currentUser = null;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _userSubscription?.cancel();
+    super.dispose();
   }
 
   // ── Méthodes de lecture (admin) ────────────────────────────────────────────

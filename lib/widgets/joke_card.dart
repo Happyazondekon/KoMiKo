@@ -93,6 +93,9 @@ class _JokeCardState extends State<JokeCard> {
     final userId = context.read<AuthService>().currentUser?.uid ?? '';
     final isLiked = joke.likedBy.contains(userId);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final currentUser = context.watch<UserService>().currentUser;
+    final isAuthorVerified = joke.isAuthorVerified ||
+        (currentUser != null && currentUser.uid == joke.authorId && currentUser.effectiveIsVerified);
 
     final content = joke.localizedContent(langCode);
     final punchline = joke.localizedPunchline(langCode);
@@ -181,7 +184,7 @@ class _JokeCardState extends State<JokeCard> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              if (joke.isAuthorVerified) ...[
+                              if (isAuthorVerified) ...[
                                 const SizedBox(width: 4),
                                 const Icon(Icons.verified,
                                     color: AppColors.primary, size: 14),
