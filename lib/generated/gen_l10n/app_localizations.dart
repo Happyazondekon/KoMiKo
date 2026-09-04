@@ -1843,6 +1843,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count}/5'**
   String freeTrialsRemaining(int count);
+
+  /// No description provided for @proThankYouTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you & Welcome to Komiko Pro!'**
+  String get proThankYouTitle;
+
+  /// No description provided for @proThankYouSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your support keeps Komiko growing. All your exclusive perks are now unlocked!'**
+  String get proThankYouSubtitle;
+
+  /// No description provided for @proBenefitBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Official gold Verified Badge next to your name'**
+  String get proBenefitBadge;
+
+  /// No description provided for @proBenefitAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited Komiko Assistant with all styles'**
+  String get proBenefitAssistant;
+
+  /// No description provided for @proBenefitPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited photos and memes in your jokes'**
+  String get proBenefitPhotos;
+
+  /// No description provided for @proBenefitBoost.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority visibility and boost in the feed'**
+  String get proBenefitBoost;
+
+  /// No description provided for @proThankYouButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoy my perks'**
+  String get proThankYouButton;
 }
 
 class _AppLocalizationsDelegate

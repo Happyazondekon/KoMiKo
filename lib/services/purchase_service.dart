@@ -240,4 +240,12 @@ class PurchaseService extends ChangeNotifier {
     await _saveLocalProStatus(false, null);
     notifyListeners();
   }
+
+  /// Réinitialise le statut après traitement d'un achat.
+  void resetStatus() {
+    _status = PurchaseStatus.idle;
+    _errorMessage = null;
+    notifyListeners();
+  }
 }
+

@@ -380,5 +380,12 @@
     "placeholders": {
       "count": { "type": "int" }
     }
-  }
+  },
+  "proThankYouTitle": "Thank you & Welcome to Komiko Pro!",
+  "proThankYouSubtitle": "Your support keeps Komiko growing. All your exclusive perks are now unlocked!",
+  "proBenefitBadge": "Official gold Verified Badge next to your name",
+  "proBenefitAssistant": "Unlimited Komiko Assistant with all styles",
+  "proBenefitPhotos": "Unlimited photos and memes in your jokes",
+  "proBenefitBoost": "Priority visibility and boost in the feed",
+  "proThankYouButton": "Enjoy my perks"
 }

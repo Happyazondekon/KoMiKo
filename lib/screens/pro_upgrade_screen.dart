@@ -1,12 +1,65 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:komiko/generated/gen_l10n/app_localizations.dart';
 import 'package:komiko/services/purchase_service.dart';
+import 'package:komiko/services/user_service.dart';
 import 'package:komiko/theme/app_colors.dart';
+import 'package:komiko/widgets/pro_thank_you_dialog.dart';
 import 'package:provider/provider.dart';
 
-class ProUpgradeScreen extends StatelessWidget {
+class ProUpgradeScreen extends StatefulWidget {
   const ProUpgradeScreen({super.key});
+
+  @override
+  State<ProUpgradeScreen> createState() => _ProUpgradeScreenState();
+}
+
+class _ProUpgradeScreenState extends State<ProUpgradeScreen> {
+  PurchaseService? _purchaseService;
+  bool _dialogShowing = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final service = Provider.of<PurchaseService>(context);
+    if (_purchaseService != service) {
+      _purchaseService?.removeListener(_onPurchaseUpdate);
+      _purchaseService = service;
+      _purchaseService?.addListener(_onPurchaseUpdate);
+    }
+  }
+
+  @override
+  void dispose() {
+    _purchaseService?.removeListener(_onPurchaseUpdate);
+    super.dispose();
+  }
+
+  void _onPurchaseUpdate() {
+    final status = _purchaseService?.status;
+    if ((status == PurchaseStatus.purchasedPro ||
+            (status == PurchaseStatus.restored && (_purchaseService?.isPro ?? false))) &&
+        !_dialogShowing &&
+        mounted) {
+      _dialogShowing = true;
+
+      // Recharger le profil utilisateur avec son statut Pro & badge vérifié
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null) {
+        context.read<UserService>().loadUserProfile(uid);
+      }
+
+      _purchaseService?.resetStatus();
+
+      // Afficher le popup de remerciement officiel avec l'illustration two.webp
+      ProThankYouDialog.show(context).then((_) {
+        if (mounted) {
+          Navigator.of(context).pop(); // Fermer l'écran d'upgrade
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

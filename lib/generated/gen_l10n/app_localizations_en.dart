@@ -948,4 +948,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String freeTrialsRemaining(int count) {
     return '$count/5';
   }
+
+  @override
+  String get proThankYouTitle => 'Thank you & Welcome to Komiko Pro!';
+
+  @override
+  String get proThankYouSubtitle =>
+      'Your support keeps Komiko growing. All your exclusive perks are now unlocked!';
+
+  @override
+  String get proBenefitBadge =>
+      'Official gold Verified Badge next to your name';
+
+  @override
+  String get proBenefitAssistant =>
+      'Unlimited Komiko Assistant with all styles';
+
+  @override
+  String get proBenefitPhotos => 'Unlimited photos and memes in your jokes';
+
+  @override
+  String get proBenefitBoost => 'Priority visibility and boost in the feed';
+
+  @override
+  String get proThankYouButton => 'Enjoy my perks';
 }

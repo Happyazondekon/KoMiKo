@@ -380,5 +380,12 @@
     "placeholders": {
       "count": { "type": "int" }
     }
-  }
+  },
+  "proThankYouTitle": "Merci et bienvenue dans Komiko Pro !",
+  "proThankYouSubtitle": "Votre soutien fait grandir Komiko. Tous vos avantages exclusifs sont désormais débloqués !",
+  "proBenefitBadge": "Badge Vérifié doré officiel à côté de votre nom",
+  "proBenefitAssistant": "Assistant Komiko illimité dans tous les styles",
+  "proBenefitPhotos": "Photos et mèmes illimités dans vos blagues",
+  "proBenefitBoost": "Visibilité prioritaire et boostée dans le fil",
+  "proThankYouButton": "Profiter de mes avantages"
 }
