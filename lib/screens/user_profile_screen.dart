@@ -53,7 +53,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final l10n = AppLocalizations.of(context)!;
     final currentUser = context.watch<UserService>().currentUser;
     final isMe = currentUser?.uid == widget.userId;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return FutureBuilder<UserModel?>(
       future: _userFuture,
