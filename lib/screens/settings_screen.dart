@@ -254,7 +254,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: GoogleFonts.poppins(
                   fontSize: 22, fontWeight: FontWeight.w800),
             ),
-            if (user?.isVerified == true) ...[
+            if (user?.effectiveIsVerified == true) ...[
               const SizedBox(width: 6),
               Tooltip(
                 message: l10n.verifiedAccount,

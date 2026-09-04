@@ -95,7 +95,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             style: GoogleFonts.poppins(
                                 fontSize: 22, fontWeight: FontWeight.w800),
                           ),
-                          if (user.isVerified) ...[
+                          if (user.effectiveIsVerified) ...[
                             const SizedBox(width: 6),
                             const Icon(Icons.verified,
                                 color: AppColors.primary, size: 22),

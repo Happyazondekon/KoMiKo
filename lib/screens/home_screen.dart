@@ -583,7 +583,7 @@ class KomikoDrawer extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            if (user?.isVerified == true) ...[
+                            if (user?.effectiveIsVerified == true) ...[
                               const SizedBox(width: 4),
                               const Icon(Icons.verified,
                                   color: AppColors.primary, size: 16),

@@ -426,7 +426,7 @@ class _AdminUserCard extends StatelessWidget {
                             style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w700, fontSize: 13),
                           ),
-                          if (user.isVerified) ...[
+                          if (user.effectiveIsVerified) ...[
                             const SizedBox(width: 4),
                             const Icon(Icons.verified,
                                 color: AppColors.primary, size: 14),

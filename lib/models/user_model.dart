@@ -52,9 +52,9 @@ class UserModel {
   bool get isOfficialContact =>
       email?.trim().toLowerCase() == 'contact@komiko.app';
 
-  /// True if user has verified status (including contact@komiko.app and admin).
+  /// True if user has verified status (including active Pro subscribers, contact@komiko.app and admin).
   bool get effectiveIsVerified =>
-      isVerified || isOfficialContact || role == 'komiko';
+      isVerified || hasActivePro || isOfficialContact || role == 'komiko';
 
   /// True if user has an active (non-expired) Pro subscription or is verified.
   bool get hasActivePro {
